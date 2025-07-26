@@ -52,9 +52,11 @@ setup:
 
 # Check environment
 check-env:
-ifndef NPM_TOKEN
-	$(error NPM_TOKEN is not set. Please create .env file with NPM_TOKEN=your-token)
-endif
+	@if [ -z "$$NPM_TOKEN" ]; then \
+		echo "$(RED)ERROR: NPM_TOKEN is not set$(NC)"; \
+		echo "$(YELLOW)Please create .env file with NPM_TOKEN=your-token$(NC)"; \
+		exit 1; \
+	fi
 	@echo "$(GREEN)✓ NPM_TOKEN is set$(NC)"
 
 # Install dependencies
@@ -82,7 +84,7 @@ unlink:
 # Run tests
 test:
 	@echo "$(BLUE)Running tests...$(NC)"
-	npm test || echo "$(YELLOW)⚠ No tests configured$(NC)"
+	@npm test || (echo "$(YELLOW)⚠ No tests configured$(NC)" && exit 0)
 
 # Run linter
 lint:
@@ -113,7 +115,7 @@ build: lint check-sensitive
 # Configure npm with token
 npm-auth: check-env
 	@echo "$(BLUE)Configuring npm authentication...$(NC)"
-	@echo "//$(NPM_REGISTRY):_authToken=$(NPM_TOKEN)" > ~/.npmrc
+	@echo "//registry.npmjs.org/:_authToken=$(NPM_TOKEN)" > ~/.npmrc
 	@echo "$(GREEN)✓ NPM authentication configured$(NC)"
 
 # Publish current version
@@ -130,7 +132,7 @@ publish-patch: check-env npm-auth build
 	@NEW_VERSION=$$(node -p "require('./package.json').version") && \
 	echo "$(BLUE)Publishing $(PACKAGE_NAME)@$$NEW_VERSION to npm...$(NC)" && \
 	npm publish --access public && \
-	git push && git push --tags && \
+	git push --follow-tags && \
 	echo "$(GREEN)✓ Published $$NEW_VERSION successfully!$(NC)"
 
 # Publish with minor version bump
@@ -140,7 +142,7 @@ publish-minor: check-env npm-auth build
 	@NEW_VERSION=$$(node -p "require('./package.json').version") && \
 	echo "$(BLUE)Publishing $(PACKAGE_NAME)@$$NEW_VERSION to npm...$(NC)" && \
 	npm publish --access public && \
-	git push && git push --tags && \
+	git push --follow-tags && \
 	echo "$(GREEN)✓ Published $$NEW_VERSION successfully!$(NC)"
 
 # Publish with major version bump
@@ -150,7 +152,7 @@ publish-major: check-env npm-auth build
 	@NEW_VERSION=$$(node -p "require('./package.json').version") && \
 	echo "$(BLUE)Publishing $(PACKAGE_NAME)@$$NEW_VERSION to npm...$(NC)" && \
 	npm publish --access public && \
-	git push && git push --tags && \
+	git push --follow-tags && \
 	echo "$(GREEN)✓ Published $$NEW_VERSION successfully!$(NC)"
 
 # Update dependencies
@@ -162,7 +164,7 @@ update:
 # Clean project
 clean:
 	@echo "$(BLUE)Cleaning project...$(NC)"
-	rm -rf node_modules package-lock.json
+	@rm -rf node_modules package-lock.json || true
 	@echo "$(GREEN)✓ Project cleaned$(NC)"
 
 # Quick publish (lint, build, and publish patch)
