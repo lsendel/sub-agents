@@ -89,7 +89,7 @@ export async function removeCommand(agentName, options) {
     
     // Suggest reinstallation
     console.log('');
-    console.log(chalk.gray(`To reinstall this agent, use:`));
+    console.log(chalk.gray('To reinstall this agent, use:'));
     console.log(chalk.gray(`claude-agents install ${agentName}`));
     
   } catch (error) {

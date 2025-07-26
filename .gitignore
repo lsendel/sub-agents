@@ -74,10 +74,12 @@ web_modules/
 
 # dotenv environment variable files
 .env
+.env.*
 .env.development.local
 .env.test.local
 .env.production.local
 .env.local
+!.env.example
 
 # parcel-bundler cache (https://parceljs.org/)
 .cache
@@ -143,3 +145,40 @@ dist
 # Claude agents specific
 .claude-agents.json
 *.local.json
+!.claude-ignore.example
+
+# Security - Private keys and certificates
+*.pem
+*.key
+*.crt
+*.cer
+*.p12
+*.pfx
+private/
+secrets/
+
+# Authentication tokens and credentials
+.npmrc
+.netrc
+.authinfo
+.auth
+credentials.json
+token.json
+auth.json
+
+# Configuration with potential secrets
+config/local.*
+config/development.*
+config/production.*
+!config/*.example
+!config/*.sample
+
+# Backup files that might contain sensitive data
+*.backup
+*.bak
+*.old
+*.orig
+
+# Local development files
+.envrc
+.direnv/

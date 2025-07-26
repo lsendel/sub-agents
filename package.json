@@ -1,5 +1,5 @@
 {
-  "name": "@webdevtoday/claude-agents",
+  "name": "@zamaz/claude-agents",
   "version": "1.0.2",
   "description": "Supercharge Claude Code with specialized AI sub-agents for code review, testing, debugging, documentation & more. Easy CLI tool to install, manage & create custom AI agents for enhanced development workflow",
   "main": "src/index.js",
@@ -12,14 +12,20 @@
     "bin/**/*",
     "agents/**/*",
     "commands/**/*",
+    "scripts/**/*",
     "README.md",
-    "LICENSE"
+    "LICENSE",
+    "CLAUDE.md",
+    "IMPROVEMENTS.md",
+    "CHANGELOG.md"
   ],
   "scripts": {
     "start": "node bin/claude-agents",
     "lint": "eslint src/**/*.js",
     "format": "prettier --write src/**/*.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "check-sensitive": "node scripts/check-sensitive-files.js",
+    "prepare": "node scripts/setup-hooks.js || true"
   },
   "keywords": [
     "claude",
@@ -54,9 +60,9 @@
     "software-development"
   ],
   "author": {
-    "name": "WebDev Today",
-    "email": "jason@webdevtoday.com",
-    "url": "https://webdevtoday.com"
+    "name": "ZAMAZ AI",
+    "email": "luis@bbep5.com",
+    "url": "https://zamaz.ai"
   },
   "contributors": [
     "Claude Sub-Agents Contributors"
@@ -68,7 +74,9 @@
     "commander": "^11.1.0",
     "fs-extra": "^11.2.0",
     "inquirer": "^9.2.12",
+    "minimatch": "^10.0.3",
     "ora": "^8.0.1",
+    "semver": "^7.7.2",
     "yaml": "^2.3.4"
   },
   "devDependencies": {

@@ -21,9 +21,12 @@ import {
 } from '../utils/config.js';
 import { 
   getAvailableAgents, 
-  getAgentDetails,
-  formatAgentForInstall
+  getAgentDetails
 } from '../utils/agents.js';
+import { 
+  optimizeAgentForClaudeCode,
+  validateAgentFormat
+} from '../utils/agent-optimizer.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -103,10 +106,16 @@ export async function installCommand(options) {
           continue;
         }
         
-        // Write agent file
+        // Validate agent format
+        const validation = validateAgentFormat(agentDetails);
+        if (!validation.valid) {
+          spinner.warn(`Agent ${agentName} has issues: ${validation.errors.join(', ')}`);
+        }
+        
+        // Write agent file with optimized format for Claude Code
         const agentPath = join(agentsDir, `${agentName}.md`);
-        const formattedContent = formatAgentForInstall(agentDetails);
-        writeFileSync(agentPath, formattedContent);
+        const optimizedContent = optimizeAgentForClaudeCode(agentDetails);
+        writeFileSync(agentPath, optimizedContent);
         
         // Copy associated slash commands if they exist
         if (agentDetails.commands && agentDetails.commands.length > 0) {
@@ -128,7 +137,7 @@ export async function installCommand(options) {
         if (agentDetails.hooks?.recommended || agentDetails.hooks?.optional) {
           const hooks = await selectHookOptions();
           if (hooks && hooks.length > 0) {
-            console.log(chalk.gray(`  Configure hooks manually in your settings.json`));
+            console.log(chalk.gray('  Configure hooks manually in your settings.json'));
           }
         }
         

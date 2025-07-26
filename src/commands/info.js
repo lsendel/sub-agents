@@ -6,7 +6,7 @@ export async function infoCommand(agentName) {
   try {
     const agentDetails = getAgentDetails(agentName);
     const installedAgents = getInstalledAgents();
-    const isInstalled = installedAgents.hasOwnProperty(agentName);
+    const isInstalled = Object.prototype.hasOwnProperty.call(installedAgents, agentName);
     
     if (!agentDetails && !isInstalled) {
       console.log(chalk.red(`Agent "${agentName}" not found.`));

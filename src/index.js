@@ -12,6 +12,7 @@ import { disableCommand } from './commands/disable.js';
 import { infoCommand } from './commands/info.js';
 import { createCommand } from './commands/create.js';
 import { removeCommand } from './commands/remove.js';
+import { checkForUpdates } from './utils/update-checker.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -102,6 +103,18 @@ program
   .action(() => {
     console.log(chalk.yellow('Config command coming soon!'));
   });
+
+// Version command with update check
+program
+  .command('version')
+  .description('Show version and check for updates')
+  .action(async () => {
+    console.log(`${packageJson.name} v${packageJson.version}`);
+    await checkForUpdates(false);
+  });
+
+// Check for updates on startup (silently)
+checkForUpdates(true);
 
 // Parse command line arguments
 program.parse(process.argv);

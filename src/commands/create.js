@@ -140,7 +140,7 @@ export async function createCommand(options) {
     
     console.log(chalk.green(`\n✓ Agent "${agentDetails.name}" created successfully!`));
     console.log(chalk.gray(`Location: ${agentPath}`));
-    console.log(chalk.gray(`The agent is now enabled and ready to use.`));
+    console.log(chalk.gray('The agent is now enabled and ready to use.'));
     
     // Provide next steps
     console.log('\n' + chalk.bold('Next steps:'));

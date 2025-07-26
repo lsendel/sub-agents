@@ -1,0 +1,76 @@
+# Claude Agents Ignore File
+# This file specifies patterns that Claude agents should ignore
+# It follows the same syntax as .gitignore
+
+# Dependencies
+node_modules/
+vendor/
+bower_components/
+
+# Build outputs
+dist/
+build/
+out/
+target/
+*.min.js
+*.min.css
+
+# Test coverage
+coverage/
+.nyc_output/
+*.lcov
+
+# Logs and databases
+*.log
+*.sql
+*.sqlite
+*.db
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Environment files
+.env
+.env.*
+config/secrets.yml
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.temp
+*.cache
+
+# Generated documentation
+docs/generated/
+api-docs/
+
+# Package files
+*.tgz
+*.zip
+*.tar.gz
+
+# Large binary files
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Media files (if not relevant to code review)
+*.mp4
+*.avi
+*.mov
+*.mp3
+*.wav
+
+# Custom patterns for your project
+# Add project-specific patterns below

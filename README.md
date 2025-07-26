@@ -6,9 +6,9 @@
 [![npm version](https://img.shields.io/npm/v/@webdevtoday/claude-agents?style=flat-square)](https://www.npmjs.com/package/@webdevtoday/claude-agents)
 [![npm downloads](https://img.shields.io/npm/dm/@webdevtoday/claude-agents?style=flat-square)](https://www.npmjs.com/package/@webdevtoday/claude-agents)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://opensource.org/licenses/MIT)
-[![GitHub release](https://img.shields.io/github/release/webdevtodayjason/sub-agents.svg?style=flat-square)](https://github.com/webdevtodayjason/sub-agents/releases)
+[![GitHub release](https://img.shields.io/github/release/lsendel/sub-agents.svg?style=flat-square)](https://github.com/lsendel/sub-agents/releases)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
-[![Made with Love](https://img.shields.io/badge/Made%20with-❤️-red.svg?style=flat-square)](https://github.com/webdevtodayjason)
+[![Made with Love](https://img.shields.io/badge/Made%20with-❤️-red.svg?style=flat-square)](https://github.com/lsendel)
 
 **🚀 Supercharge Claude Code with Specialized AI Sub-Agents for Code Review, Testing, Debugging & More**
 
@@ -19,6 +19,10 @@
 </div>
 
 ---
+
+## 🙏 Acknowledgments
+
+This project is forked from [https://github.com/webdevtodayjason/sub-agents.git](https://github.com/webdevtodayjason/sub-agents.git). A warm thanks to webdevtodayjason for the excellent project contribution and foundation!
 
 ## 🎯 What is Claude Sub-Agents Manager?
 
@@ -36,20 +40,53 @@ Claude Sub-Agents Manager is a powerful CLI tool that enhances Claude Code with 
 
 ### NPM (Recommended)
 ```bash
-npm install -g @webdevtoday/claude-agents
+npm install -g @zamaz/claude-agents
 ```
 
 ### Yarn
 ```bash
-yarn global add @webdevtoday/claude-agents
+yarn global add @zamaz/claude-agents
 ```
 
 ### From Source
 ```bash
-git clone https://github.com/webdevtodayjason/sub-agents.git
+git clone https://github.com/lsendel/sub-agents.git
 cd sub-agents
 npm install
 npm link
+```
+
+## 🔄 Updating
+
+### Check Current Version
+```bash
+claude-agents --version
+# or
+claude-agents version
+```
+
+### Update to Latest
+```bash
+# NPM
+npm update -g @zamaz/claude-agents
+
+# Yarn
+yarn global upgrade @zamaz/claude-agents
+
+# From source
+cd sub-agents
+git pull
+npm install
+npm link --force
+```
+
+### Check for Updates
+```bash
+# Manual check
+claude-agents version
+
+# Automatic check on every run
+# (notifies when updates are available)
 ```
 
 ## ⚡ Quick Start
@@ -280,11 +317,40 @@ Trigger agents automatically with hooks:
 
 Check out our other tools for Claude Code:
 
-### 🪝 [Claude Hooks Manager](https://github.com/webdevtodayjason/claude-hooks)
+### 🪝 [Claude Hooks Manager](https://github.com/lsendel/claude-hooks)
 Powerful hook management system for Claude Code automation
 
-### 🔨 [Context Forge](https://github.com/webdevtodayjason/context-forge)
+### 🔨 [Context Forge](https://github.com/lsendel/context-forge)
 Our flagship tool for intelligent context generation and management
+
+## 🚫 Gitignore Support
+
+Claude agents now respect gitignore patterns to avoid processing unnecessary files:
+
+### Automatic Exclusions
+Agents automatically ignore:
+- `node_modules/` - Dependencies
+- `.git/` - Version control
+- `dist/`, `build/` - Build outputs
+- `.env` files - Secrets
+- IDE configurations
+- OS-specific files
+
+### Custom Ignore Patterns
+Create a `.claude-ignore` file in your project root:
+```bash
+# Example .claude-ignore
+*.log
+coverage/
+temp/
+secrets/
+```
+
+### How It Works
+- Agents read both `.gitignore` and `.claude-ignore`
+- File searches automatically exclude ignored patterns
+- Improves performance by skipping irrelevant files
+- Prevents accidental exposure of sensitive data
 
 ## 🤝 Contributing
 
@@ -362,13 +428,14 @@ MIT License - see [LICENSE](LICENSE) file for details
 - Claude Code team at Anthropic
 - Our amazing community of developers
 - All contributors and testers
+- Special thanks to webdevtodayjason for the original project
 
 ## 📬 Connect
 
-- 🐛 [Report Issues](https://github.com/webdevtodayjason/sub-agents/issues)
-- 💡 [Request Features](https://github.com/webdevtodayjason/sub-agents/discussions)
-- 🐦 [Follow Updates](https://twitter.com/webdevtodayjason)
-- ⭐ [Star on GitHub](https://github.com/webdevtodayjason/sub-agents)
+- 🐛 [Report Issues](https://github.com/lsendel/sub-agents/issues)
+- 💡 [Request Features](https://github.com/lsendel/sub-agents/discussions)
+- 🐦 [Follow Updates](https://twitter.com/lsendel)
+- ⭐ [Star on GitHub](https://github.com/lsendel/sub-agents)
 
 ## 🔍 SEO Keywords & Use Cases
 
@@ -393,12 +460,12 @@ MIT License - see [LICENSE](LICENSE) file for details
 
 <div align="center">
 
-**Made with ❤️ by [WebDev Today Jason](https://github.com/webdevtodayjason)**
+**Made with ❤️ by [lsendel](https://github.com/lsendel)**
 
 *Building AI-powered developer tools to enhance productivity and code quality*
 
 **Claude Sub-Agents Manager** - Your AI-Powered Development Team in Claude Code
 
-[![Star History Chart](https://api.star-history.com/svg?repos=webdevtodayjason/sub-agents&type=Date)](https://star-history.com/#webdevtodayjason/sub-agents&Date)
+[![Star History Chart](https://api.star-history.com/svg?repos=lsendel/sub-agents&type=Date)](https://star-history.com/#lsendel/sub-agents&Date)
 
 </div>
