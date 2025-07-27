@@ -15,6 +15,7 @@ import { infoCommand } from './commands/info.js';
 import { createCommand } from './commands/create.js';
 import { removeCommand } from './commands/remove.js';
 import { updateCommand } from './commands/update.js';
+import { syncCommand } from './commands/sync.js';
 import { checkForUpdates } from './utils/update-checker.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -40,11 +41,11 @@ program
 
 // Install command
 program
-  .command('install')
+  .command('install [agents...]')
   .description('Install sub-agents to your system')
   .option('-p, --project', 'Install to project directory instead of user directory')
   .option('-a, --all', 'Install all available agents')
-  .action(installCommand);
+  .action((agents, options) => installCommand(agents, options));
 
 // List command
 program
@@ -100,12 +101,36 @@ program
   .option('--preserve-custom', 'Preserve custom modifications')
   .action(updateCommand.action);
 
+// Sync command
+program
+  .command('sync')
+  .description('Sync externally installed agents with configuration')
+  .option('-a, --auto', 'Auto-register without confirmation')
+  .option('-c, --commands', 'Also check for orphaned commands')
+  .option('-f, --force-copy', 'Force copy all agents to project directory')
+  .action(syncCommand);
+
 // Config command
 program
-  .command('config')
-  .description('Configure default settings')
-  .action(() => {
-    logger.info(chalk.yellow('Config command coming soon!'));
+  .command('config <setting> [value]')
+  .description('Configure settings (e.g., config autosync on/off)')
+  .action(async (setting, value) => {
+    const { enableAutoSync, disableAutoSync, isAutoSyncEnabled } = await import('./utils/auto-sync.js');
+    
+    if (setting === 'autosync') {
+      if (value === 'on' || value === 'true') {
+        enableAutoSync();
+      } else if (value === 'off' || value === 'false') {
+        disableAutoSync();
+      } else if (!value) {
+        console.log(`Auto-sync is currently: ${isAutoSyncEnabled() ? chalk.green('enabled') : chalk.gray('disabled')}`);
+      } else {
+        console.log(chalk.red('Invalid value. Use "on" or "off"'));
+      }
+    } else {
+      console.log(chalk.red(`Unknown setting: ${setting}`));
+      console.log(chalk.gray('Available settings: autosync'));
+    }
   });
 
 // Version command with update check

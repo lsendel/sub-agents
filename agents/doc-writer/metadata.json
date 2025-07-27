@@ -1,17 +1,19 @@
 {
   "name": "doc-writer",
   "version": "1.0.0",
-  "description": "Documentation specialist for creating and updating technical documentation, API docs, and README files",
-  "author": "Claude Sub-Agents",
-  "tags": ["documentation", "technical-writing", "api-docs", "readme"],
+  "description": "Documentation specialist for creating comprehensive technical documentation, API references, and README files. Automatically generates and updates documentation from code.",
+  "author": "External",
+  "tags": [],
   "requirements": {
-    "tools": ["Read", "Write", "Edit", "Grep", "Glob"],
-    "optional_tools": ["Bash", "WebSearch"]
+    "tools": [
+      "Read",
+      "Write",
+      "Edit",
+      "Grep",
+      "Glob"
+    ]
   },
-  "hooks": {
-    "recommended": ["PostToolUse:Write", "PostToolUse:Edit"],
-    "optional": []
-  },
-  "commands": ["document"],
-  "compatible_with": ["claude-code@>=1.0.0"]
+  "compatible_with": [
+    "claude-code@>=1.0.0"
+  ]
 }

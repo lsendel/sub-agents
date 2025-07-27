@@ -1,0 +1,13 @@
+{
+  "name": "interaction-design-optimizer",
+  "version": "1.0.0",
+  "description": "Use this agent when you need to design, analyze, or optimize user interactions and interfaces with a focus on predictive behavior, psychological triggers, and conversion optimization. This includes creating micro-interactions, implementing adaptive personalization systems, analyzing user intent patterns, or designing self-improving interface systems. Examples: <example>Context: The user is working on improving user engagement on a web application. user: \"I need to redesign the checkout flow to reduce cart abandonment\" assistant: \"I'll use the interaction-design-optimizer agent to analyze the current flow and design psychological triggers to improve conversion\" <commentary>Since the user needs help with conversion optimization through interface design, use the interaction-design-optimizer agent to apply behavioral psychology principles.</commentary></example> <example>Context: The user is building a new feature with complex user interactions. user: \"Create a recommendation system that adapts to user behavior in real-time\" assistant: \"Let me engage the interaction-design-optimizer agent to design a predictive interaction system with contextual responses\" <commentary>The user needs an adaptive system that predicts user intent, which is a core capability of the interaction-design-optimizer agent.</commentary></example>",
+  "author": "External",
+  "tags": [],
+  "requirements": {
+    "tools": []
+  },
+  "compatible_with": [
+    "claude-code@>=1.0.0"
+  ]
+}

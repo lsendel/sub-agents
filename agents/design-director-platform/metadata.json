@@ -1,0 +1,13 @@
+{
+  "name": "design-director-platform",
+  "version": "1.0.0",
+  "description": "Use this agent when you need to orchestrate a comprehensive platform redesign to address multiple systemic issues including accessibility problems, poor conversion rates, and technical debt. This agent coordinates multiple specialists and ensures all aspects of the redesign are properly addressed and integrated.",
+  "author": "External",
+  "tags": [],
+  "requirements": {
+    "tools": []
+  },
+  "compatible_with": [
+    "claude-code@>=1.0.0"
+  ]
+}

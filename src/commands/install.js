@@ -32,7 +32,7 @@ import { validateAgentName } from '../utils/validation.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-export async function installCommand(options) {
+export async function installCommand(agentNames, options) {
   const spinner = ora();
   
   try {
@@ -66,7 +66,20 @@ export async function installCommand(options) {
     
     // Select agents to install
     let selectedAgents;
-    if (options.all) {
+    if (agentNames && agentNames.length > 0) {
+      // Filter specified agents from available agents
+      selectedAgents = agentNames.filter(name => 
+        installableAgents.some(agent => agent.name === name)
+      );
+      
+      // Warn about agents not found
+      const notFound = agentNames.filter(name => 
+        !installableAgents.some(agent => agent.name === name)
+      );
+      if (notFound.length > 0) {
+        console.log(chalk.yellow(`Agents not found: ${notFound.join(', ')}`));
+      }
+    } else if (options.all) {
       selectedAgents = installableAgents.map(a => a.name);
     } else {
       selectedAgents = await selectAgents(installableAgents);
@@ -78,7 +91,9 @@ export async function installCommand(options) {
     }
     
     // Select installation scope
-    const scope = options.project ? 'project' : await selectInstallScope();
+    const scope = options.project ? 'project' : 
+      (agentNames && agentNames.length > 0) ? 'user' : 
+        await selectInstallScope();
     const isProject = scope === 'project';
     
     if (isProject) {
@@ -88,11 +103,13 @@ export async function installCommand(options) {
     const agentsDir = getAgentsDir(isProject);
     const commandsDir = getCommandsDir(isProject);
     
-    // Confirm installation
-    const confirmMessage = `Install ${selectedAgents.length} agent(s) to ${scope} directory?`;
-    if (!await confirmAction(confirmMessage)) {
-      console.log(chalk.yellow('Installation cancelled.'));
-      return;
+    // Confirm installation (skip if specific agents were requested)
+    if (!(agentNames && agentNames.length > 0)) {
+      const confirmMessage = `Install ${selectedAgents.length} agent(s) to ${scope} directory?`;
+      if (!await confirmAction(confirmMessage)) {
+        console.log(chalk.yellow('Installation cancelled.'));
+        return;
+      }
     }
     
     // Install each selected agent

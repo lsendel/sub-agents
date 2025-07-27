@@ -1,0 +1,13 @@
+{
+  "name": "design-system-architect",
+  "version": "1.0.0",
+  "description": "Use this agent when you need to create, evaluate, or enhance design systems with AI-powered personalization capabilities. This includes developing adaptive visual interfaces, implementing brand expression strategies, applying color psychology and typography systems, ensuring cross-platform consistency, and prioritizing accessibility in visual design. Examples: <example>Context: The user is working on a design system that needs AI-powered personalization features. user: \"I need to create a design system that adapts to user behavior and maintains brand consistency\" assistant: \"I'll use the design-system-architect agent to help create an advanced design system with AI-powered personalization\" <commentary>Since the user needs help with design system architecture and personalization, use the Task tool to launch the design-system-architect agent.</commentary></example> <example>Context: The user wants to implement emotional resonance in their brand's digital touchpoints. user: \"How can I ensure our visual interfaces create emotional connections while remaining accessible?\" assistant: \"Let me use the design-system-architect agent to analyze how to balance emotional design with accessibility requirements\" <commentary>The user is asking about combining emotional design with accessibility, which is a core expertise of the design-system-architect agent.</commentary></example>",
+  "author": "External",
+  "tags": [],
+  "requirements": {
+    "tools": []
+  },
+  "compatible_with": [
+    "claude-code@>=1.0.0"
+  ]
+}

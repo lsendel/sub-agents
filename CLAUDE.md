@@ -70,3 +70,14 @@ When adding new CLI commands:
 1. Create command handler in `src/commands/[command].js`
 2. Register in `src/index.js` using commander pattern
 3. Update state management in `src/utils/config.js` if needed
+
+## How to Create a New Agent
+
+- To create a new agent, follow these steps learned from this session:
+  - Create a new directory in `agents/[agent-name]/`
+  - Create an `agent.md` file with YAML frontmatter defining the agent
+  - Add a `metadata.json` file with agent details
+  - Optionally create a `hooks.json` for custom behaviors
+  - Ensure the agent follows the project's modular and extensible design
+  - Test the agent installation in both user and project scopes
+  - Add a corresponding slash command in `commands/[command].md` if needed

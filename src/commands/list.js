@@ -3,7 +3,6 @@ import Table from 'cli-table3';
 import { getAvailableAgents } from '../utils/agents.js';
 import { getInstalledAgents, isAgentEnabled } from '../utils/config.js';
 import { logger } from '../utils/logger.js';
-
 export async function listCommand(options) {
   try {
     const availableAgents = getAvailableAgents();

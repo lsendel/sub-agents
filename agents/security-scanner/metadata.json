@@ -1,17 +1,18 @@
 {
   "name": "security-scanner",
   "version": "1.0.0",
-  "description": "Security vulnerability scanner that detects common security issues and suggests fixes",
-  "author": "Claude Sub-Agents",
-  "tags": ["security", "vulnerability", "scanner", "audit"],
+  "description": "Security vulnerability scanner that proactively detects security issues, exposed secrets, and suggests remediation. Use after code changes or for security audits.",
+  "author": "External",
+  "tags": [],
   "requirements": {
-    "tools": ["Read", "Grep", "Glob", "Bash"],
-    "optional_tools": ["WebSearch", "Edit"]
+    "tools": [
+      "Read",
+      "Grep",
+      "Glob",
+      "Bash"
+    ]
   },
-  "hooks": {
-    "recommended": ["PostToolUse:Write", "PreToolUse:Bash"],
-    "optional": ["Stop"]
-  },
-  "commands": ["security-scan"],
-  "compatible_with": ["claude-code@>=1.0.0"]
+  "compatible_with": [
+    "claude-code@>=1.0.0"
+  ]
 }

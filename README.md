@@ -101,12 +101,35 @@ claude-agents install
 # Or install all agents at once
 claude-agents install --all
 
+# Install specific agents directly (NEW!)
+claude-agents install code-reviewer test-runner
+
+# Sync externally installed agents
+claude-agents sync
+
 # Use an agent via slash command
 # In Claude Code:
 > /review
 > /test
 > /debug TypeError in production
 ```
+
+## 🔄 Keeping Agents in Sync
+
+Claude Code may install agents directly to `~/.claude/agents/`. Use the sync command to register these agents:
+
+```bash
+# Detect and register externally installed agents
+claude-agents sync
+
+# Enable automatic synchronization
+claude-agents config autosync on
+
+# Check sync status
+claude-agents config autosync
+```
+
+The sync feature ensures all agents are properly tracked and managed, regardless of how they were installed. See [SYNC_PROCESS.md](docs/SYNC_PROCESS.md) for details.
 
 ## 📋 Available Sub-Agents
 

@@ -1,6 +1,8 @@
 ---
 name: test-runner
-description: Automated test execution specialist. Use proactively to run tests and fix failures. Automatically detects test frameworks and ensures all tests pass.
+description: Automated test execution specialist. Use proactively to run tests
+  and fix failures. Automatically detects test frameworks and ensures all tests
+  pass.
 tools: Bash, Read, Edit, Grep, Glob
 ---
 

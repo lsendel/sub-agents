@@ -1,17 +1,19 @@
 {
   "name": "debugger",
   "version": "1.0.0",
-  "description": "Expert debugging specialist for analyzing errors, stack traces, and fixing issues",
-  "author": "Claude Sub-Agents",
-  "tags": ["debugging", "error-analysis", "troubleshooting", "diagnostics"],
+  "description": "Expert debugging specialist for analyzing errors, stack traces, and unexpected behavior. Use proactively when encountering any errors or test failures.",
+  "author": "External",
+  "tags": [],
   "requirements": {
-    "tools": ["Read", "Edit", "Bash", "Grep", "Glob"],
-    "optional_tools": ["WebSearch", "MultiEdit"]
+    "tools": [
+      "Read",
+      "Edit",
+      "Bash",
+      "Grep",
+      "Glob"
+    ]
   },
-  "hooks": {
-    "recommended": ["PostToolUse:Bash"],
-    "optional": ["SubagentStop"]
-  },
-  "commands": ["debug"],
-  "compatible_with": ["claude-code@>=1.0.0"]
+  "compatible_with": [
+    "claude-code@>=1.0.0"
+  ]
 }

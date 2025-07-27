@@ -19,7 +19,7 @@ YELLOW = \033[1;33m
 RED = \033[0;31m
 NC = \033[0m # No Color
 
-.PHONY: help install test lint format build publish publish-patch publish-minor publish-major update clean check-env setup dev link unlink
+.PHONY: help install test lint format build publish publish-patch publish-minor publish-major update clean check-env setup dev link unlink sync sync-full sync-auto sync-off sync-check install-agent dev-sync
 
 # Default target
 help:
@@ -39,6 +39,18 @@ help:
 	@echo "  $(YELLOW)make clean$(NC)        - Clean node_modules and lock files"
 	@echo "  $(YELLOW)make setup$(NC)        - Initial setup (copy .env.example)"
 	@echo "  $(YELLOW)make update-agents$(NC) - Update all installed agents"
+	@echo ""
+	@echo "$(GREEN)Sync commands:$(NC)"
+	@echo "  $(YELLOW)make sync$(NC)         - Sync externally installed agents"
+	@echo "  $(YELLOW)make sync-full$(NC)    - Full sync with auto-confirm"
+	@echo "  $(YELLOW)make sync-auto$(NC)    - Enable automatic sync"
+	@echo "  $(YELLOW)make sync-off$(NC)     - Disable automatic sync"
+	@echo "  $(YELLOW)make sync-check$(NC)   - Check sync status"
+	@echo ""
+	@echo "$(GREEN)Agent management:$(NC)"
+	@echo "  $(YELLOW)make install-agent AGENTS=\"name1 name2\"$(NC) - Install specific agents"
+	@echo "  $(YELLOW)make list-agents$(NC)  - List all installed agents"
+	@echo "  $(YELLOW)make dev-sync$(NC)     - Dev setup with sync"
 
 # Initial setup
 setup:
@@ -201,10 +213,63 @@ update-agent:
 # List installed agents
 list-agents:
 	@echo "$(BLUE)Listing installed agents...$(NC)"
-	@./bin/claude-agents list --installed
+	@./bin/claude-agents list
 
 # Install all agents
 install-agents:
 	@echo "$(BLUE)Installing all available agents...$(NC)"
 	@./bin/claude-agents install --all
 	@echo "$(GREEN)✓ All agents installed$(NC)"
+
+# Sync externally installed agents
+sync:
+	@echo "$(BLUE)Syncing externally installed agents...$(NC)"
+	@./bin/claude-agents sync
+	@echo "$(GREEN)✓ Sync complete$(NC)"
+
+# Sync with auto-confirmation and command check
+sync-full:
+	@echo "$(BLUE)Running full sync with command check...$(NC)"
+	@./bin/claude-agents sync --auto --commands
+	@echo "$(GREEN)✓ Full sync complete$(NC)"
+
+# Force copy all agents to project directory
+sync-copy:
+	@echo "$(BLUE)Copying all agents to project directory...$(NC)"
+	@./bin/claude-agents sync --force-copy
+	@echo "$(GREEN)✓ All agents copied to project$(NC)"
+
+# Enable automatic sync
+sync-auto:
+	@echo "$(BLUE)Enabling automatic sync...$(NC)"
+	@./bin/claude-agents config autosync on
+	@echo "$(GREEN)✓ Auto-sync enabled$(NC)"
+
+# Disable automatic sync
+sync-off:
+	@echo "$(BLUE)Disabling automatic sync...$(NC)"
+	@./bin/claude-agents config autosync off
+	@echo "$(GREEN)✓ Auto-sync disabled$(NC)"
+
+# Check sync status
+sync-check:
+	@echo "$(BLUE)Checking sync status...$(NC)"
+	@./bin/claude-agents config autosync
+	@echo ""
+	@echo "$(BLUE)Checking for unregistered agents...$(NC)"
+	@./bin/claude-agents sync --auto --commands || true
+
+# Install specific agents by name
+install-agent:
+	@if [ -z "$(AGENTS)" ]; then \
+		echo "$(RED)Error: Please specify AGENTS=<agent-names>$(NC)"; \
+		echo "Example: make install-agent AGENTS=\"code-reviewer test-runner\""; \
+		exit 1; \
+	fi
+	@echo "$(BLUE)Installing agents: $(AGENTS)...$(NC)"
+	@./bin/claude-agents install $(AGENTS)
+	@echo "$(GREEN)✓ Agents installed$(NC)"
+
+# Quick development workflow - install, link, and sync
+dev-sync: dev sync
+	@echo "$(GREEN)✓ Development environment ready with sync$(NC)"
