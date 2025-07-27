@@ -16,6 +16,9 @@ import { createCommand } from './commands/create.js';
 import { removeCommand } from './commands/remove.js';
 import { updateCommand } from './commands/update.js';
 import { syncCommand } from './commands/sync.js';
+import { migrateCommandConfig } from './commands/migrate.js';
+import { optimizeCommandConfig } from './commands/optimize.js';
+import { validateCommandConfig } from './commands/validate.js';
 import { checkForUpdates } from './utils/update-checker.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -109,6 +112,33 @@ program
   .option('-c, --commands', 'Also check for orphaned commands')
   .option('-f, --force-copy', 'Force copy all agents to project directory')
   .action(syncCommand);
+
+// Migrate command
+const migrateCmd = program
+  .command(migrateCommandConfig.command)
+  .description(migrateCommandConfig.description);
+migrateCommandConfig.options.forEach(opt => {
+  migrateCmd.option(...opt);
+});
+migrateCmd.action(migrateCommandConfig.action);
+
+// Optimize command
+const optimizeCmd = program
+  .command(optimizeCommandConfig.command)
+  .description(optimizeCommandConfig.description);
+optimizeCommandConfig.options.forEach(opt => {
+  optimizeCmd.option(...opt);
+});
+optimizeCmd.action(optimizeCommandConfig.action);
+
+// Validate command
+const validateCmd = program
+  .command(validateCommandConfig.command)
+  .description(validateCommandConfig.description);
+validateCommandConfig.options.forEach(opt => {
+  validateCmd.option(...opt);
+});
+validateCmd.action(validateCommandConfig.action);
 
 // Config command
 program

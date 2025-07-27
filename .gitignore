@@ -146,6 +146,7 @@ dist
 .claude-agents.json
 *.local.json
 !.claude-ignore.example
+.claude-agents-backup/
 
 # Security - Private keys and certificates
 *.pem

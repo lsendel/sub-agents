@@ -5,15 +5,13 @@ import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { 
   getAgentsDir, 
-  getCommandsDir, 
   ensureDirectories, 
   ensureProjectDirectories 
 } from '../utils/paths.js';
 import { 
   selectAgents, 
   confirmAction, 
-  selectInstallScope,
-  selectHookOptions
+  selectInstallScope
 } from '../utils/prompts.js';
 import { 
   addInstalledAgent, 
@@ -21,12 +19,9 @@ import {
 } from '../utils/config.js';
 import { 
   getAvailableAgents, 
-  getAgentDetails
+  getAgentDetails,
+  formatAgentForInstall
 } from '../utils/agents.js';
-import { 
-  optimizeAgentForClaudeCode,
-  validateAgentFormat
-} from '../utils/agent-optimizer.js';
 import { validateAgentName } from '../utils/validation.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -101,7 +96,6 @@ export async function installCommand(agentNames, options) {
     }
     
     const agentsDir = getAgentsDir(isProject);
-    const commandsDir = getCommandsDir(isProject);
     
     // Confirm installation (skip if specific agents were requested)
     if (!(agentNames && agentNames.length > 0)) {
@@ -131,26 +125,17 @@ export async function installCommand(agentNames, options) {
           continue;
         }
         
-        // Validate agent format
-        const validation = validateAgentFormat(agentDetails);
-        if (!validation.valid) {
-          spinner.warn(`Agent ${agentName} has issues: ${validation.errors.join(', ')}`);
-        }
+        // For new format, just copy the .md file
+        const srcPath = join(__dirname, '..', '..', 'agents', `${agentName}.md`);
+        const destPath = join(agentsDir, `${agentName}.md`);
         
-        // Write agent file with optimized format for Claude Code
-        const agentPath = join(agentsDir, `${agentName}.md`);
-        const optimizedContent = optimizeAgentForClaudeCode(agentDetails);
-        writeFileSync(agentPath, optimizedContent);
-        
-        // Copy associated slash commands if they exist
-        if (agentDetails.commands && agentDetails.commands.length > 0) {
-          for (const command of agentDetails.commands) {
-            const srcPath = join(__dirname, '..', '..', 'commands', `${command}.md`);
-            if (existsSync(srcPath)) {
-              const destPath = join(commandsDir, `${command}.md`);
-              copyFileSync(srcPath, destPath);
-            }
-          }
+        if (existsSync(srcPath)) {
+          // Copy the single .md file
+          copyFileSync(srcPath, destPath);
+        } else {
+          // Fall back to formatting from agent details
+          const agentContent = formatAgentForInstall(agentDetails);
+          writeFileSync(destPath, agentContent);
         }
         
         // Add to config
@@ -158,12 +143,9 @@ export async function installCommand(agentNames, options) {
         
         spinner.succeed(`Installed ${chalk.bold(agentName)}`);
         
-        // Ask about hooks configuration
-        if (agentDetails.hooks?.recommended || agentDetails.hooks?.optional) {
-          const hooks = await selectHookOptions();
-          if (hooks && hooks.length > 0) {
-            console.log(chalk.gray('  Configure hooks manually in your settings.json'));
-          }
+        // Note about hooks if present in frontmatter
+        if (agentDetails.frontmatter?.hooks_recommended || agentDetails.frontmatter?.hooks_optional) {
+          console.log(chalk.gray('  This agent recommends hooks configuration in settings.json'));
         }
         
       } catch (error) {
@@ -174,7 +156,8 @@ export async function installCommand(agentNames, options) {
     console.log('');
     console.log(chalk.green('✓ Installation complete!'));
     console.log(chalk.gray('Use "claude-agents list" to see your installed agents.'));
-    console.log(chalk.gray('Agents are automatically enabled. Use "claude-agents disable <agent>" to disable.'));
+    console.log(chalk.gray('Agents use description-based auto-delegation in Claude Code.'));
+    console.log(chalk.gray('Example: "I need to review my code" will trigger the code-reviewer agent.'));
     
   } catch (error) {
     spinner.fail('Installation failed');

@@ -8,9 +8,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Run CLI**: `npm start` or `node bin/claude-agents`
 - **Lint**: `npm run lint` - Runs ESLint on src/**/*.js
 - **Format**: `npm run format` - Runs Prettier on src/**/*.js
+- **Migrate agents**: `npm start -- migrate` - Convert to Claude Code format
 
 ### Installation
-- **Global install**: `npm install -g @webdevtoday/claude-agents`
+- **Global install**: `npm install -g @zamaz/claude-agents`
 - **Link for development**: `npm link` (after cloning repo)
 
 ## Architecture
@@ -26,10 +27,11 @@ This is a CLI tool for managing Claude Code sub-agents. The codebase is organize
 
 ### Key Components
 
-1. **Agent Definition Format**:
-   - Each agent has: `agent.md` (main definition with YAML frontmatter), `metadata.json`, optional `hooks.json`
-   - Agents are stored in `agents/[agent-name]/` directory
-   - Slash commands are stored in `commands/[command].md`
+1. **Agent Definition Format** (Claude Code Compatible):
+   - Single `.md` file per agent with YAML frontmatter
+   - Stored as `agents/[agent-name].md`
+   - No separate metadata.json or slash commands
+   - Uses description-based auto-delegation
 
 2. **State Management**:
    - Configuration stored in `.claude-agents.json` (user home or project root)
@@ -73,11 +75,17 @@ When adding new CLI commands:
 
 ## How to Create a New Agent
 
-- To create a new agent, follow these steps learned from this session:
-  - Create a new directory in `agents/[agent-name]/`
-  - Create an `agent.md` file with YAML frontmatter defining the agent
-  - Add a `metadata.json` file with agent details
-  - Optionally create a `hooks.json` for custom behaviors
-  - Ensure the agent follows the project's modular and extensible design
-  - Test the agent installation in both user and project scopes
-  - Add a corresponding slash command in `commands/[command].md` if needed
+To create a new agent compatible with Claude Code:
+1. Create a single `.md` file in `agents/[agent-name].md`
+2. Add YAML frontmatter with:
+   ```yaml
+   ---
+   name: agent-name
+   description: Clear description with trigger words for auto-delegation
+   tools: Read, Grep, Glob  # Optional - inherits all if omitted
+   ---
+   ```
+3. Write the agent's system prompt below the frontmatter
+4. Use `claude-agents optimize` to improve description for better auto-delegation
+5. Use `claude-agents validate` to check agent quality
+6. Install with `claude-agents install agent-name`

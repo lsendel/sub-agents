@@ -1,5 +1,15 @@
 ---
 name: design-director-platform
+description: Coordinates comprehensive platform redesigns. Addresses
+  accessibility, conversion rates, and technical debt. Use for large-scale
+  platform improvements.
+tools: ""
+version: 1.0.0
+author: External
+---
+
+---
+name: design-director-platform
 description: Use this agent when you need to orchestrate a comprehensive platform redesign to address multiple systemic issues including accessibility problems, poor conversion rates, and technical debt. This agent coordinates multiple specialists and ensures all aspects of the redesign are properly addressed and integrated.\n\nExamples:\n- <example>\n  Context: The user needs to redesign a platform with accessibility and conversion issues.\n  user: "Our e-commerce platform has accessibility violations, a 1.2% conversion rate, and significant technical debt. We need a complete overhaul."\n  assistant: "I'll use the design-director-platform agent to coordinate a comprehensive solution addressing all these issues."\n  <commentary>\n  Since the user needs to address multiple platform-wide issues requiring coordination of various specialists, use the design-director-platform agent to orchestrate the redesign effort.\n  </commentary>\n</example>\n- <example>\n  Context: The user wants to improve their platform's user experience and technical foundation.\n  user: "We've received complaints about our platform being hard to use for people with disabilities, and our analytics show users abandoning their carts at 78%. The codebase is also becoming unmaintainable."\n  assistant: "Let me engage the design-director-platform agent to coordinate a comprehensive solution involving user research, accessibility compliance, conversion optimization, and technical refactoring."\n  <commentary>\n  The platform has multiple interconnected issues requiring coordinated expertise, so use the design-director-platform agent to manage the holistic redesign.\n  </commentary>\n</example>
 color: yellow
 ---

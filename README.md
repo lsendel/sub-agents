@@ -10,9 +10,9 @@
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
 [![Made with Love](https://img.shields.io/badge/Made%20with-❤️-red.svg?style=flat-square)](https://github.com/lsendel)
 
-**🚀 Supercharge Claude Code with Specialized AI Sub-Agents for Code Review, Testing, Debugging & More**
+**🚀 Enhance Claude Code with Specialized AI Agents - Now Fully Compatible with Claude Code Format**
 
-**Transform your development workflow with intelligent AI assistants that excel at specific programming tasks**
+**A powerful management tool for Claude Code agents that adds discovery, optimization, and bulk operations**
 
 [Installation](#-installation) • [Quick Start](#-quick-start) • [Available Agents](#-available-sub-agents) • [Documentation](#-documentation) • [Contributing](#-contributing)
 
@@ -24,17 +24,20 @@
 
 This project is forked from [https://github.com/webdevtodayjason/sub-agents.git](https://github.com/webdevtodayjason/sub-agents.git). A warm thanks to webdevtodayjason for the excellent project contribution and foundation!
 
+**\ud83d\udd04 Major Update**: Now fully compatible with Claude Code's native agent format! Use the `migrate` command to update existing agents.
+
 ## 🎯 What is Claude Sub-Agents Manager?
 
-Claude Sub-Agents Manager is a powerful CLI tool that enhances Claude Code with specialized AI assistants designed for specific development tasks. Each sub-agent is an expert in its domain - from automated code reviews and test fixing to intelligent debugging and documentation generation. Install production-ready agents instantly or create custom agents tailored to your unique workflow needs.
+Claude Sub-Agents Manager is a complementary CLI tool for Claude Code that helps you discover, install, and optimize AI agents. It fully supports Claude Code's native agent format while adding powerful features like bulk operations, description optimization for better auto-delegation, and quality validation. Think of it as a package manager for Claude Code agents.
 
-### ✨ Why Claude Sub-Agents?
+### ✨ Why Use This Tool?
 
-- **🧠 Specialized Intelligence**: Each agent is an expert in its domain
-- **⚡ Zero Configuration**: Pre-built agents work out of the box
-- **🎨 Fully Customizable**: Create agents that match your workflow
-- **🔄 Smart Context Management**: Agents operate in isolated contexts
-- **🛠️ Developer First**: Built by developers, for developers
+- **🧠 Agent Discovery**: Browse and install community agents easily
+- **⚡ Bulk Operations**: Install, update, or validate multiple agents at once
+- **🎨 Description Optimization**: Improve agent descriptions for better auto-delegation
+- **🔍 Quality Validation**: Ensure agents follow best practices
+- **🔄 Format Migration**: Convert legacy agents to Claude Code format
+- **🛠️ Developer Friendly**: Simplifies agent management workflow
 
 ## 🚀 Installation
 
@@ -107,11 +110,11 @@ claude-agents install code-reviewer test-runner
 # Sync externally installed agents
 claude-agents sync
 
-# Use an agent via slash command
-# In Claude Code:
-> /review
-> /test
-> /debug TypeError in production
+# Agents now use description-based auto-delegation
+# In Claude Code, just describe what you need:
+> "Review my recent code changes"
+> "Run the tests and fix any failures"
+> "Debug this TypeError in production"
 ```
 
 ## 🔄 Keeping Agents in Sync
@@ -133,14 +136,14 @@ The sync feature ensures all agents are properly tracked and managed, regardless
 
 ## 📋 Available Sub-Agents
 
-| Agent Name | Description | Slash Command |
-|------------|-------------|---------------|
-| **code-reviewer** | Expert code review specialist for quality, security, and maintainability | `/review` |
-| **test-runner** | Automated test execution specialist that runs tests and fixes failures | `/test [pattern]` |
-| **debugger** | Expert debugging specialist for analyzing errors, stack traces, and fixing issues | `/debug [error]` |
-| **refactor** | Code refactoring specialist for improving code structure, patterns, and maintainability | `/refactor [target]` |
-| **doc-writer** | Documentation specialist for creating and updating technical documentation, API docs, and README files | `/document [type]` |
-| **security-scanner** | Security vulnerability scanner that detects common security issues and suggests fixes | `/security-scan [path]` |
+| Agent Name | Description | Trigger Examples |
+|------------|-------------|------------------|
+| **code-reviewer** | Automatically reviews code after edits. Checks for quality, security vulnerabilities, performance issues, and best practices. | "Review my code", "Check for security issues" |
+| **test-runner** | Runs tests when code changes or tests fail. Automatically detects test framework and fixes failing tests. | "Run tests", "Fix failing tests" |
+| **debugger** | Analyzes and fixes errors, crashes, and unexpected behavior. Interprets stack traces and identifies root causes. | "Debug this error", "Fix the crash" |
+| **refactor** | Improves code structure without changing functionality. Applies design patterns and modernizes legacy code. | "Refactor this code", "Apply SOLID principles" |
+| **doc-writer** | Creates and updates documentation. Generates API docs, README files, and inline comments. | "Document this API", "Update the README" |
+| **security-scanner** | Scans for security vulnerabilities and compliance issues. Detects exposed secrets and suggests fixes. | "Scan for vulnerabilities", "Check security" |
 
 ## 🤖 Detailed Agent Descriptions
 
@@ -156,8 +159,8 @@ The sync feature ensures all agents are properly tracked and managed, regardless
 # Install
 claude-agents install code-reviewer
 
-# Use
-> /review
+# Use in Claude Code (auto-delegation)
+> "I need to review my recent changes for security issues"
 ```
 
 ### 🧪 Test Runner
@@ -260,6 +263,9 @@ claude-agents install security-scanner
 | `remove <agent>` | Remove/uninstall an agent | `claude-agents remove debugger` |
 | `info <agent>` | Show agent details | `claude-agents info debugger` |
 | `create` | Create a custom agent | `claude-agents create` |
+| `migrate` | Migrate to Claude Code format | `claude-agents migrate` |
+| `optimize [agent]` | Optimize descriptions | `claude-agents optimize` |
+| `validate [agent]` | Validate agent quality | `claude-agents validate` |
 | `update [agent]` | Update agent configurations | `claude-agents update` |
 | `update --all` | Update all installed agents | `claude-agents update --all` |
 | `update --force` | Force update without confirmation | `claude-agents update --force` |
@@ -307,32 +313,75 @@ make list-agents
 - **Hooks** - Any associated automation hooks
 - **Slash Commands** - Corresponding command files
 
-### Creating Custom Agents
+### 🔄 New Features for Claude Code Compatibility
 
-#### Interactive Creation
+#### Migrate Existing Agents
 ```bash
-claude-agents create
+# Convert old format to Claude Code format
+claude-agents migrate
+
+# With options
+claude-agents migrate --cleanup  # Remove old directories after migration
 ```
 
-#### Manual Creation
+#### Optimize Agent Descriptions
+```bash
+# Improve descriptions for better auto-delegation
+claude-agents optimize
+
+# Optimize specific agent
+claude-agents optimize code-reviewer
+```
+
+#### Validate Agent Quality
+```bash
+# Check agent format and quality
+claude-agents validate
+
+# Detailed validation
+claude-agents validate --verbose
+```
+
+### Creating Custom Agents
+
+#### Simple Agent Creation
 Create `~/.claude/agents/my-agent.md`:
 
 ```markdown
 ---
 name: my-agent
-description: What this agent does and when to use it
-tools: Read, Edit, Grep, Bash
+description: Automatically handles X when Y occurs. Use when dealing with Z tasks.
+tools: Read, Edit, Grep  # Optional - inherits all if omitted
 ---
 
 You are an expert in [DOMAIN]. Your role is to [PURPOSE].
 
-When invoked, you will:
+## Process
+When invoked, immediately:
 1. [STEP 1]
 2. [STEP 2]
 3. [STEP 3]
-
-Always ensure [KEY PRINCIPLE].
 ```
+
+### \ud83d\udcdd Agent Format (Claude Code Compatible)
+
+Agents are now single `.md` files with YAML frontmatter:
+
+```markdown
+---
+name: agent-name
+description: Clear description with trigger words for auto-delegation
+tools: Read, Grep, Glob  # Optional - inherits all if omitted
+---
+
+Agent system prompt here...
+```
+
+**Key Points**:
+- No more slash commands - uses description-based auto-delegation
+- No separate metadata.json or hooks.json files
+- Tools are optional - agents inherit all tools if not specified
+- Descriptions should include trigger words for better matching
 
 ### Installation Scopes
 

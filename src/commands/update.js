@@ -7,7 +7,6 @@ import ora from 'ora';
 import { loadConfig, saveConfig } from '../utils/config.js';
 import { loadAgent, formatAgentForInstall } from '../utils/agents.js';
 import { getUserAgentsDir, getProjectAgentsDir, ensureDir } from '../utils/paths.js';
-import { optimizeAgentForClaudeCode } from '../utils/agent-optimizer.js';
 import { logger } from '../utils/logger.js';
 import { validateAgentName } from '../utils/validation.js';
 import { Errors, handleError } from '../utils/errors.js';
@@ -145,9 +144,8 @@ async function updateSingleAgent(agent, config, options) {
  * Update agent files
  */
 async function updateAgentFiles(sourceAgent, targetPath, sourceDir) {
-  // Optimize and format agent
-  const optimizedAgent = optimizeAgentForClaudeCode(sourceAgent);
-  const agentContent = formatAgentForInstall(optimizedAgent);
+  // Format agent content
+  const agentContent = formatAgentForInstall(sourceAgent);
 
   // Ensure directory exists
   ensureDir(targetPath);

@@ -1,69 +1,55 @@
 #!/usr/bin/env node
-import { readFileSync, writeFileSync, readdirSync } from 'fs';
+
+/**
+ * Script to migrate existing agents to new Claude Code compatible format
+ */
+
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
+import { AgentMigrator } from '../src/utils/agent-migrator.js';
 import chalk from 'chalk';
-import ora from 'ora';
-import { getAgentDetails } from '../src/utils/agents.js';
-import { optimizeAgentForClaudeCode } from '../src/utils/agent-optimizer.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const spinner = ora();
-
-console.log(chalk.blue(`
-╔═══════════════════════════════════════════╗
-║        Agent Migration Tool               ║
-║   Update agents for better Claude Code    ║
-║          compatibility                    ║
-╚═══════════════════════════════════════════╝
-`));
-
-// Get all agents
-const agentsDir = join(__dirname, '..', 'agents');
-const agentDirs = readdirSync(agentsDir, { withFileTypes: true })
-  .filter(dirent => dirent.isDirectory())
-  .map(dirent => dirent.name);
-
-console.log(`Found ${agentDirs.length} agents to migrate\n`);
-
-// Process each agent
-for (const agentName of agentDirs) {
-  spinner.start(`Migrating ${chalk.bold(agentName)}...`);
+async function main() {
+  console.log(chalk.blue.bold('\n🔄 Migrating Agents to Claude Code Format\n'));
+  
+  const migrator = new AgentMigrator();
+  const agentsDir = join(__dirname, '..', 'agents');
   
   try {
-    // Load agent details
-    const agentDetails = getAgentDetails(agentName);
-    if (!agentDetails) {
-      spinner.fail(`Failed to load ${agentName}`);
-      continue;
+    // Perform migration with backup
+    const results = await migrator.migrateDirectory(agentsDir, {
+      backup: true,
+      cleanup: false // Don't remove old directories yet
+    });
+    
+    console.log(chalk.green.bold('\n✅ Migration Results:\n'));
+    console.log(`  Migrated: ${chalk.green(results.migrated.length)}`);
+    console.log(`  Skipped: ${chalk.yellow(results.skipped.length)}`);
+    console.log(`  Failed: ${chalk.red(results.failed.length)}`);
+    
+    if (results.migrated.length > 0) {
+      console.log(chalk.gray('\nMigrated agents:'));
+      results.migrated.forEach(agent => {
+        console.log(chalk.gray(`  • ${agent}`));
+      });
     }
     
-    // Generate optimized content
-    const optimizedContent = optimizeAgentForClaudeCode(agentDetails);
-    
-    // Create improved version
-    const improvedPath = join(agentsDir, agentName, 'agent-improved.md');
-    writeFileSync(improvedPath, optimizedContent);
-    
-    spinner.succeed(`Migrated ${chalk.bold(agentName)} → ${chalk.green('agent-improved.md')}`);
-    
-    // Show what changed
-    const originalDesc = agentDetails.frontmatter?.description || agentDetails.metadata?.description;
-    const improvedDesc = optimizedContent.match(/description: (.+)/)?.[1];
-    
-    if (originalDesc !== improvedDesc) {
-      console.log(chalk.gray(`  Description: ${improvedDesc}`));
+    if (results.failed.length > 0) {
+      console.log(chalk.red('\nFailed agents:'));
+      results.failed.forEach(agent => {
+        console.log(chalk.red(`  • ${agent}`));
+      });
     }
+    
+    console.log(chalk.yellow('\n⚠️  Old agent directories preserved. Run with --cleanup to remove them.\n'));
     
   } catch (error) {
-    spinner.fail(`Failed to migrate ${agentName}: ${error.message}`);
+    console.error(chalk.red('Migration failed:'), error.message);
+    process.exit(1);
   }
 }
 
-console.log(`\n${chalk.green('✓')} Migration complete!`);
-console.log(chalk.gray('\nNext steps:'));
-console.log(chalk.gray('1. Review the agent-improved.md files'));
-console.log(chalk.gray('2. If satisfied, replace agent.md with the improved version'));
-console.log(chalk.gray('3. Test the agents in Claude Code'));
+main();
