@@ -3,6 +3,8 @@ import chalk from 'chalk';
 import { readFileSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
+import { logger } from './utils/logger.js';
+import { CLIError } from './utils/errors.js';
 
 // Commands
 import { installCommand } from './commands/install.js';
@@ -24,7 +26,7 @@ const packageJson = JSON.parse(
 );
 
 // ASCII Art Banner
-console.log(chalk.blue(`
+logger.info(chalk.blue(`
 ╔═══════════════════════════════════════════╗
 ║       Claude Sub-Agents Manager           ║
 ║   Enhance Claude Code with AI Agents      ║
@@ -103,7 +105,7 @@ program
   .command('config')
   .description('Configure default settings')
   .action(() => {
-    console.log(chalk.yellow('Config command coming soon!'));
+    logger.info(chalk.yellow('Config command coming soon!'));
   });
 
 // Version command with update check
@@ -111,12 +113,30 @@ program
   .command('version')
   .description('Show version and check for updates')
   .action(async () => {
-    console.log(`${packageJson.name} v${packageJson.version}`);
+    logger.info(`${packageJson.name} v${packageJson.version}`);
     await checkForUpdates(false);
   });
 
 // Check for updates on startup (silently)
 checkForUpdates(true);
+
+// Wrap command execution for error handling
+const originalParse = program.parse.bind(program);
+program.parse = async (...args) => {
+  try {
+    return await originalParse(...args);
+  } catch (error) {
+    if (error instanceof CLIError) {
+      process.exit(error.code || 1);
+    } else {
+      logger.error('Unexpected error:', error.message);
+      if (process.env.DEBUG === 'true') {
+        logger.error(error.stack);
+      }
+      process.exit(1);
+    }
+  }
+};
 
 // Parse command line arguments
 program.parse(process.argv);

@@ -1,5 +1,7 @@
 import chalk from 'chalk';
 import { getInstalledAgents, disableAgent, isAgentEnabled } from '../utils/config.js';
+import { logger } from '../utils/logger.js';
+import { Errors, handleError } from '../utils/errors.js';
 
 export async function disableCommand(agentName, options) {
   try {
@@ -7,17 +9,17 @@ export async function disableCommand(agentName, options) {
     
     // Check if agent is installed
     if (!installedAgents[agentName]) {
-      console.log(chalk.red(`❌ Agent "${agentName}" is not installed.`));
-      console.log(chalk.gray('\nTo see installed agents:'));
-      console.log(chalk.cyan('  claude-agents list --installed'));
-      console.log(chalk.gray('\nTo install this agent:'));
-      console.log(chalk.cyan(`  claude-agents install ${agentName}`));
-      process.exit(1);
+      logger.error(`❌ Agent "${agentName}" is not installed.`);
+      logger.info(chalk.gray('\nTo see installed agents:'));
+      logger.info(chalk.cyan('  claude-agents list --installed'));
+      logger.info(chalk.gray('\nTo install this agent:'));
+      logger.info(chalk.cyan(`  claude-agents install ${agentName}`));
+      throw Errors.agentNotInstalled(agentName);
     }
     
     // Check if already disabled
     if (!isAgentEnabled(agentName)) {
-      console.log(chalk.yellow(`Agent "${agentName}" is already disabled.`));
+      logger.warn(`Agent "${agentName}" is already disabled.`);
       return;
     }
     
@@ -26,16 +28,14 @@ export async function disableCommand(agentName, options) {
     const success = disableAgent(agentName, isProject);
     
     if (success) {
-      console.log(chalk.green(`✓ Disabled agent "${agentName}"`));
-      console.log(chalk.gray(`Scope: ${isProject ? 'project' : 'user'}`));
-      console.log(chalk.gray(`Use "claude-agents enable ${agentName}" to re-enable.`));
+      logger.success(`Disabled agent "${agentName}"`);
+      logger.info(chalk.gray(`Scope: ${isProject ? 'project' : 'user'}`));
+      logger.info(chalk.gray(`Use "claude-agents enable ${agentName}" to re-enable.`));
     } else {
-      console.log(chalk.red(`Failed to disable agent "${agentName}"`));
-      process.exit(1);
+      throw new Error(`Failed to disable agent "${agentName}"`);
     }
     
   } catch (error) {
-    console.error(chalk.red('Error:'), error.message);
-    process.exit(1);
+    handleError(error, 'Disable command');
   }
 }

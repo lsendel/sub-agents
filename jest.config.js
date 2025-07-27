@@ -2,13 +2,11 @@
 export default {
   testEnvironment: 'node',
   transform: {},
-  moduleNameMapper: {
-    '^(\\.{1,2}/.*)\\.js$': '$1'
-  },
   testMatch: [
     '**/test/**/*.test.js',
     '**/__tests__/**/*.js'
   ],
+  setupFilesAfterEnv: ['<rootDir>/test/setup.js'],
   collectCoverage: true,
   coverageDirectory: 'coverage',
   coveragePathIgnorePatterns: [
@@ -18,5 +16,9 @@ export default {
     '/commands/',
     '/docs/'
   ],
-  testTimeout: 10000
+  testTimeout: 10000,
+  moduleNameMapper: {},
+  resetMocks: true,
+  clearMocks: true,
+  restoreMocks: true
 };

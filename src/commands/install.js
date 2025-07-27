@@ -27,6 +27,7 @@ import {
   optimizeAgentForClaudeCode,
   validateAgentFormat
 } from '../utils/agent-optimizer.js';
+import { validateAgentName } from '../utils/validation.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -100,6 +101,13 @@ export async function installCommand(options) {
       spinner.start(`Installing ${chalk.bold(agentName)}...`);
       
       try {
+        // Validate agent name for security
+        const nameValidation = validateAgentName(agentName);
+        if (!nameValidation.valid) {
+          spinner.fail(`Invalid agent name: ${nameValidation.error}`);
+          continue;
+        }
+        
         const agentDetails = getAgentDetails(agentName);
         if (!agentDetails) {
           spinner.fail(`Failed to load agent ${agentName}`);

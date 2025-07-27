@@ -1,25 +1,35 @@
 import { jest } from '@jest/globals';
-import fs from 'fs';
-import { loadConfig, saveConfig, initConfig } from '../../src/utils/config.js';
+import { loadConfig, saveConfig, addInstalledAgent, removeInstalledAgent, enableAgent, disableAgent, isAgentEnabled, getInstalledAgents } from '../../src/utils/config.js';
+import * as fs from 'fs';
+import * as paths from '../../src/utils/paths.js';
 
-// Mock fs module
+// Mock modules
 jest.mock('fs');
+jest.mock('../../src/utils/paths.js');
 
 describe('Config Utility', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    // Set up default mock for getConfigPath
+    paths.getConfigPath = jest.fn().mockReturnValue('/mock/config.json');
   });
 
   describe('loadConfig', () => {
-    test('should return empty config when file does not exist', () => {
-      fs.existsSync.mockReturnValue(false);
+    test('should return default config when file does not exist', () => {
+      jest.mocked(fs.existsSync).mockReturnValue(false);
       
       const config = loadConfig();
       
       expect(config).toEqual({
+        version: '1.0.0',
         installedAgents: {},
         enabledAgents: [],
-        disabledAgents: []
+        disabledAgents: [],
+        settings: {
+          autoEnableOnInstall: true,
+          preferProjectScope: false,
+          autoUpdateCheck: true
+        }
       });
     });
 
@@ -35,24 +45,30 @@ describe('Config Utility', () => {
         disabledAgents: []
       };
       
-      fs.existsSync.mockReturnValue(true);
-      fs.readFileSync.mockReturnValue(JSON.stringify(mockConfig));
+      jest.mocked(fs.existsSync).mockReturnValue(true);
+      jest.mocked(fs.readFileSync).mockReturnValue(JSON.stringify(mockConfig));
       
       const config = loadConfig();
       
       expect(config).toEqual(mockConfig);
     });
 
-    test('should return empty config on JSON parse error', () => {
-      fs.existsSync.mockReturnValue(true);
-      fs.readFileSync.mockReturnValue('invalid json');
+    test('should return default config on JSON parse error', () => {
+      jest.mocked(fs.existsSync).mockReturnValue(true);
+      jest.mocked(fs.readFileSync).mockReturnValue('invalid json');
       
       const config = loadConfig();
       
       expect(config).toEqual({
+        version: '1.0.0',
         installedAgents: {},
         enabledAgents: [],
-        disabledAgents: []
+        disabledAgents: [],
+        settings: {
+          autoEnableOnInstall: true,
+          preferProjectScope: false,
+          autoUpdateCheck: true
+        }
       });
     });
   });
@@ -72,21 +88,22 @@ describe('Config Utility', () => {
       
       saveConfig(mockConfig);
       
-      expect(fs.writeFileSync).toHaveBeenCalledWith(
-        expect.any(String),
+      expect(jest.mocked(fs.writeFileSync)).toHaveBeenCalledWith(
+        '/mock/config.json',
         JSON.stringify(mockConfig, null, 2)
       );
     });
 
     test('should handle save errors gracefully', () => {
-      fs.writeFileSync.mockImplementation(() => {
+      jest.mocked(fs.writeFileSync).mockImplementation(() => {
         throw new Error('Write error');
       });
       
       const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
       
-      saveConfig({});
+      const result = saveConfig({});
       
+      expect(result).toBe(false);
       expect(consoleErrorSpy).toHaveBeenCalledWith(
         expect.stringContaining('Error saving config:'),
         expect.any(Error)
@@ -96,28 +113,152 @@ describe('Config Utility', () => {
     });
   });
 
-  describe('initConfig', () => {
-    test('should create config file if it does not exist', () => {
-      fs.existsSync.mockReturnValue(false);
+  describe('addInstalledAgent', () => {
+    test('should add agent to config and auto-enable if setting is true', () => {
+      const mockConfig = {
+        version: '1.0.0',
+        installedAgents: {},
+        enabledAgents: [],
+        disabledAgents: [],
+        settings: {
+          autoEnableOnInstall: true,
+          preferProjectScope: false,
+          autoUpdateCheck: true
+        }
+      };
       
-      initConfig();
+      jest.mocked(fs.existsSync).mockReturnValue(true);
+      jest.mocked(fs.readFileSync).mockReturnValue(JSON.stringify(mockConfig));
+      jest.mocked(fs.writeFileSync).mockImplementation(() => {});
       
-      expect(fs.writeFileSync).toHaveBeenCalledWith(
-        expect.any(String),
-        JSON.stringify({
-          installedAgents: {},
-          enabledAgents: [],
-          disabledAgents: []
-        }, null, 2)
+      const result = addInstalledAgent('test-agent', { version: '1.0.0' });
+      
+      expect(result).toBe(true);
+      expect(jest.mocked(fs.writeFileSync)).toHaveBeenCalledWith(
+        '/mock/config.json',
+        expect.stringContaining('"test-agent"')
       );
     });
+  });
 
-    test('should not create config file if it already exists', () => {
-      fs.existsSync.mockReturnValue(true);
+  describe('enableAgent', () => {
+    test('should enable agent and remove from disabled list', () => {
+      const mockConfig = {
+        version: '1.0.0',
+        installedAgents: { 'test-agent': { version: '1.0.0' } },
+        enabledAgents: [],
+        disabledAgents: ['test-agent'],
+        settings: {
+          autoEnableOnInstall: true,
+          preferProjectScope: false,
+          autoUpdateCheck: true
+        }
+      };
       
-      initConfig();
+      jest.mocked(fs.existsSync).mockReturnValue(true);
+      jest.mocked(fs.readFileSync).mockReturnValue(JSON.stringify(mockConfig));
+      jest.mocked(fs.writeFileSync).mockImplementation(() => {});
       
-      expect(fs.writeFileSync).not.toHaveBeenCalled();
+      const result = enableAgent('test-agent');
+      
+      expect(result).toBe(true);
+    });
+  });
+
+  describe('disableAgent', () => {
+    test('should disable agent and remove from enabled list', () => {
+      const mockConfig = {
+        version: '1.0.0',
+        installedAgents: { 'test-agent': { version: '1.0.0' } },
+        enabledAgents: ['test-agent'],
+        disabledAgents: [],
+        settings: {
+          autoEnableOnInstall: true,
+          preferProjectScope: false,
+          autoUpdateCheck: true
+        }
+      };
+      
+      jest.mocked(fs.existsSync).mockReturnValue(true);
+      jest.mocked(fs.readFileSync).mockReturnValue(JSON.stringify(mockConfig));
+      jest.mocked(fs.writeFileSync).mockImplementation(() => {});
+      
+      const result = disableAgent('test-agent');
+      
+      expect(result).toBe(true);
+    });
+  });
+
+  describe('isAgentEnabled', () => {
+    test('should return false if agent is disabled', () => {
+      const mockConfig = {
+        version: '1.0.0',
+        installedAgents: { 'test-agent': { version: '1.0.0' } },
+        enabledAgents: [],
+        disabledAgents: ['test-agent'],
+        settings: {
+          autoEnableOnInstall: true,
+          preferProjectScope: false,
+          autoUpdateCheck: true
+        }
+      };
+      
+      jest.mocked(fs.existsSync).mockReturnValue(true);
+      jest.mocked(fs.readFileSync).mockReturnValue(JSON.stringify(mockConfig));
+      
+      const result = isAgentEnabled('test-agent', false);
+      
+      expect(result).toBe(false);
+    });
+
+    test('should return true if agent is enabled', () => {
+      const mockConfig = {
+        version: '1.0.0',
+        installedAgents: { 'test-agent': { version: '1.0.0' } },
+        enabledAgents: ['test-agent'],
+        disabledAgents: [],
+        settings: {
+          autoEnableOnInstall: true,
+          preferProjectScope: false,
+          autoUpdateCheck: true
+        }
+      };
+      
+      jest.mocked(fs.existsSync).mockReturnValue(true);
+      jest.mocked(fs.readFileSync).mockReturnValue(JSON.stringify(mockConfig));
+      
+      const result = isAgentEnabled('test-agent', false);
+      
+      expect(result).toBe(true);
+    });
+  });
+
+  describe('getInstalledAgents', () => {
+    test('should return installed agents', () => {
+      const mockConfig = {
+        version: '1.0.0',
+        installedAgents: {
+          'test-agent': { version: '1.0.0' },
+          'another-agent': { version: '2.0.0' }
+        },
+        enabledAgents: ['test-agent'],
+        disabledAgents: [],
+        settings: {
+          autoEnableOnInstall: true,
+          preferProjectScope: false,
+          autoUpdateCheck: true
+        }
+      };
+      
+      jest.mocked(fs.existsSync).mockReturnValue(true);
+      jest.mocked(fs.readFileSync).mockReturnValue(JSON.stringify(mockConfig));
+      
+      const agents = getInstalledAgents(false);
+      
+      expect(agents).toEqual({
+        'test-agent': { version: '1.0.0' },
+        'another-agent': { version: '2.0.0' }
+      });
     });
   });
 });

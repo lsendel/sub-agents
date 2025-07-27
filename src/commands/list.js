@@ -2,6 +2,7 @@ import chalk from 'chalk';
 import Table from 'cli-table3';
 import { getAvailableAgents } from '../utils/agents.js';
 import { getInstalledAgents, isAgentEnabled } from '../utils/config.js';
+import { logger } from '../utils/logger.js';
 
 export async function listCommand(options) {
   try {
@@ -25,13 +26,15 @@ export async function listCommand(options) {
     const allAgents = new Map();
     
     // Add available agents
-    availableAgents.forEach(agent => {
-      allAgents.set(agent.name, {
-        ...agent,
-        available: true,
-        installed: false
+    if (availableAgents && Array.isArray(availableAgents)) {
+      availableAgents.forEach(agent => {
+        allAgents.set(agent.name, {
+          ...agent,
+          available: true,
+          installed: false
+        });
       });
-    });
+    }
     
     // Update with installed agents
     Object.entries(installedAgents).forEach(([name, info]) => {
@@ -84,31 +87,31 @@ export async function listCommand(options) {
     // Display results
     if (agentsToShow.length === 0) {
       if (options.installed) {
-        console.log(chalk.yellow('No agents installed yet.'));
-        console.log(chalk.gray('Use "claude-agents install" to install agents.'));
+        logger.warn('No agents installed yet.');
+        logger.info(chalk.gray('Use "claude-agents install" to install agents.'));
       } else if (options.available) {
-        console.log(chalk.yellow('No new agents available.'));
+        logger.warn('No new agents available.');
       } else {
-        console.log(chalk.yellow('No agents found.'));
+        logger.warn('No agents found.');
       }
     } else {
-      console.log(table.toString());
+      logger.info(table.toString());
       
       // Show summary
-      console.log('');
+      logger.info('');
       const installedCount = agentsToShow.filter(a => a.installed).length;
       const availableCount = agentsToShow.filter(a => !a.installed).length;
       const enabledCount = agentsToShow.filter(a => a.installed && isAgentEnabled(a.name)).length;
       
       if (!options.installed && !options.available) {
-        console.log(chalk.gray(`Total: ${agentsToShow.length} agents`));
-        console.log(chalk.gray(`Installed: ${installedCount} (${enabledCount} enabled)`));
-        console.log(chalk.gray(`Available: ${availableCount}`));
+        logger.info(chalk.gray(`Total: ${agentsToShow.length} agents`));
+        logger.info(chalk.gray(`Installed: ${installedCount} (${enabledCount} enabled)`));
+        logger.info(chalk.gray(`Available: ${availableCount}`));
       }
     }
     
   } catch (error) {
-    console.error(chalk.red('Error:'), error.message);
-    process.exit(1);
+    logger.error('Error:', error.message);
+    throw error;
   }
 }

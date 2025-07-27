@@ -31,6 +31,19 @@ export function validateAgentName(agentName) {
     return { valid: false, error: 'Agent name cannot start or end with a hyphen' };
   }
 
+  // Prevent path traversal attacks
+  if (agentName.includes('..') || agentName.includes('/') || agentName.includes('\\')) {
+    return { valid: false, error: 'Agent name contains invalid characters' };
+  }
+
+  // Block common path traversal patterns
+  const dangerousPatterns = ['%2e', '%2f', '%5c', '%252e', '%252f', '%255c', '~'];
+  for (const pattern of dangerousPatterns) {
+    if (agentName.toLowerCase().includes(pattern)) {
+      return { valid: false, error: 'Agent name contains potentially dangerous patterns' };
+    }
+  }
+
   return { valid: true };
 }
 

@@ -6,6 +6,9 @@ import { getAgentsDir, getCommandsDir } from '../utils/paths.js';
 import { getInstalledAgents, removeInstalledAgent } from '../utils/config.js';
 import { confirmAction } from '../utils/prompts.js';
 import { getAgentDetails } from '../utils/agents.js';
+import { logger } from '../utils/logger.js';
+import { Errors, handleError } from '../utils/errors.js';
+import { validateAgentName } from '../utils/validation.js';
 
 export async function removeCommand(agentName, options) {
   const spinner = ora();
@@ -16,9 +19,9 @@ export async function removeCommand(agentName, options) {
     
     // Check if agent is installed
     if (!installedAgents[agentName]) {
-      console.log(chalk.red(`Agent "${agentName}" is not installed.`));
-      console.log(chalk.gray('Use "claude-agents list --installed" to see installed agents.'));
-      process.exit(1);
+      logger.error(`Agent "${agentName}" is not installed.`);
+      logger.info(chalk.gray('Use "claude-agents list --installed" to see installed agents.'));
+      throw Errors.agentNotInstalled(agentName);
     }
     
     // Get agent info
@@ -27,27 +30,33 @@ export async function removeCommand(agentName, options) {
     
     // Check if trying to remove from wrong scope
     if (options.project && agentInfo.scope === 'user') {
-      console.log(chalk.yellow(`Agent "${agentName}" is installed in user scope, not project scope.`));
-      console.log(chalk.gray('Remove --project flag to uninstall from user scope.'));
-      process.exit(1);
+      logger.warn(`Agent "${agentName}" is installed in user scope, not project scope.`);
+      logger.info(chalk.gray('Remove --project flag to uninstall from user scope.'));
+      throw new Error('Scope mismatch');
     }
     
     if (!options.project && agentInfo.scope === 'project') {
-      console.log(chalk.yellow(`Agent "${agentName}" is installed in project scope, not user scope.`));
-      console.log(chalk.gray('Add --project flag to uninstall from project scope.'));
-      process.exit(1);
+      logger.warn(`Agent "${agentName}" is installed in project scope, not user scope.`);
+      logger.info(chalk.gray('Add --project flag to uninstall from project scope.'));
+      throw new Error('Scope mismatch');
+    }
+    
+    // Validate agent name
+    const nameValidation = validateAgentName(agentName);
+    if (!nameValidation.valid) {
+      throw new Error(nameValidation.error);
     }
     
     // Show agent details
-    console.log(chalk.bold(`\nAgent to remove: ${agentName}`));
-    console.log(`Scope: ${agentInfo.scope}`);
-    console.log(`Version: ${agentInfo.version || 'unknown'}`);
-    console.log(`Installed: ${new Date(agentInfo.installedAt).toLocaleDateString()}`);
+    logger.info(chalk.bold(`\nAgent to remove: ${agentName}`));
+    logger.info(`Scope: ${agentInfo.scope}`);
+    logger.info(`Version: ${agentInfo.version || 'unknown'}`);
+    logger.info(`Installed: ${new Date(agentInfo.installedAt).toLocaleDateString()}`);
     
     // Confirm removal
     const confirmMessage = `Are you sure you want to remove the "${agentName}" agent?`;
     if (!await confirmAction(confirmMessage, false)) {
-      console.log(chalk.yellow('Removal cancelled.'));
+      logger.warn('Removal cancelled.');
       return;
     }
     
@@ -83,18 +92,17 @@ export async function removeCommand(agentName, options) {
     
     spinner.succeed(`Removed ${chalk.bold(agentName)}`);
     
-    console.log('');
-    console.log(chalk.green('✓ Agent removed successfully!'));
-    console.log(chalk.gray('The agent has been uninstalled from your system.'));
+    logger.info('');
+    logger.success('Agent removed successfully!');
+    logger.info(chalk.gray('The agent has been uninstalled from your system.'));
     
     // Suggest reinstallation
-    console.log('');
-    console.log(chalk.gray('To reinstall this agent, use:'));
-    console.log(chalk.gray(`claude-agents install ${agentName}`));
+    logger.info('');
+    logger.info(chalk.gray('To reinstall this agent, use:'));
+    logger.info(chalk.gray(`claude-agents install ${agentName}`));
     
   } catch (error) {
     spinner.fail('Removal failed');
-    console.error(chalk.red('Error:'), error.message);
-    process.exit(1);
+    handleError(error, 'Remove command');
   }
 }
