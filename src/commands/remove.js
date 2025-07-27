@@ -2,7 +2,7 @@ import chalk from 'chalk';
 import ora from 'ora';
 import { unlinkSync, existsSync } from 'fs';
 import { join } from 'path';
-import { getAgentsDir, getCommandsDir } from '../utils/paths.js';
+import { getAgentsDir } from '../utils/paths.js';
 import { getInstalledAgents, removeInstalledAgent } from '../utils/config.js';
 import { confirmAction } from '../utils/prompts.js';
 import { getAgentDetails } from '../utils/agents.js';
@@ -64,7 +64,6 @@ export async function removeCommand(agentName, options) {
     
     // Get directories
     const agentsDir = getAgentsDir(isProject);
-    const commandsDir = getCommandsDir(isProject);
     
     // Remove agent file
     const agentPath = join(agentsDir, `${agentName}.md`);
@@ -72,20 +71,7 @@ export async function removeCommand(agentName, options) {
       unlinkSync(agentPath);
     }
     
-    // Remove associated slash commands
-    const agentDetails = getAgentDetails(agentName);
-    if (agentDetails && agentDetails.commands && agentDetails.commands.length > 0) {
-      for (const command of agentDetails.commands) {
-        const commandPath = join(commandsDir, `${command}.md`);
-        if (existsSync(commandPath)) {
-          try {
-            unlinkSync(commandPath);
-          } catch (error) {
-            // Ignore errors for command removal
-          }
-        }
-      }
-    }
+    // Commands no longer used - agents use description-based delegation
     
     // Remove from config
     removeInstalledAgent(agentName, isProject);

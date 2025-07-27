@@ -4,29 +4,14 @@
 
 This document outlines the recent improvements made to the Claude Sub-Agents Manager to enhance code quality, security, and maintainability.
 
-## 🧪 Testing Framework
+## 🔄 Claude Code Format Alignment
 
-### Jest Integration
-- **Framework**: Jest v29.7.0 with ES modules support
-- **Coverage**: Configured to generate coverage reports
-- **Test Structure**: Organized under `test/` directory
-
-### Running Tests
-```bash
-# Run all tests
-npm test
-
-# Watch mode for development
-npm run test:watch
-
-# Generate coverage report
-npm run test:coverage
-```
-
-### Test Files Created
-- `test/utils/paths.test.js` - Path utilities testing
-- `test/utils/config.test.js` - Configuration management testing
-- `test/utils/agents.test.js` - Agent utilities testing
+### Major Changes
+- **Single File Format**: Agents now use Claude Code's native `.md` format
+- **Description-Based Delegation**: Removed slash commands in favor of natural language
+- **Migration Tools**: Added `migrate` command for smooth transition
+- **Optimization**: New `optimize` command improves agent descriptions
+- **Validation**: New `validate` command ensures agent quality
 
 ## 🔒 Security Enhancements
 

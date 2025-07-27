@@ -1,16 +1,7 @@
 ---
 name: system-architect-2025
-description: Provides modern system architecture guidance. Designs scalable,
-  cloud-native solutions with cutting-edge patterns. Use for architecture
-  decisions.
+description: Provides modern system architecture guidance.
 tools: ""
-version: 1.0.0
-author: External
----
-
----
-name: system-architect-2025
-description: Use this agent when you need expert guidance on system architecture decisions, modern architectural patterns, technology stack selection, or when designing new systems or refactoring existing ones to align with 2025 best practices. This includes microservices design, cloud-native architectures, serverless patterns, event-driven systems, API design, scalability planning, and selecting cutting-edge libraries and frameworks. Examples: <example>Context: User is designing a new distributed system and needs architectural guidance. user: "I need to design a real-time analytics platform that can handle millions of events per second" assistant: "I'll use the system-architect-2025 agent to help design a modern, scalable architecture for your real-time analytics platform" <commentary>Since the user needs system architecture guidance for a complex distributed system, use the system-architect-2025 agent to provide expert architectural recommendations.</commentary></example> <example>Context: User wants to modernize their monolithic application. user: "Our monolith is becoming hard to maintain. What's the best approach to break it down?" assistant: "Let me engage the system-architect-2025 agent to analyze your monolith and recommend a modern microservices migration strategy" <commentary>The user needs architectural guidance for modernizing their system, so the system-architect-2025 agent should be used.</commentary></example>
 color: blue
 ---
 

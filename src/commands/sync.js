@@ -2,11 +2,10 @@ import chalk from 'chalk';
 import ora from 'ora';
 import { readdirSync, readFileSync, existsSync, writeFileSync, mkdirSync, copyFileSync } from 'fs';
 import { join, basename, dirname } from 'path';
-import yaml from 'yaml';
 import { fileURLToPath } from 'url';
+import { extractFrontmatter } from '../utils/yaml-parser.js';
 import { 
-  getAgentsDir, 
-  getCommandsDir,
+  getAgentsDir,
   ensureDirectories 
 } from '../utils/paths.js';
 import { 
@@ -31,7 +30,8 @@ function getProjectRoot() {
 async function copyAgentToProject(agent) {
   const projectRoot = getProjectRoot();
   const projectAgentsDir = join(projectRoot, 'agents', agent.name);
-  const projectCommandsDir = join(projectRoot, 'commands');
+  // Commands no longer used - agents use description-based delegation
+  // const projectCommandsDir = join(projectRoot, 'commands');
   
   try {
     // Create agent directory
@@ -59,59 +59,8 @@ async function copyAgentToProject(agent) {
     const metadataPath = join(projectAgentsDir, 'metadata.json');
     writeFileSync(metadataPath, JSON.stringify(metadata, null, 2));
     
-    // Look for corresponding command file in user directory
-    const userCommandsDir = getCommandsDir(false);
-    const possibleCommands = [];
-    
-    logger.debug(`Looking for commands for agent ${agent.name} in ${userCommandsDir}`);
-    
-    // Check for command with agent name
-    const commandPath = join(userCommandsDir, `${agent.name}.md`);
-    if (existsSync(commandPath)) {
-      possibleCommands.push({ name: agent.name, path: commandPath });
-      logger.debug(`Found command: ${agent.name}.md`);
-    }
-    
-    // Check for common command variations
-    const variations = [
-      agent.name.replace(/-/g, ''),  // Remove hyphens
-      agent.name.split('-')[0],      // First part only
-      agent.name.split('-').pop()    // Last part only
-    ];
-    
-    // For single-word agents, also check for shortened versions
-    if (!agent.name.includes('-')) {
-      // Try common single-word command patterns
-      const singleWordVariations = [
-        agent.name.replace(/er$/, ''),     // Remove 'er' suffix (debugger -> debug)
-        agent.name.replace(/or$/, ''),     // Remove 'or' suffix 
-        agent.name.replace(/ist$/, ''),    // Remove 'ist' suffix
-        agent.name.substring(0, 4),        // First 4 chars
-        agent.name.substring(0, 5)         // First 5 chars
-      ];
-      variations.push(...singleWordVariations);
-    }
-    
-    // Remove duplicates
-    const uniqueVariations = [...new Set(variations)];
-    
-    logger.debug(`Checking variations: ${uniqueVariations.join(', ')}`);
-    
-    for (const variant of uniqueVariations) {
-      const variantPath = join(userCommandsDir, `${variant}.md`);
-      if (existsSync(variantPath) && !possibleCommands.find(c => c.path === variantPath)) {
-        possibleCommands.push({ name: variant, path: variantPath });
-        logger.debug(`Found variant command: ${variant}.md`);
-      }
-    }
-    
-    // Copy command files
-    mkdirSync(projectCommandsDir, { recursive: true });
-    for (const cmd of possibleCommands) {
-      const targetPath = join(projectCommandsDir, `${cmd.name}.md`);
-      copyFileSync(cmd.path, targetPath);
-      logger.debug(`Copied command ${cmd.name} to project`);
-    }
+    // Commands no longer used - agents use description-based delegation
+    // Command detection and copying logic removed
     
     return true;
   } catch (error) {
@@ -212,30 +161,14 @@ export async function syncCommand(options) {
         
         try {
           const agentPath = join(dir, file);
-          const content = readFileSync(agentPath, 'utf-8');
+          const fullContent = readFileSync(agentPath, 'utf-8');
           
-          // Parse YAML frontmatter
-          const frontmatterMatch = RegExp(/^---\n([\s\S]*?)\n---/).exec(content);
-          if (!frontmatterMatch) continue;
+          // Use custom parser that supports Claude Code format
+          const { frontmatter, content } = extractFrontmatter(fullContent);
           
-          let frontmatter;
-          try {
-            frontmatter = yaml.parse(frontmatterMatch[1]);
-          } catch (yamlError) {
-            // Try to extract basic info manually for problematic YAML
-            const nameMatch = /^name:\s*(.+)$/m.exec(frontmatterMatch[1]);
-            const descMatch = /^description:\s*(.+)$/m.exec(frontmatterMatch[1]);
-            
-            if (nameMatch) {
-              frontmatter = {
-                name: nameMatch[1].trim(),
-                description: descMatch ? descMatch[1].trim().split('\\n')[0] : 'No description available'
-              };
-              logger.debug(`Manually parsed frontmatter for ${agentName}`);
-            } else {
-              logger.debug(`Failed to parse YAML for ${agentName}: ${yamlError.message}`);
-              continue;
-            }
+          if (!frontmatter) {
+            logger.debug(`No frontmatter found in ${agentName}`);
+            continue;
           }
           
           // Extract agent details
@@ -244,8 +177,8 @@ export async function syncCommand(options) {
             path: agentPath,
             scope,
             frontmatter,
-            content: content.replace(frontmatterMatch[0], '').trim(),
-            fullContent: content  // Keep the full content including frontmatter
+            content: content,
+            fullContent: fullContent  // Keep the full content including frontmatter
           };
           
           unregisteredAgents.push(agentInfo);
@@ -353,45 +286,7 @@ export async function syncCommand(options) {
     
     spinner.succeed(`Registered ${registered} agent(s), copied ${copied} to project`);
     
-    // Check for orphaned commands
-    if (options.commands) {
-      spinner.start('Checking for orphaned commands...');
-      
-      const userCommandsDir = getCommandsDir(false);
-      const projectCommandsDir = getCommandsDir(true);
-      const commandDirs = [userCommandsDir, projectCommandsDir].filter(existsSync);
-      
-      let orphanedCommands = 0;
-      
-      for (const dir of commandDirs) {
-        const files = readdirSync(dir, { withFileTypes: true })
-          .filter(dirent => dirent.isFile() && dirent.name.endsWith('.md'))
-          .map(dirent => dirent.name);
-        
-        for (const file of files) {
-          const commandName = basename(file, '.md');
-          
-          // Check if there's a corresponding agent
-          const hasAgent = unregisteredAgents.some(a => 
-            a.frontmatter.commands && a.frontmatter.commands.includes(commandName)
-          ) || registeredNames.some(name => {
-            const agent = registeredAgents[name];
-            return agent.commands && agent.commands.includes(commandName);
-          });
-          
-          if (!hasAgent) {
-            console.log(chalk.yellow(`  Orphaned command: ${commandName}`));
-            orphanedCommands++;
-          }
-        }
-      }
-      
-      spinner.stop();
-      
-      if (orphanedCommands > 0) {
-        console.log(chalk.yellow(`\nFound ${orphanedCommands} orphaned command(s)`));
-      }
-    }
+    // Commands feature removed - agents use description-based delegation
     
     console.log('');
     console.log(chalk.green('✓ Sync complete!'));

@@ -4,7 +4,9 @@ This document explains how to keep agent configurations synchronized when agents
 
 ## Overview
 
-The Claude Sub-Agents Manager now includes a synchronization mechanism to detect and register agents that were installed outside of the normal `claude-agents install` process. This ensures that all agents in your system are properly tracked and managed.
+The Claude Sub-Agents Manager includes a synchronization mechanism to detect and register agents that were installed outside of the normal `claude-agents install` process. This ensures that all agents in your system are properly tracked and managed.
+
+**Note**: With the new Claude Code format alignment, agents are now single `.md` files and slash commands have been removed. The sync process has been updated accordingly.
 
 ## The Sync Command
 
@@ -12,25 +14,24 @@ The Claude Sub-Agents Manager now includes a synchronization mechanism to detect
 
 ```bash
 # Scan and register unregistered agents
-npm start -- sync
+claude-agents sync
 
 # Auto-register without confirmation prompt
-npm start -- sync --auto
+claude-agents sync --auto
 
-# Also check for orphaned commands
-npm start -- sync --commands
+# Force copy all agents to project directory
+claude-agents sync --force-copy
 ```
 
 ### What It Does
 
 1. **Scans agent directories** - Checks both user (`~/.claude/agents/`) and project (`.claude/agents/`) directories
 2. **Detects unregistered agents** - Finds `.md` files that aren't in the configuration
-3. **Parses agent metadata** - Extracts frontmatter and agent details
-4. **Copies to project** - Copies agent files and commands to your project's `agents/` and `commands/` directories
+3. **Parses agent metadata** - Extracts YAML frontmatter from single agent files
+4. **Copies to project** - Copies agent files to your project's `agents/` directory
 5. **Registers agents** - Adds them to the configuration file
-6. **Checks for orphaned commands** (optional) - Identifies command files without corresponding agents
 
-**New in v1.2.0**: The sync command now automatically copies externally installed agents to your project directory, ensuring they're version-controlled and available to your team.
+**Format Update**: Agents are now single `.md` files with YAML frontmatter. Slash commands have been removed in favor of description-based auto-delegation.
 
 ## Auto-Sync Feature
 
@@ -38,13 +39,13 @@ npm start -- sync --commands
 
 ```bash
 # Enable automatic synchronization
-npm start -- config autosync on
+claude-agents config autosync on
 
 # Disable automatic synchronization
-npm start -- config autosync off
+claude-agents config autosync off
 
 # Check current status
-npm start -- config autosync
+claude-agents config autosync
 ```
 
 ### How Auto-Sync Works
@@ -108,20 +109,6 @@ Optional fields:
 - `tags` - Array of tags
 - `color` - UI color hint
 
-## Command Detection
-
-The sync process automatically detects and copies slash commands for agents. It looks for commands using these patterns:
-
-1. **Exact match**: `agent-name.md` → `/agent-name`
-2. **Hyphen removal**: `code-reviewer` → `/codereviewer`
-3. **First part**: `code-reviewer` → `/code`
-4. **Last part**: `code-reviewer` → `/reviewer`
-5. **Suffix removal** (for single words):
-   - `debugger` → `/debug` (removes 'er')
-   - `refactor` → `/refact` (first 6 chars)
-   - `documenter` → `/document` (removes 'er')
-
-This intelligent matching ensures that common command patterns are automatically detected and copied to your project.
 
 ## Troubleshooting
 
@@ -199,16 +186,14 @@ If sync isn't updating the configuration:
 npm start -- sync
 # This will:
 #   - Copy design-system agent to ./agents/design-system/
-#   - Copy any related commands to ./commands/
 #   - Register in configuration
 
 # 3. Verify registration and files
 npm start -- list | grep design-system
 ls -la ./agents/design-system/
-ls -la ./commands/
 
 # 4. Commit to version control
-git add agents/design-system/ commands/
+git add agents/design-system/
 git commit -m "Add design-system agent from Claude Code"
 
 # 5. Enable auto-sync for future installations

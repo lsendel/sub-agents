@@ -1,7 +1,7 @@
 import { readdirSync, readFileSync, existsSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
-import yaml from 'yaml';
+import { extractFrontmatter } from './yaml-parser.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -13,14 +13,11 @@ function loadAgentFromFile(agentName, agentPath) {
   try {
     const agentContent = readFileSync(agentPath, 'utf-8');
     
-    // Parse YAML frontmatter
-    const frontmatterMatch = RegExp(/^---\n([\s\S]*?)\n---/).exec(agentContent);
-    let frontmatter = {};
-    let content = agentContent;
+    // Use custom parser that supports Claude Code format
+    const { frontmatter, content } = extractFrontmatter(agentContent);
     
-    if (frontmatterMatch) {
-      frontmatter = yaml.parse(frontmatterMatch[1]);
-      content = agentContent.replace(frontmatterMatch[0], '').trim();
+    if (!frontmatter) {
+      throw new Error('No YAML frontmatter found');
     }
     
     // Extract metadata from frontmatter

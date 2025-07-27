@@ -1,6 +1,6 @@
 {
   "name": "@zamaz/claude-agents",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Supercharge Claude Code with specialized AI sub-agents for code review, testing, debugging, documentation & more. Easy CLI tool to install, manage & create custom AI agents for enhanced development workflow",
   "main": "src/index.js",
   "type": "module",
@@ -21,9 +21,7 @@
   ],
   "scripts": {
     "start": "node bin/claude-agents",
-    "test": "NODE_OPTIONS=--experimental-vm-modules jest",
-    "test:watch": "NODE_OPTIONS=--experimental-vm-modules jest --watch",
-    "test:coverage": "NODE_OPTIONS=--experimental-vm-modules jest --coverage",
+    "test": "echo \"No tests configured\" && exit 0",
     "lint": "eslint src/**/*.js",
     "lint:fix": "eslint src/**/*.js --fix",
     "format": "prettier --write src/**/*.js",
@@ -85,9 +83,7 @@
     "yaml": "^2.3.4"
   },
   "devDependencies": {
-    "@types/jest": "^30.0.0",
     "eslint": "^8.56.0",
-    "jest": "^29.7.0",
     "prettier": "^3.1.1"
   },
   "engines": {

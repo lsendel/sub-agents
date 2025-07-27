@@ -1,12 +1,12 @@
 # How to Create a New Agent
 
-This guide explains how to create a new agent for the Claude Sub-Agents system based on the patterns used in existing agents like `code-reviewer` and `requirements-analyst`.
+This guide explains how to create a new agent for the Claude Sub-Agents system that is fully compatible with Claude Code's native format.
 
 ## Agent Structure
 
-Each agent consists of three main files:
+Each agent is now a single `.md` file with YAML frontmatter:
 
-### 1. Agent Definition File (`agents/[agent-name]/agent.md`)
+### Agent Definition File (`agents/[agent-name].md`)
 
 This is the core agent definition with YAML frontmatter and detailed instructions.
 
@@ -63,72 +63,65 @@ Example content here...
 Remember: Your goal is to [restate primary objective].
 ```
 
-### 2. Metadata File (`agents/[agent-name]/metadata.json`)
-
-This file contains agent metadata, dependencies, and configuration.
-
-```json
-{
-  "name": "your-agent-name",
-  "version": "1.0.0",
-  "description": "Brief description for the agent listing",
-  "author": "Claude Sub-Agents",
-  "tags": ["tag1", "tag2", "tag3"],
-  "requirements": {
-    "tools": ["Read", "Grep", "Glob", "Bash"],
-    "optional_tools": ["WebSearch", "WebFetch"]
-  },
-  "hooks": {
-    "recommended": ["Start", "PostToolUse:Edit"],
-    "optional": ["Stop"]
-  },
-  "commands": ["your-command"],
-  "compatible_with": ["claude-code@>=1.0.0"]
-}
-```
-
-### 3. Slash Command File (`commands/[command-name].md`)
-
-This creates a slash command to trigger your agent.
+### Example Agent File
 
 ```markdown
 ---
-description: Brief description of what the command does
-allowed-tools: Task
+name: your-agent-name
+description: Clear description with trigger words for auto-delegation. Use when dealing with specific tasks.
+tools: Read, Grep, Glob  # Optional - inherits all tools if omitted
+version: 1.0.0  # Optional
+author: Your Name  # Optional
+tags: [tag1, tag2]  # Optional
 ---
 
-Use the your-agent-name agent to [perform specific action]. [Additional context about what the agent will do and what to focus on].
+You are a [role description]. Your role is to [primary responsibility].
+
+## Process
+
+When invoked, immediately:
+1. [First action]
+2. [Second action]
+3. Begin systematic work without delay
+
+## Output Format
+
+[Describe expected output format]
 ```
+
+**Important Notes**:
+- No separate metadata.json file needed
+- No slash commands - agents use description-based auto-delegation
+- Tools field is optional - agents inherit all tools if not specified
+- Description should include trigger words for better matching
 
 ## Step-by-Step Creation Process
 
-1. **Create the agent directory structure**:
+1. **Create the agent file**:
    ```bash
-   mkdir -p agents/your-agent-name
+   # Create your agent file directly
+   touch agents/your-agent-name.md
    ```
 
-2. **Create the agent definition file**:
-   - Write `agents/your-agent-name/agent.md` with:
-     - YAML frontmatter with name, description, and tools
-     - Clear role definition
-     - Structured process and checklists
-     - Output format guidelines
-     - Examples
+2. **Write the agent definition**:
+   - Add YAML frontmatter with:
+     - `name`: Agent identifier (lowercase with hyphens)
+     - `description`: Clear description with trigger words
+     - `tools`: Optional tool restrictions
+   - Write the system prompt below the frontmatter
+   - Include clear instructions and output format
 
-3. **Create the metadata file**:
-   - Write `agents/your-agent-name/metadata.json` with:
-     - Matching name from agent.md
-     - Version (start with "1.0.0")
-     - Descriptive tags
-     - Required and optional tools
-     - Recommended hooks
-     - Associated slash commands
+3. **Optimize the description**:
+   ```bash
+   # Use the optimize command to improve auto-delegation
+   claude-agents optimize your-agent-name
+   ```
 
-4. **Create the slash command**:
-   - Write `commands/your-command.md` with:
-     - Clear description
-     - `allowed-tools: Task` (standard for agent invocation)
-     - Instructions that reference your agent
+4. **Validate the agent**:
+   ```bash
+   # Check agent format and quality
+   claude-agents validate your-agent-name
+   ```
 
 ## Best Practices
 
@@ -139,9 +132,14 @@ Use the your-agent-name agent to [perform specific action]. [Additional context 
 - **Structured Output**: Use consistent formatting with emojis for sections
 - **Checklists**: Include comprehensive checklists for thorough coverage
 
+### Description Writing
+- Include trigger words that users might naturally use
+- Start with action verbs (e.g., "Analyzes", "Creates", "Scans")
+- Mention when the agent should be used
+- Keep descriptions under 200 characters for readability
+
 ### Naming Conventions
 - Agent names: lowercase with hyphens (e.g., `code-reviewer`, `requirements-analyst`)
-- Commands: short, memorable names (e.g., `review`, `analyze`, `debug`)
 - Tags: descriptive keywords for discoverability
 
 ### Tool Selection
@@ -154,82 +152,77 @@ Use the your-agent-name agent to [perform specific action]. [Additional context 
   - `Edit`/`MultiEdit`: For code modifications
   - `Write`: For creating files
 
-### Hooks Configuration
-- `Start`: Run when agent begins
-- `PostToolUse:Edit`: Run after file edits
-- `Stop`: Run when agent completes
-- Only include hooks that enhance the agent's functionality
+### Tool Selection
+- Only restrict tools if the agent needs specific limitations
+- Most agents should omit the tools field to inherit all available tools
+- Common tool restrictions:
+  - Analysis agents: `Read, Grep, Glob`
+  - Modification agents: `Read, Edit, MultiEdit, Grep, Glob`
+  - Generation agents: `Read, Write, Grep, Glob`
 
 ## Example: Creating a "Performance Analyzer" Agent
 
-1. **Create directory**:
+1. **Create the agent file**:
    ```bash
-   mkdir -p agents/performance-analyzer
+   touch agents/performance-analyzer.md
    ```
 
-2. **Create `agents/performance-analyzer/agent.md`**:
+2. **Write the agent**:
    ```markdown
    ---
    name: performance-analyzer
-   description: Analyzes code performance and suggests optimizations
+   description: Analyzes code performance bottlenecks and suggests optimizations. Use when code is slow or needs performance tuning.
    tools: Read, Grep, Glob, Bash
+   version: 1.0.0
+   tags: [performance, optimization, profiling]
    ---
    
-   You are a performance optimization specialist...
-   ```
-
-3. **Create `agents/performance-analyzer/metadata.json`**:
-   ```json
-   {
-     "name": "performance-analyzer",
-     "version": "1.0.0",
-     "description": "Performance analysis and optimization specialist",
-     "author": "Claude Sub-Agents",
-     "tags": ["performance", "optimization", "profiling"],
-     "requirements": {
-       "tools": ["Read", "Grep", "Glob", "Bash"]
-     },
-     "hooks": {
-       "recommended": ["Start"]
-     },
-     "commands": ["perf"],
-     "compatible_with": ["claude-code@>=1.0.0"]
-   }
-   ```
-
-4. **Create `commands/perf.md`**:
-   ```markdown
-   ---
-   description: Analyze code performance and suggest optimizations
-   allowed-tools: Task
-   ---
+   You are a performance optimization specialist with expertise in profiling and optimizing code.
    
-   Use the performance-analyzer agent to analyze code performance...
+   ## Process
+   
+   When invoked, immediately:
+   1. Identify the code or system to analyze
+   2. Look for common performance bottlenecks
+   3. Measure or estimate performance impact
+   4. Suggest specific optimizations
+   
+   ## Analysis Areas
+   
+   - Algorithm complexity (time and space)
+   - Database query optimization
+   - Memory usage and leaks
+   - I/O operations
+   - Caching opportunities
+   - Parallel processing potential
+   
+   ## Output Format
+   
+   ### 🔴 Critical Performance Issues
+   [Issues causing major slowdowns]
+   
+   ### 🟡 Optimization Opportunities
+   [Areas for improvement]
+   
+   ### 🟢 Performance Best Practices
+   [Good patterns already in use]
+   
+   ### 📊 Recommendations
+   [Prioritized list of optimizations]
    ```
 
 ## Installation and Testing
 
 After creating your agent files:
 
-### Method 1: Direct Installation (NEW - Recommended)
-```bash
-# Install a specific agent by name (skips interactive prompts)
-npm start -- install your-agent-name
+### Installation
 
-# Example:
-npm start -- install requirements-analyst
-```
-
-### Method 2: Using Quick Install Script
 ```bash
-# Use the provided script for easier installation
-./scripts/quick-install.sh your-agent-name
-```
+# Install your agent
+claude-agents install performance-analyzer
 
-### Method 3: Interactive Installation
-```bash
-# Run without agent name for interactive selection
-npm start -- install
+# Or install directly from file
+cp agents/performance-analyzer.md ~/.claude/agents/
 ```
 
 ### Verify Installation
@@ -239,34 +232,44 @@ npm start -- list | grep your-agent-name
 ```
 
 ### Test in Claude Code
-- Use the slash command: `/your-command`
-- Or invoke directly with the Task tool
 
-## Quick Start Example
+The agent will be triggered automatically when users mention relevant keywords:
+- "analyze performance"
+- "code is slow"
+- "optimize this function"
+- "performance bottleneck"
 
-Here's a complete workflow for creating and immediately using a new agent:
+## Quick Start Template
 
-```bash
-# 1. Create agent structure
-mkdir -p agents/my-analyzer
-mkdir -p commands
+Here's a minimal agent template:
 
-# 2. Create agent files (agent.md, metadata.json, command.md)
-# ... (create files as shown above) ...
+```markdown
+---
+name: my-agent
+description: Does X when Y happens. Use for Z tasks.
+tools: Read, Grep, Glob
+---
 
-# 3. Install the agent immediately
-npm start -- install my-analyzer
+You are an expert in [DOMAIN]. Your primary role is to [PURPOSE].
 
-# 4. Use in Claude Code
-# Type: /my-command
+When invoked, immediately:
+1. [FIRST ACTION]
+2. [SECOND ACTION]
+3. [DELIVER RESULTS]
+
+## Output Format
+
+[DESCRIBE OUTPUT STRUCTURE]
 ```
+
+Save this as `agents/my-agent.md` and install with `claude-agents install my-agent`.
 
 ## Troubleshooting
 
-- **Agent not appearing**: Check file paths and naming consistency
-- **Command not working**: Ensure command name in metadata.json matches the filename
-- **Tools not available**: Verify tool names match Claude Code's available tools
-- **Installation fails**: Check JSON syntax in metadata.json
+- **Agent not triggering**: Improve description with better trigger words
+- **Tools not available**: Remove tools field to inherit all tools
+- **Validation fails**: Run `claude-agents validate` to see specific issues
+- **Poor auto-delegation**: Use `claude-agents optimize` to improve description
 
 ## Contributing
 

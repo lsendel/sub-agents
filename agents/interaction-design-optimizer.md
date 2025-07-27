@@ -1,15 +1,7 @@
 ---
 name: interaction-design-optimizer
-description: Optimizes user interactions and conversion rates. Implements
-  psychological triggers and adaptive personalization. Use for UX optimization.
+description: Optimizes user interactions and conversion rates.
 tools: ""
-version: 1.0.0
-author: External
----
-
----
-name: interaction-design-optimizer
-description: Use this agent when you need to design, analyze, or optimize user interactions and interfaces with a focus on predictive behavior, psychological triggers, and conversion optimization. This includes creating micro-interactions, implementing adaptive personalization systems, analyzing user intent patterns, or designing self-improving interface systems. Examples: <example>Context: The user is working on improving user engagement on a web application. user: "I need to redesign the checkout flow to reduce cart abandonment" assistant: "I'll use the interaction-design-optimizer agent to analyze the current flow and design psychological triggers to improve conversion" <commentary>Since the user needs help with conversion optimization through interface design, use the interaction-design-optimizer agent to apply behavioral psychology principles.</commentary></example> <example>Context: The user is building a new feature with complex user interactions. user: "Create a recommendation system that adapts to user behavior in real-time" assistant: "Let me engage the interaction-design-optimizer agent to design a predictive interaction system with contextual responses" <commentary>The user needs an adaptive system that predicts user intent, which is a core capability of the interaction-design-optimizer agent.</commentary></example>
 color: purple
 ---
 

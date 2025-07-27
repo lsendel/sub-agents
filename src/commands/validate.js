@@ -2,10 +2,10 @@ import chalk from 'chalk';
 import Table from 'cli-table3';
 import { existsSync, readFileSync } from 'fs';
 import { join } from 'path';
-import yaml from 'yaml';
 import { getAgentsDir } from '../utils/paths.js';
 import { getInstalledAgents } from '../utils/config.js';
 import { validateDescription } from '../utils/description-optimizer.js';
+import { extractFrontmatter } from '../utils/yaml-parser.js';
 
 export async function validateCommand(agentName, options) {
   try {
@@ -80,21 +80,13 @@ async function validateAgent(agentName) {
     
     // Read and parse agent file
     const content = readFileSync(agentPath, 'utf-8');
-    const frontmatterMatch = /^---\n([\s\S]*?)\n---/.exec(content);
     
-    if (!frontmatterMatch) {
+    // Use our custom parser that supports Claude Code format
+    const { frontmatter, content: agentBody } = extractFrontmatter(content);
+    
+    if (!frontmatter) {
       result.valid = false;
       result.issues.push('No YAML frontmatter found');
-      result.score = 0;
-      return result;
-    }
-    
-    let frontmatter;
-    try {
-      frontmatter = yaml.parse(frontmatterMatch[1]);
-    } catch (e) {
-      result.valid = false;
-      result.issues.push(`Invalid YAML frontmatter: ${e.message}`);
       result.score = 0;
       return result;
     }
@@ -136,14 +128,13 @@ async function validateAgent(agentName) {
     }
     
     // Validate content
-    const agentContent = content.replace(frontmatterMatch[0], '').trim();
-    if (agentContent.length < 100) {
+    if (agentBody.length < 100) {
       result.warnings.push('Agent content seems too short (< 100 characters)');
       result.score *= 0.8;
     }
     
     // Check for common patterns
-    if (!agentContent.includes('role') && !agentContent.includes('expert')) {
+    if (!agentBody.includes('role') && !agentBody.includes('expert')) {
       result.warnings.push('Agent should define its role or expertise');
       result.score *= 0.9;
     }

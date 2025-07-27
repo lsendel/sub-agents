@@ -1,7 +1,7 @@
 import chalk from 'chalk';
 import ora from 'ora';
 import { existsSync } from 'fs';
-import { getAgentsDir, getCommandsDir } from '../utils/paths.js';
+import { getAgentsDir } from '../utils/paths.js';
 import { confirmAction } from '../utils/prompts.js';
 import { AgentMigrator } from '../utils/agent-migrator.js';
 
@@ -19,8 +19,9 @@ export async function migrateCommand(options) {
     // Check both user and project directories
     const userAgentsDir = getAgentsDir(false);
     const projectAgentsDir = getAgentsDir(true);
-    const userCommandsDir = getCommandsDir(false);
-    const projectCommandsDir = getCommandsDir(true);
+    // Commands directories are deprecated - no longer used
+    // const userCommandsDir = getCommandsDir(false);
+    // const projectCommandsDir = getCommandsDir(true);
 
     const dirsToMigrate = [];
     const commandDirsToRemove = [];
@@ -31,12 +32,13 @@ export async function migrateCommand(options) {
     if (existsSync(projectAgentsDir)) {
       dirsToMigrate.push({ path: projectAgentsDir, scope: 'project' });
     }
-    if (existsSync(userCommandsDir)) {
-      commandDirsToRemove.push({ path: userCommandsDir, scope: 'user' });
-    }
-    if (existsSync(projectCommandsDir)) {
-      commandDirsToRemove.push({ path: projectCommandsDir, scope: 'project' });
-    }
+    // Commands directories removal - commented out as they're deprecated
+    // if (existsSync(userCommandsDir)) {
+    //   commandDirsToRemove.push({ path: userCommandsDir, scope: 'user' });
+    // }
+    // if (existsSync(projectCommandsDir)) {
+    //   commandDirsToRemove.push({ path: projectCommandsDir, scope: 'project' });
+    // }
 
     if (dirsToMigrate.length === 0) {
       console.log(chalk.yellow('No agents found to migrate.'));
