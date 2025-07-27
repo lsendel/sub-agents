@@ -11,7 +11,7 @@ YELLOW = \033[1;33m
 RED = \033[0;31m
 NC = \033[0m # No Color
 
-.PHONY: help install test lint format clean dev link unlink sync sync-copy install-agent migrate optimize validate fix-yaml publish-info list-agents install-agents
+.PHONY: help install test lint format clean dev link unlink sync sync-copy install-agent migrate optimize validate fix-yaml publish-info publish-quick list-agents install-agents
 
 # Default target
 help:
@@ -47,6 +47,7 @@ help:
 	@echo "  $(YELLOW)npm version patch && npm publish$(NC)"
 	@echo ""
 	@echo "  For detailed instructions: $(YELLOW)make publish-info$(NC)"
+	@echo "  For quick publish: $(YELLOW)make publish-quick$(NC)"
 	@echo ""
 	@echo "  Current package: @zamaz/claude-agents"
 	@echo "  Registry: https://www.npmjs.com/package/@zamaz/claude-agents"
@@ -159,6 +160,24 @@ publish-info:
 	@echo "$(BLUE)═══════════════════════════════════════════════════$(NC)"
 	@echo "$(BLUE)  NPM Publishing Instructions for @zamaz/claude-agents$(NC)"
 	@echo "$(BLUE)═══════════════════════════════════════════════════$(NC)"
+
+# Quick publish helper
+publish-quick:
+	@echo "$(BLUE)Quick Publish Process$(NC)"
+	@echo ""
+	@echo "Current version: $$(node -p "require('./package.json').version")"
+	@echo ""
+	@echo "$(YELLOW)1. First, ensure git is up to date:$(NC)"
+	@echo "   Running: git fetch origin && git pull --rebase origin main"
+	@git fetch origin
+	@git pull --rebase origin main || true
+	@echo ""
+	@echo "$(YELLOW)2. Now run these commands:$(NC)"
+	@echo "   $(GREEN)npm version patch$(NC)  # or minor/major"
+	@echo "   $(GREEN)npm publish --otp=YOUR_OTP$(NC)"
+	@echo "   $(GREEN)git push --follow-tags$(NC)"
+	@echo ""
+	@echo "$(BLUE)After running npm version, copy the OTP from your authenticator!$(NC)"
 	@echo ""
 	@echo "Current version: $$(node -p "require('./package.json').version")"
 	@echo "Package name: @zamaz/claude-agents"
@@ -182,6 +201,19 @@ publish-info:
 	@echo ""
 	@echo "5. Push changes to git:"
 	@echo "   $(GREEN)git push --follow-tags$(NC)"
+	@echo ""
+	@echo "$(YELLOW)Troubleshooting:$(NC)"
+	@echo "• If npm says version already exists:"
+	@echo "  - You need to bump version first"
+	@echo "  - Check current published versions: $(GREEN)npm view @zamaz/claude-agents versions$(NC)"
+	@echo ""
+	@echo "• If git push is rejected:"
+	@echo "  $(GREEN)git fetch origin$(NC)"
+	@echo "  $(GREEN)git pull --rebase origin main$(NC)"
+	@echo "  $(GREEN)git push origin main$(NC)"
+	@echo ""
+	@echo "• If npm requires OTP:"
+	@echo "  $(GREEN)npm publish --otp=YOUR_6_DIGIT_CODE$(NC)"
 	@echo ""
 	@echo "$(BLUE)View package at:$(NC) https://www.npmjs.com/package/@zamaz/claude-agents"
 	@echo "$(BLUE)═══════════════════════════════════════════════════$(NC)"
