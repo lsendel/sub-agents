@@ -1,12 +1,8 @@
 import path from 'path';
-import { fileURLToPath } from 'url';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 // Regex patterns for validation
 const AGENT_NAME_PATTERN = /^[a-z0-9-]+$/;
-const SAFE_PATH_PATTERN = /^[a-zA-Z0-9._\-\/]+$/;
 const COMMAND_INJECTION_PATTERNS = [
   /[;&|`$(){}[\]<>]/,
   /\.\./,
@@ -182,11 +178,6 @@ export function validateEnvironment() {
     warnings.push(`Node.js ${nodeVersion} is outdated. Please upgrade to v16 or later`);
   }
 
-  // Check for required directories
-  const requiredDirs = [
-    path.join(process.env.HOME || '', '.claude'),
-    path.join(process.cwd(), 'agents')
-  ];
 
   return {
     valid: true,

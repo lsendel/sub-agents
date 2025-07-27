@@ -5,7 +5,7 @@ import chalk from 'chalk';
 import inquirer from 'inquirer';
 import ora from 'ora';
 import { loadConfig, saveConfig } from '../utils/config.js';
-import { getAgentPath, loadAgent, formatAgentForInstall } from '../utils/agents.js';
+import { loadAgent, formatAgentForInstall } from '../utils/agents.js';
 import { getUserAgentsDir, getProjectAgentsDir, ensureDir } from '../utils/paths.js';
 import { optimizeAgentForClaudeCode } from '../utils/agent-optimizer.js';
 
