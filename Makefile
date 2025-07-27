@@ -38,6 +38,7 @@ help:
 	@echo "  $(YELLOW)make update$(NC)       - Update all dependencies"
 	@echo "  $(YELLOW)make clean$(NC)        - Clean node_modules and lock files"
 	@echo "  $(YELLOW)make setup$(NC)        - Initial setup (copy .env.example)"
+	@echo "  $(YELLOW)make update-agents$(NC) - Update all installed agents"
 
 # Initial setup
 setup:
@@ -179,3 +180,31 @@ info:
 dry-run:
 	@echo "$(BLUE)Dry run - files that would be published:$(NC)"
 	npm pack --dry-run
+
+# Update installed agents
+update-agents:
+	@echo "$(BLUE)Updating all installed agents...$(NC)"
+	@./bin/claude-agents update --all --force
+	@echo "$(GREEN)✓ Agents updated$(NC)"
+
+# Update specific agent
+update-agent:
+	@if [ -z "$(AGENT)" ]; then \
+		echo "$(RED)Error: Please specify AGENT=<agent-name>$(NC)"; \
+		echo "Example: make update-agent AGENT=code-reviewer"; \
+		exit 1; \
+	fi
+	@echo "$(BLUE)Updating agent: $(AGENT)...$(NC)"
+	@./bin/claude-agents update $(AGENT) --force
+	@echo "$(GREEN)✓ Agent updated$(NC)"
+
+# List installed agents
+list-agents:
+	@echo "$(BLUE)Listing installed agents...$(NC)"
+	@./bin/claude-agents list --installed
+
+# Install all agents
+install-agents:
+	@echo "$(BLUE)Installing all available agents...$(NC)"
+	@./bin/claude-agents install --all
+	@echo "$(GREEN)✓ All agents installed$(NC)"

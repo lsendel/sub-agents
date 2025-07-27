@@ -12,6 +12,7 @@ import { disableCommand } from './commands/disable.js';
 import { infoCommand } from './commands/info.js';
 import { createCommand } from './commands/create.js';
 import { removeCommand } from './commands/remove.js';
+import { updateCommand } from './commands/update.js';
 import { checkForUpdates } from './utils/update-checker.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -89,12 +90,13 @@ program
 
 // Update command
 program
-  .command('update')
-  .description('Update agents to latest versions')
+  .command(updateCommand.name)
+  .description(updateCommand.description)
   .option('-a, --all', 'Update all installed agents')
-  .action(() => {
-    console.log(chalk.yellow('Update command coming soon!'));
-  });
+  .option('-p, --project', 'Update agents in project scope')
+  .option('-f, --force', 'Force update without confirmation')
+  .option('--preserve-custom', 'Preserve custom modifications')
+  .action(updateCommand.action);
 
 // Config command
 program

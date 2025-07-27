@@ -52,3 +52,17 @@ export function ensureProjectDirectories() {
     }
   });
 }
+
+export function getUserAgentsDir() {
+  return CLAUDE_USER_AGENTS_DIR;
+}
+
+export function getProjectAgentsDir() {
+  return CLAUDE_PROJECT_AGENTS_DIR;
+}
+
+export function ensureDir(dir) {
+  if (!existsSync(dir)) {
+    mkdirSync(dir, { recursive: true });
+  }
+}

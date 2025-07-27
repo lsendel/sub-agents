@@ -21,10 +21,15 @@
   ],
   "scripts": {
     "start": "node bin/claude-agents",
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest",
+    "test:watch": "NODE_OPTIONS=--experimental-vm-modules jest --watch",
+    "test:coverage": "NODE_OPTIONS=--experimental-vm-modules jest --coverage",
     "lint": "eslint src/**/*.js",
+    "lint:fix": "eslint src/**/*.js --fix",
     "format": "prettier --write src/**/*.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
     "check-sensitive": "node scripts/check-sensitive-files.js",
+    "audit": "npm audit",
+    "audit:fix": "npm audit fix",
     "prepare": "node scripts/setup-hooks.js || true"
   },
   "keywords": [
@@ -80,7 +85,9 @@
     "yaml": "^2.3.4"
   },
   "devDependencies": {
+    "@types/jest": "^30.0.0",
     "eslint": "^8.56.0",
+    "jest": "^29.7.0",
     "prettier": "^3.1.1"
   },
   "engines": {

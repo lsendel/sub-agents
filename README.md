@@ -223,7 +223,7 @@ claude-agents install security-scanner
 
 ## 📖 Documentation
 
-### Command Reference
+### 📚 Command Reference
 
 | Command | Description | Example |
 |---------|-------------|---------|
@@ -237,6 +237,52 @@ claude-agents install security-scanner
 | `remove <agent>` | Remove/uninstall an agent | `claude-agents remove debugger` |
 | `info <agent>` | Show agent details | `claude-agents info debugger` |
 | `create` | Create a custom agent | `claude-agents create` |
+| `update [agent]` | Update agent configurations | `claude-agents update` |
+| `update --all` | Update all installed agents | `claude-agents update --all` |
+| `update --force` | Force update without confirmation | `claude-agents update --force` |
+
+### 🔄 Updating Agents
+
+Keep your agents up-to-date with the latest improvements and features:
+
+#### Update Commands
+
+```bash
+# Interactive update - select which agents to update
+claude-agents update
+
+# Update a specific agent
+claude-agents update code-reviewer
+
+# Update all installed agents at once
+claude-agents update --all
+
+# Force update without confirmation prompt
+claude-agents update --all --force
+
+# Preserve custom modifications during update
+claude-agents update --all --preserve-custom
+```
+
+#### Using Make
+
+```bash
+# Update all agents quickly
+make update-agents
+
+# Update specific agent
+make update-agent AGENT=code-reviewer
+
+# List installed agents first
+make list-agents
+```
+
+#### What Gets Updated
+
+- **Agent Definitions** - Latest prompts and configurations
+- **Metadata** - Version information and timestamps
+- **Hooks** - Any associated automation hooks
+- **Slash Commands** - Corresponding command files
 
 ### Creating Custom Agents
 
@@ -429,6 +475,48 @@ MIT License - see [LICENSE](LICENSE) file for details
 - Our amazing community of developers
 - All contributors and testers
 - Special thanks to webdevtodayjason for the original project
+
+## 🔧 Development & Testing
+
+### Running Tests
+```bash
+# Run all tests
+npm test
+
+# Watch mode
+npm run test:watch
+
+# Coverage report
+npm run test:coverage
+```
+
+### Code Quality
+```bash
+# Lint code
+npm run lint
+
+# Fix linting issues
+npm run lint:fix
+
+# Format code
+npm run format
+```
+
+### Security
+```bash
+# Run security audit
+npm audit
+
+# Fix vulnerabilities
+npm run audit:fix
+```
+
+See [IMPROVEMENTS.md](./docs/IMPROVEMENTS.md) for detailed documentation on:
+- 🧪 Testing framework setup
+- 🔒 Security enhancements
+- 📊 Type safety with JSDoc
+- 🚀 CI/CD pipelines
+- 📦 Dependency management
 
 ## 📬 Connect
 

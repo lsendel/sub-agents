@@ -28,7 +28,7 @@ export function getAvailableAgents() {
         const agentContent = readFileSync(agentPath, 'utf-8');
         
         // Parse YAML frontmatter
-        const frontmatterMatch = agentContent.match(/^---\n([\s\S]*?)\n---/);
+        const frontmatterMatch = RegExp(/^---\n([\s\S]*?)\n---/).exec(agentContent);
         let frontmatter = {};
         
         if (frontmatterMatch) {
@@ -70,7 +70,7 @@ export function getAgentDetails(agentName) {
       : null;
     
     // Parse YAML frontmatter
-    const frontmatterMatch = agentContent.match(/^---\n([\s\S]*?)\n---/);
+    const frontmatterMatch = RegExp(/^---\n([\s\S]*?)\n---/).exec(agentContent);
     let frontmatter = {};
     let content = agentContent;
     
@@ -108,4 +108,49 @@ export function formatAgentForInstall(agent) {
   const content = fullContent.replace(/^---\n[\s\S]*?\n---/, '').trim();
   
   return `---\n${yamlFrontmatter}\n---\n\n${content}`;
+}
+
+export function getAgentPath(agentName) {
+  return join(__dirname, '..', '..', 'agents', agentName);
+}
+
+export async function loadAgent(agentDir) {
+  const metadataPath = join(agentDir, 'metadata.json');
+  const agentPath = join(agentDir, 'agent.md');
+  const hooksPath = join(agentDir, 'hooks.json');
+  
+  if (!existsSync(metadataPath) || !existsSync(agentPath)) {
+    return null;
+  }
+  
+  try {
+    const metadata = JSON.parse(readFileSync(metadataPath, 'utf-8'));
+    const agentContent = readFileSync(agentPath, 'utf-8');
+    const hooks = existsSync(hooksPath) 
+      ? JSON.parse(readFileSync(hooksPath, 'utf-8'))
+      : null;
+    
+    // Parse YAML frontmatter
+    const frontmatterMatch = RegExp(/^---\n([\s\S]*?)\n---/).exec(agentContent);
+    let frontmatter = {};
+    let content = agentContent;
+    
+    if (frontmatterMatch) {
+      frontmatter = yaml.parse(frontmatterMatch[1]);
+      content = agentContent.replace(frontmatterMatch[0], '').trim();
+    }
+    
+    return {
+      name: metadata.name,
+      ...metadata,
+      frontmatter,
+      content,
+      fullContent: agentContent,
+      hooks,
+      metadata
+    };
+  } catch (error) {
+    console.error(`Error loading agent from ${agentDir}:`, error);
+    return null;
+  }
 }
