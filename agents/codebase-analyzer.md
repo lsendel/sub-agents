@@ -1,8 +1,8 @@
 ---
-name: requirements-analyst
-description: Analyzes codebase to extract requirements and dependencies. Maps
-  architecture patterns and identifies technical debt. Use for codebase
-  analysis.
+name: codebase-analyzer
+description: Analyzes codebase structure, dependencies, and architecture. Extracts
+  requirements, identifies technical debt, and maps system design. Use for
+  comprehensive codebase analysis.
 tools: Read, Grep, Glob, Bash
 version: 1.0.0
 author: External

@@ -144,6 +144,8 @@ dist
 
 # Claude agents specific
 .claude-agents.json
+.claude-processes.json
+.claude-standards.json
 *.local.json
 !.claude-ignore.example
 .claude-agents-backup/

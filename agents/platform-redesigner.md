@@ -1,5 +1,5 @@
 ---
-name: design-director-platform
+name: platform-redesigner
 description: Coordinates comprehensive platform redesigns. Addresses accessibility, conversion rates, and technical debt. Use for large-scale platform improvements.
 tools: ""
 color: yellow

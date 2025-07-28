@@ -1,5 +1,5 @@
 ---
-name: refactor
+name: code-refactorer
 description: Improves code structure without changing functionality. Applies
   design patterns, modernizes legacy code, and enhances maintainability. Use
   when code needs restructuring.

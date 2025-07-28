@@ -1,6 +1,8 @@
 ---
-name: system-architect-2025
-description: Provides modern system architecture guidance.
+name: system-architect
+description: Designs scalable system architectures using modern patterns. Recommends
+  cloud-native solutions, microservices, and best practices. Use for architecture
+  design.
 tools: ""
 color: blue
 ---

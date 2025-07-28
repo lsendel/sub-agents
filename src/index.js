@@ -16,6 +16,8 @@ import { createCommand } from './commands/create.js';
 import { removeCommand } from './commands/remove.js';
 import { updateCommand } from './commands/update.js';
 import { syncCommand } from './commands/sync.js';
+import { syncProcessesCommandConfig } from './commands/sync-processes.js';
+import { syncStandardsCommandConfig } from './commands/sync-standards.js';
 import { migrateCommandConfig } from './commands/migrate.js';
 import { optimizeCommandConfig } from './commands/optimize.js';
 import { validateCommandConfig } from './commands/validate.js';
@@ -112,6 +114,24 @@ program
   .option('-c, --commands', 'Also check for orphaned commands')
   .option('-f, --force-copy', 'Force copy all agents to project directory')
   .action(syncCommand);
+
+// Sync processes command
+const syncProcessesCmd = program
+  .command(syncProcessesCommandConfig.command)
+  .description(syncProcessesCommandConfig.description);
+syncProcessesCommandConfig.options.forEach(opt => {
+  syncProcessesCmd.option(...opt);
+});
+syncProcessesCmd.action(syncProcessesCommandConfig.action);
+
+// Sync standards command
+const syncStandardsCmd = program
+  .command(syncStandardsCommandConfig.command)
+  .description(syncStandardsCommandConfig.description);
+syncStandardsCommandConfig.options.forEach(opt => {
+  syncStandardsCmd.option(...opt);
+});
+syncStandardsCmd.action(syncStandardsCommandConfig.action);
 
 // Migrate command
 const migrateCmd = program

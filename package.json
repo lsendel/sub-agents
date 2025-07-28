@@ -1,7 +1,7 @@
 {
   "name": "@zamaz/claude-agents",
-  "version": "1.0.3",
-  "description": "Supercharge Claude Code with specialized AI sub-agents for code review, testing, debugging, documentation & more. Easy CLI tool to install, manage & create custom AI agents for enhanced development workflow",
+  "version": "1.0.4",
+  "description": "Supercharge Claude Code with specialized AI sub-agents for code review, testing, debugging, documentation & more. Now with process & standards management! Easy CLI tool to install, manage & create custom AI agents for enhanced development workflow",
   "main": "src/index.js",
   "type": "module",
   "bin": {
@@ -13,6 +13,9 @@
     "agents/**/*",
     "commands/**/*",
     "scripts/**/*",
+    "process/**/*",
+    "standards/**/*",
+    "docs/**/*",
     "README.md",
     "LICENSE",
     "CLAUDE.md",
@@ -60,7 +63,12 @@
     "development-workflow",
     "coding-assistant",
     "pair-programming",
-    "software-development"
+    "software-development",
+    "process-management",
+    "coding-standards",
+    "best-practices",
+    "team-collaboration",
+    "development-processes"
   ],
   "author": {
     "name": "ZAMAZ AI",

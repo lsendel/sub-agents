@@ -7,7 +7,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.4] - 2024-07-28
+
 ### Added
+- Process management system for development workflows
+- Standards management system for coding guidelines
+- `sync-processes` command to sync from `~/.claude/processes`
+- `sync-standards` command to sync from `~/.claude/standards`
+- Separate configuration files for processes and standards
+- Sample process files (code-review, feature-development)
+- Sample standards files (coding-standards, api-design)
+- Documentation for process and standards format
+- New keywords for process and standards management
+
+### Changed
+- Updated documentation to include process/standards features
+- Enhanced CLAUDE.md with new architecture details
+- Updated Makefile with process/standards sync targets
+
+## [1.0.3] - 2024-07-27
+
+### Added
+- Enhanced sync with automatic project copying
+- Full Claude Code YAML format support
+- Custom YAML parser for complex descriptions
+- Improved command detection
 - Gitignore support for agents
 - Security checks to prevent committing sensitive files
 - Update checker with automatic notifications
@@ -21,6 +45,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Author updated to ZAMAZ AI
 - Enhanced `.gitignore` with comprehensive security patterns
 - Improved agent descriptions for better automatic delegation
+- Cleaned up Makefile targets
+
+### Fixed
+- YAML parsing for complex multi-line descriptions
+- Sync functionality for Claude Code created agents
 
 ### Security
 - Added pre-commit hook to block sensitive files

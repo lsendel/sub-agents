@@ -11,7 +11,7 @@ YELLOW = \033[1;33m
 RED = \033[0;31m
 NC = \033[0m # No Color
 
-.PHONY: help install test lint format clean dev link unlink sync sync-copy install-agent migrate optimize validate fix-yaml publish-info publish-quick list-agents install-agents
+.PHONY: help install test lint format clean dev link unlink sync sync-copy sync-processes sync-standards install-agent migrate optimize validate fix-yaml publish-info publish-quick list-agents install-agents
 
 # Default target
 help:
@@ -32,6 +32,8 @@ help:
 	@echo "$(GREEN)Sync commands:$(NC)"
 	@echo "  $(YELLOW)make sync$(NC)         - Sync externally installed agents"
 	@echo "  $(YELLOW)make sync-copy$(NC)    - Force copy all agents to project"
+	@echo "  $(YELLOW)make sync-processes$(NC) - Sync processes from ~/.claude/processes"
+	@echo "  $(YELLOW)make sync-standards$(NC) - Sync standards from ~/.claude/standards"
 	@echo ""
 	@echo "$(GREEN)Maintenance:$(NC)"
 	@echo "  $(YELLOW)make validate$(NC)     - Validate agent configurations"
@@ -130,6 +132,18 @@ sync-copy:
 	@echo "$(BLUE)Copying all agents to project directory...$(NC)"
 	@./bin/claude-agents sync --force-copy
 	@echo "$(GREEN)✓ All agents copied to project$(NC)"
+
+# Sync processes from ~/.claude/processes
+sync-processes:
+	@echo "$(BLUE)Syncing processes from ~/.claude/processes...$(NC)"
+	@./bin/claude-agents sync-processes --force-copy
+	@echo "$(GREEN)✓ Processes sync complete$(NC)"
+
+# Sync standards from ~/.claude/standards
+sync-standards:
+	@echo "$(BLUE)Syncing standards from ~/.claude/standards...$(NC)"
+	@./bin/claude-agents sync-standards --force-copy
+	@echo "$(GREEN)✓ Standards sync complete$(NC)"
 
 # Migrate agents to new format
 migrate:

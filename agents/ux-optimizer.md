@@ -1,6 +1,7 @@
 ---
-name: interaction-design-optimizer
-description: Optimizes user interactions and conversion rates.
+name: ux-optimizer
+description: Optimizes user experience, interactions, and conversion rates. Applies
+  behavioral psychology and predictive UX patterns. Use for UX improvements.
 tools: ""
 color: purple
 ---

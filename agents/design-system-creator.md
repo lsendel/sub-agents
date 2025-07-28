@@ -1,5 +1,5 @@
 ---
-name: design-system-architect
+name: design-system-creator
 description: Creates and enhances design systems with AI personalization. Implements adaptive interfaces and brand consistency. Use for design system work.
 tools: ""
 color: pink

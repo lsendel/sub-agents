@@ -1,4 +1,6 @@
 import { readFileSync, writeFileSync, existsSync } from 'fs';
+import { join } from 'path';
+import { homedir } from 'os';
 import { getConfigPath } from './paths.js';
 
 const DEFAULT_CONFIG = {
@@ -125,4 +127,102 @@ export function getInstalledAgents(checkBothScopes = true) {
   }
   
   return agents;
+}
+
+// Process configuration functions
+const PROCESSES_CONFIG_FILE = '.claude-processes.json';
+const DEFAULT_PROCESSES_CONFIG = {
+  version: '1.0.0',
+  processes: {},
+  lastSync: null
+};
+
+export function getProcessesConfigPath(isProject = false) {
+  const baseDir = isProject ? process.cwd() : homedir();
+  return join(baseDir, PROCESSES_CONFIG_FILE);
+}
+
+export function getProcessesConfig(isProject = false) {
+  const configPath = getProcessesConfigPath(isProject);
+  
+  if (!existsSync(configPath)) {
+    return { ...DEFAULT_PROCESSES_CONFIG };
+  }
+  
+  try {
+    const content = readFileSync(configPath, 'utf-8');
+    return JSON.parse(content);
+  } catch (error) {
+    console.error('Error loading processes config:', error);
+    return { ...DEFAULT_PROCESSES_CONFIG };
+  }
+}
+
+export function updateProcessesConfig(config, isProject = false) {
+  const configPath = getProcessesConfigPath(isProject);
+  
+  try {
+    writeFileSync(configPath, JSON.stringify(config, null, 2));
+    return true;
+  } catch (error) {
+    console.error('Error saving processes config:', error);
+    return false;
+  }
+}
+
+export function initializeProcessesConfig(isProject = false) {
+  const configPath = getProcessesConfigPath(isProject);
+  
+  if (!existsSync(configPath)) {
+    updateProcessesConfig(DEFAULT_PROCESSES_CONFIG, isProject);
+  }
+}
+
+// Standards configuration functions
+const STANDARDS_CONFIG_FILE = '.claude-standards.json';
+const DEFAULT_STANDARDS_CONFIG = {
+  version: '1.0.0',
+  standards: {},
+  lastSync: null
+};
+
+export function getStandardsConfigPath(isProject = false) {
+  const baseDir = isProject ? process.cwd() : homedir();
+  return join(baseDir, STANDARDS_CONFIG_FILE);
+}
+
+export function getStandardsConfig(isProject = false) {
+  const configPath = getStandardsConfigPath(isProject);
+  
+  if (!existsSync(configPath)) {
+    return { ...DEFAULT_STANDARDS_CONFIG };
+  }
+  
+  try {
+    const content = readFileSync(configPath, 'utf-8');
+    return JSON.parse(content);
+  } catch (error) {
+    console.error('Error loading standards config:', error);
+    return { ...DEFAULT_STANDARDS_CONFIG };
+  }
+}
+
+export function updateStandardsConfig(config, isProject = false) {
+  const configPath = getStandardsConfigPath(isProject);
+  
+  try {
+    writeFileSync(configPath, JSON.stringify(config, null, 2));
+    return true;
+  } catch (error) {
+    console.error('Error saving standards config:', error);
+    return false;
+  }
+}
+
+export function initializeStandardsConfig(isProject = false) {
+  const configPath = getStandardsConfigPath(isProject);
+  
+  if (!existsSync(configPath)) {
+    updateStandardsConfig(DEFAULT_STANDARDS_CONFIG, isProject);
+  }
 }

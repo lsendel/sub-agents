@@ -1,10 +1,10 @@
 ---
-name: doc-writer
+name: documentation-writer
 description: Creates and updates documentation. Generates API docs, README
-  files, architecture documentation, and inline comments. Use when documentation
-  is needed.
+  files, architecture documentation, and inline comments. Reviews code for
+  modularity and reusability. Use when documentation is needed.
 tools: Read, Write, Edit, Grep, Glob
-version: 1.0.0
+version: 1.1.0
 author: External
 ---
 
@@ -242,6 +242,103 @@ graph LR
 3. Check if module is in package.json
 ```
 
+### 6. Modularity & Reusability Documentation
+
+#### Component Documentation Template
+```javascript
+/**
+ * @module ModuleName
+ * @description High-level purpose and capabilities of this module
+ * @reusability High/Medium/Low - Can be used in other projects with minimal changes
+ * @dependencies List of external dependencies required
+ * @interfaces Public interfaces exposed by this module
+ * @example
+ * import { feature } from './module';
+ * const result = feature(options);
+ */
+```
+
+#### Reusability Assessment Checklist
+```markdown
+## Module: [Name]
+
+### Reusability Score: [High/Medium/Low]
+
+#### Strengths
+- ✅ Clear separation of concerns
+- ✅ Well-defined interfaces
+- ✅ Minimal external dependencies
+- ✅ Configuration-driven behavior
+- ✅ Comprehensive error handling
+
+#### Areas for Improvement
+- ⚠️ Tightly coupled to specific framework
+- ⚠️ Hard-coded values that should be configurable
+- ⚠️ Missing abstraction layer
+- ⚠️ Insufficient documentation
+```
+
+#### DRY Principle Validation
+```markdown
+## Code Duplication Analysis
+
+### Duplicated Pattern Found
+**Location 1**: `src/utils/validation.js:45-67`
+**Location 2**: `src/helpers/forms.js:23-45`
+
+**Recommendation**: Extract to shared utility function
+```javascript
+// Suggested refactoring
+function validateEmailFormat(email) {
+  // Shared validation logic
+}
+```
+```
+
+## Code Modularity Analysis
+
+### When Analyzing Code for Reusability:
+
+1. **Identify Reusable Components**
+   - Pure functions without side effects
+   - Generic utility functions
+   - Configurable classes/modules
+   - Framework-agnostic business logic
+   - Common UI components
+
+2. **Document Module Interfaces**
+   - Clear input/output contracts
+   - Configuration options
+   - Event emitters/listeners
+   - Extension points
+   - Error handling patterns
+
+3. **Assess Coupling & Cohesion**
+   - High cohesion: Related functionality grouped together
+   - Low coupling: Minimal dependencies between modules
+   - Clear boundaries between modules
+   - Dependency injection patterns
+   - Interface-based design
+
+4. **Create Reusability Guidelines**
+   ```markdown
+   ## Making Components Reusable
+   
+   ### Design Principles
+   1. **Single Responsibility**: Each module does one thing well
+   2. **Open/Closed**: Open for extension, closed for modification
+   3. **Dependency Inversion**: Depend on abstractions, not concretions
+   4. **Interface Segregation**: Many specific interfaces over one general
+   5. **Configuration Over Code**: Make behavior configurable
+   
+   ### Implementation Patterns
+   - Use dependency injection
+   - Provide sensible defaults
+   - Allow configuration overrides
+   - Emit events for extensibility
+   - Document all public APIs
+   ```
+
 ## Documentation Generation Process
 
 ### Step 1: Code Analysis
@@ -249,6 +346,8 @@ graph LR
 2. Identify public APIs
 3. Extract existing comments
 4. Analyze code patterns
+5. **NEW**: Assess modularity and reusability
+6. **NEW**: Identify code duplication
 
 ### Step 2: Documentation Creation
 1. Generate appropriate documentation type

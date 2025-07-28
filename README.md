@@ -37,6 +37,7 @@ Claude Sub-Agents Manager is a complementary CLI tool for Claude Code that helps
 - **🎨 Description Optimization**: Improve agent descriptions for better auto-delegation
 - **🔍 Quality Validation**: Ensure agents follow best practices
 - **🔄 Format Migration**: Convert legacy agents to Claude Code format
+- **📋 Process & Standards Management**: Sync development processes and coding standards
 - **🛠️ Developer Friendly**: Simplifies agent management workflow
 
 ## 🚀 Installation
@@ -145,12 +146,13 @@ The sync feature ensures all agents are properly tracked, managed, and version-c
 
 ## 🔑 Key Features
 
-### 🆕 New in v1.0.3
+### 🆕 New in v1.0.4
+- **Process & Standards Management**: Sync development processes and coding standards from `~/.claude/`
 - **Enhanced Sync**: Automatically copies Claude Code agents to your project directory
 - **YAML Compatibility**: Full support for Claude Code's complex YAML format
 - **Bulk Operations**: Install, validate, and optimize multiple agents at once
 - **Smart Command Detection**: Automatically finds and copies related slash commands
-- **Git-Friendly**: All agents are version-controlled in your project
+- **Git-Friendly**: All agents, processes, and standards are version-controlled in your project
 
 ### Core Features
 - **🔍 Agent Discovery**: Browse and install community agents
@@ -204,6 +206,12 @@ claude-agents info <agent>               # Show agent details
 claude-agents sync                       # Detect and register external agents
 claude-agents sync --force-copy          # Copy all agents to project directory
 
+# Sync processes and standards
+claude-agents sync-processes             # Sync processes from ~/.claude/processes
+claude-agents sync-processes --force-copy # Copy all processes to project
+claude-agents sync-standards             # Sync standards from ~/.claude/standards
+claude-agents sync-standards --force-copy # Copy all standards to project
+
 # Quality and optimization
 claude-agents validate                   # Validate all agents
 claude-agents validate <agent>           # Validate specific agent
@@ -221,6 +229,8 @@ claude-agents migrate --cleanup          # Migrate and remove old files
 make list-agents                         # List all installed agents
 make sync                               # Sync external agents
 make sync-copy                          # Force copy all agents to project
+make sync-processes                     # Sync processes from ~/.claude/processes
+make sync-standards                     # Sync standards from ~/.claude/standards
 make validate                           # Validate all agents
 make fix-yaml                           # Fix YAML frontmatter issues
 
@@ -515,6 +525,68 @@ Trigger agents automatically with hooks:
 }
 ```
 
+### 📋 Process & Standards Management
+
+#### Managing Development Processes
+Store reusable development processes in `~/.claude/processes/`:
+
+```bash
+# Sync processes to your project
+claude-agents sync-processes
+
+# Force copy all processes
+claude-agents sync-processes --force-copy
+
+# Using Make
+make sync-processes
+```
+
+Example process file (`~/.claude/processes/code-review.md`):
+```markdown
+---
+name: code-review
+type: process
+version: 1.0.0
+description: Standard code review process
+---
+
+# Code Review Process
+[Process content...]
+```
+
+#### Managing Coding Standards
+Store coding standards in `~/.claude/standards/`:
+
+```bash
+# Sync standards to your project
+claude-agents sync-standards
+
+# Force copy all standards
+claude-agents sync-standards --force-copy
+
+# Using Make
+make sync-standards
+```
+
+Example standard file (`~/.claude/standards/api-design.md`):
+```markdown
+---
+name: api-design
+type: standard
+version: 1.0.0
+description: RESTful API design standards
+---
+
+# API Design Standards
+[Standards content...]
+```
+
+#### Benefits
+- **Consistency**: Share processes and standards across projects
+- **Version Control**: Track changes to processes and standards
+- **Team Collaboration**: Ensure everyone follows the same guidelines
+- **Claude Integration**: Reference processes and standards in conversations
+
 ## 🌟 Our Ecosystem
 
 Check out our other tools for Claude Code:
@@ -671,7 +743,14 @@ cat ~/.claude-agents.json
 
 ## 📊 Release Notes
 
-### Version 1.0.3 (Latest)
+### Version 1.0.4 (Latest)
+- Added process and standards management
+- Sync development processes from ~/.claude/processes
+- Sync coding standards from ~/.claude/standards
+- New commands: sync-processes and sync-standards
+- Separate configuration files for processes and standards
+
+### Version 1.0.3
 - Enhanced sync with automatic project copying
 - Full Claude Code YAML format support
 - Fixed YAML parsing for complex descriptions
