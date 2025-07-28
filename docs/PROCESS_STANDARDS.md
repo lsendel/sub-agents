@@ -315,7 +315,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Install claude-agents
-        run: npm install -g @zamaz/claude-agents
+        run: npm install -g claude-agents
       - name: Sync standards
         run: claude-agents sync-standards
       - name: Validate standards compliance

@@ -22,7 +22,7 @@
 
 ## 🙏 Acknowledgments
 
-This project is forked from [https://github.com/webdevtodayjason/sub-agents.git](https://github.com/webdevtodayjason/sub-agents.git). A warm thanks to webdevtodayjason for the excellent project contribution and foundation!
+This project grab some ideas from  [https://github.com/webdevtodayjason/sub-agents.git](https://github.com/webdevtodayjason/sub-agents.git).     [https://buildermethods.com/agent-os](https://buildermethods.com/agent-os]) A warm thanks to both projects ada for the excellent project contribution and foundation!
 
 **\ud83d\udd04 Major Update**: Now fully compatible with Claude Code's native agent format! Use the `migrate` command to update existing agents.
 
@@ -165,19 +165,51 @@ The sync feature ensures all agents are properly tracked, managed, and version-c
 
 ## 📋 Available Sub-Agents
 
+### Core Development Agents
 | Agent Name | Description | Trigger Examples |
 |------------|-------------|------------------|
 | **code-reviewer** | Automatically reviews code after edits. Checks for quality, security vulnerabilities, performance issues, and best practices. | "Review my code", "Check for security issues" |
-| **test-runner** | Runs tests when code changes or tests fail. Automatically detects test framework and fixes failing tests. | "Run tests", "Fix failing tests" |
+| **code-refactorer** | Improves code structure without changing functionality. Applies design patterns and modernizes legacy code. | "Refactor this code", "Apply SOLID principles" |
 | **debugger** | Analyzes and fixes errors, crashes, and unexpected behavior. Interprets stack traces and identifies root causes. | "Debug this error", "Fix the crash" |
-| **refactor** | Improves code structure without changing functionality. Applies design patterns and modernizes legacy code. | "Refactor this code", "Apply SOLID principles" |
-| **doc-writer** | Creates and updates documentation. Generates API docs, README files, and inline comments. | "Document this API", "Update the README" |
 | **security-scanner** | Scans for security vulnerabilities and compliance issues. Detects exposed secrets and suggests fixes. | "Scan for vulnerabilities", "Check security" |
-| **requirements-analyst** | Analyzes codebases to identify requirements, dependencies, and potential improvements. | "Analyze this codebase", "What are the dependencies" |
-| **design-director-platform** | Coordinates comprehensive platform redesigns addressing accessibility, conversion rates, and technical debt. | "Redesign our platform", "Fix accessibility issues" |
-| **design-system-architect** | Creates and enhances design systems with AI personalization and adaptive interfaces. | "Create a design system", "Implement adaptive UI" |
-| **interaction-design-optimizer** | Optimizes user interactions and improves UX through data-driven design decisions. | "Optimize user experience", "Improve interaction flow" |
-| **system-architect-2025** | Designs modern system architectures with focus on scalability and best practices. | "Design system architecture", "Plan microservices" |
+| **performance-optimizer** | Continuously analyzes and optimizes system performance, code efficiency, and resource usage. | "Optimize performance", "Fix bottlenecks" |
+| **codebase-analyzer** | Analyzes codebase structure, dependencies, and architecture. Extracts insights and patterns. | "Analyze this codebase", "Show dependencies" |
+
+### Testing Agents
+| Agent Name | Description | Trigger Examples |
+|------------|-------------|------------------|
+| **test-runner** | Runs tests when code changes or tests fail. Automatically detects test framework and fixes failing tests. | "Run tests", "Fix failing tests" |
+| **unit-test-writer** | Writes comprehensive unit tests using JUnit, Jest, pytest, and other frameworks. Creates test suites with high coverage. | "Write unit tests", "Add test coverage" |
+| **integration-test-writer** | Creates end-to-end and integration tests using Playwright, Cypress, Selenium. Tests user flows and API integrations. | "Write integration tests", "Test user flow" |
+
+### Documentation Agents
+| Agent Name | Description | Trigger Examples |
+|------------|-------------|------------------|
+| **documentation-writer** | Creates and updates technical documentation. Generates API docs, README files, and developer guides. | "Document this API", "Update the README" |
+| **technical-documentation-writer** | Creates detailed technical documentation including API references, system architecture docs, and deployment guides. | "Write technical docs", "Document architecture" |
+| **business-documentation-writer** | Creates business-focused documentation including user guides, process documentation, and stakeholder reports. | "Write user guide", "Create process docs" |
+
+### Design & UX Agents
+| Agent Name | Description | Trigger Examples |
+|------------|-------------|------------------|
+| **ux-optimizer** | Optimizes user experience, interactions, and conversion rates through data-driven design decisions. | "Optimize user experience", "Improve conversion rate" |
+| **design-system-creator** | Creates and enhances design systems with AI personalization. Implements adaptive interfaces and brand consistency. | "Create design system", "Implement adaptive UI" |
+| **visual-design-enhancer** | Enhances visual aesthetics, creates artistic approaches, and develops creative visual solutions. | "Enhance visuals", "Improve aesthetics" |
+| **platform-redesigner** | Coordinates comprehensive platform redesigns. Addresses accessibility, conversion rates, and technical debt. | "Redesign platform", "Fix accessibility" |
+
+### Architecture & Planning Agents
+| Agent Name | Description | Trigger Examples |
+|------------|-------------|------------------|
+| **system-architect** | Designs scalable system architectures using modern patterns. Recommends best practices and technologies. | "Design system architecture", "Plan microservices" |
+| **product-roadmap-planner** | Creates strategic product roadmaps, feature prioritization matrices, and release planning. | "Plan product roadmap", "Prioritize features" |
+| **agent-orchestration-strategist** | Organizes AI agents into strategic groups, creates specialized roadmaps for each domain. | "Organize agents", "Create agent strategy" |
+| **process-orchestrator** | Maps workflows, identifies automation opportunities, and designs orchestration patterns. | "Map workflow", "Automate process" |
+
+### Creative & Marketing Agents
+| Agent Name | Description | Trigger Examples |
+|------------|-------------|------------------|
+| **creative-brainstormer** | Generates innovative ideas, product names, and creative concepts. Brainstorms features and unique solutions. | "Brainstorm ideas", "Generate product names" |
+| **marketing-strategist** | Creates compelling marketing copy, SEO strategies, and campaign ideas. Analyzes competitor messaging. | "Write marketing copy", "Create SEO strategy" |
 
 ## 📚 CLI Commands Reference
 
@@ -239,7 +271,7 @@ make publish-info                       # Show publishing instructions
 make publish-quick                      # Quick publish helper
 ```
 
-## 🤖 Detailed Agent Descriptions
+## 🤖 Featured Agent Examples
 
 ### 🔍 Code Reviewer
 *Your personal code quality guardian*
@@ -257,88 +289,89 @@ claude-agents install code-reviewer
 > "I need to review my recent changes for security issues"
 ```
 
-### 🧪 Test Runner
-*Intelligent test automation specialist*
+### 🧪 Unit Test Writer
+*Comprehensive test creation specialist*
 
-- Auto-detects test frameworks
-- Fixes failing tests automatically
-- Improves test coverage
-- Supports all major languages
+- Creates test suites with high coverage
+- Supports Jest, pytest, JUnit, and more
+- Implements mocking and edge cases
+- Follows testing best practices
 
 ```bash
 # Install
-claude-agents install test-runner
+claude-agents install unit-test-writer
 
 # Use
-> /test
-> /test src/**/*.test.js
+> "Write unit tests for my authentication module"
+> "Add test coverage for the payment service"
 ```
 
-### 🐛 Debugger
-*Expert problem solver and bug hunter*
+### 🎨 UX Optimizer
+*User experience enhancement expert*
 
-- Root cause analysis
-- Stack trace interpretation
-- Performance profiling
-- Memory leak detection
+- Data-driven design decisions
+- Conversion rate optimization
+- Accessibility improvements
+- User flow analysis
 
 ```bash
 # Install
-claude-agents install debugger
+claude-agents install ux-optimizer
 
 # Use
-> /debug Cannot read property 'map' of undefined
+> "Optimize the checkout flow for better conversion"
+> "Improve accessibility of our forms"
 ```
 
-### 🔧 Refactor Assistant
-*Code transformation specialist*
+### 🚀 Performance Optimizer
+*System performance specialist*
 
-- Apply design patterns
-- Modernize legacy code
-- Improve code structure
-- Maintain functionality
+- Identifies bottlenecks
+- Optimizes resource usage
+- Improves code efficiency
+- Continuous performance monitoring
 
 ```bash
 # Install
-claude-agents install refactor
+claude-agents install performance-optimizer
 
 # Use
-> /refactor improve performance
-> /refactor apply SOLID principles
+> "Optimize our API response times"
+> "Find and fix performance bottlenecks"
 ```
 
-### 📝 Documentation Writer
-*Technical writing expert*
+### 📊 Product Roadmap Planner
+*Strategic planning expert*
 
-- API documentation
-- README generation
-- Architecture docs
-- Code comments
+- Feature prioritization matrices
+- Release planning
+- Business alignment
+- Technical debt management
 
 ```bash
 # Install
-claude-agents install doc-writer
+claude-agents install product-roadmap-planner
 
 # Use
-> /document API
-> /document architecture
+> "Plan our Q2 product roadmap"
+> "Prioritize features for next sprint"
 ```
 
-### 🔒 Security Scanner
-*Vulnerability detection specialist*
+### 💡 Creative Brainstormer
+*Innovation catalyst*
 
-- Secret detection
-- OWASP compliance
-- Dependency auditing
-- Security best practices
+- Generates product names
+- Feature ideation
+- Creative problem solving
+- Market differentiation
 
 ```bash
 # Install
-claude-agents install security-scanner
+claude-agents install creative-brainstormer
 
 # Use
-> /security-scan
-> /security-scan src/api/
+> "Brainstorm names for our new AI tool"
+> "Generate innovative feature ideas"
 ```
 
 ## 📖 Documentation

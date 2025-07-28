@@ -228,7 +228,7 @@ Add sync to your build process:
 steps:
   - name: Sync Claude agents
     run: |
-      npm install -g @webdevtoday/claude-agents
+      npm install -g claude-agents
       claude-agents sync --auto
 ```
 

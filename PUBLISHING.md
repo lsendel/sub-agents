@@ -121,7 +121,7 @@ NPM_TOKEN=your-npm-token-here
 
 # Optional
 NPM_REGISTRY=https://registry.npmjs.org/
-NPM_SCOPE=@webdevtoday
+NPM_SCOPE=@zamaz
 ```
 
 ## Troubleshooting

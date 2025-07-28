@@ -1,5 +1,5 @@
 {
-  "name": "@zamaz/claude-agents",
+  "name": "claude-agents",
   "version": "1.0.4",
   "description": "Supercharge Claude Code with specialized AI sub-agents for code review, testing, debugging, documentation & more. Now with process & standards management! Easy CLI tool to install, manage & create custom AI agents for enhanced development workflow",
   "main": "src/index.js",
@@ -71,9 +71,9 @@
     "development-processes"
   ],
   "author": {
-    "name": "ZAMAZ AI",
-    "email": "luis@bbep5.com",
-    "url": "https://zamaz.ai"
+    "name": "Claude Agents Team",
+    "email": "support@claude-agents.com",
+    "url": "https://claude-agents.com"
   },
   "contributors": [
     "Claude Sub-Agents Contributors"
@@ -105,15 +105,15 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/webdevtodayjason/sub-agents.git"
+    "url": "git+https://github.com/lsendel/sub-agents.git"
   },
   "bugs": {
-    "url": "https://github.com/webdevtodayjason/sub-agents/issues"
+    "url": "https://github.com/lsendel/sub-agents/issues"
   },
-  "homepage": "https://github.com/webdevtodayjason/sub-agents#readme",
+  "homepage": "https://github.com/lsendel/sub-agents#readme",
   "funding": {
     "type": "github",
-    "url": "https://github.com/sponsors/webdevtodayjason"
+    "url": "https://github.com/sponsors/lsendel"
   },
   "publishConfig": {
     "access": "public",

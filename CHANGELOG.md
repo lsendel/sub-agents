@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- 17 new specialized agents for comprehensive development support:
+  - **Core Development**: code-refactorer, performance-optimizer, codebase-analyzer
+  - **Testing**: unit-test-writer, integration-test-writer
+  - **Documentation**: documentation-writer, technical-documentation-writer, business-documentation-writer
+  - **Design & UX**: ux-optimizer, design-system-creator, visual-design-enhancer, platform-redesigner
+  - **Architecture & Planning**: system-architect, product-roadmap-planner, agent-orchestration-strategist, process-orchestrator
+  - **Creative & Marketing**: creative-brainstormer, marketing-strategist
+- Categorized agent display in documentation
+- Enhanced agent descriptions for better auto-delegation
+
 ## [1.0.4] - 2024-07-28
 
 ### Added
@@ -41,8 +52,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Version command with update checking
 
 ### Changed
-- Package renamed from `@webdevtoday/claude-agents` to `@zamaz/claude-agents`
-- Author updated to ZAMAZ AI
+- Package renamed to generic naming structure
+- Author updated to generic format
 - Enhanced `.gitignore` with comprehensive security patterns
 - Improved agent descriptions for better automatic delegation
 - Cleaned up Makefile targets
@@ -76,12 +87,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Initial release
-- 6 production-ready agents:
+- 4 production-ready agents:
   - code-reviewer
   - test-runner
   - debugger
-  - refactor
-  - doc-writer
   - security-scanner
 - Interactive CLI interface
 - Project and user scope support

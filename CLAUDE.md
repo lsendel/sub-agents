@@ -10,7 +10,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Format**: `npm run format` - Runs Prettier on src/**/*.js
 
 ### Installation
-- **Global install**: `npm install -g @zamaz/claude-agents`
+- **Global install**: `npm install -g claude-agents`
 - **Link for development**: `npm link` (after cloning repo)
 
 ### Agent Commands

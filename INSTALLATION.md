@@ -7,10 +7,10 @@
 #### From npm (When Published)
 ```bash
 # Install globally
-npm install -g @zamaz/claude-agents
+npm install -g claude-agents
 
 # Or with yarn
-yarn global add @zamaz/claude-agents
+yarn global add claude-agents
 
 # Verify installation
 claude-agents --version
@@ -38,13 +38,13 @@ npm link --force
 claude-agents --version
 
 # Check latest version available
-npm view @zamaz/claude-agents version
+npm view claude-agents version
 
 # Update to latest version
-npm update -g @zamaz/claude-agents
+npm update -g claude-agents
 
 # Or force reinstall
-npm install -g @zamaz/claude-agents@latest
+npm install -g claude-agents@latest
 ```
 
 #### Update from Source
@@ -70,10 +70,10 @@ claude-agents --version
 #### Manual Check
 ```bash
 # See if updates are available
-npm outdated -g @zamaz/claude-agents
+npm outdated -g claude-agents
 
 # View all versions
-npm view @zamaz/claude-agents versions
+npm view claude-agents versions
 ```
 
 #### Automatic Update Notification
@@ -195,10 +195,10 @@ gh release create v1.0.3 \
 Users can download specific versions:
 ```bash
 # Download specific version
-npm pack @zamaz/claude-agents@1.0.3
+npm pack claude-agents@1.0.3
 
 # Install from tarball
-npm install -g zamaz-claude-agents-1.0.3.tgz
+npm install -g claude-agents-1.0.3.tgz
 ```
 
 ## Troubleshooting Updates
@@ -208,11 +208,11 @@ npm install -g zamaz-claude-agents-1.0.3.tgz
 #### Permission Errors
 ```bash
 # On macOS/Linux
-sudo npm update -g @zamaz/claude-agents
+sudo npm update -g claude-agents
 
 # Better: Use a Node version manager
 nvm use 18
-npm update -g @zamaz/claude-agents
+npm update -g claude-agents
 ```
 
 #### Cache Issues
@@ -221,25 +221,25 @@ npm update -g @zamaz/claude-agents
 npm cache clean --force
 
 # Reinstall
-npm install -g @zamaz/claude-agents@latest
+npm install -g claude-agents@latest
 ```
 
 #### Version Conflicts
 ```bash
 # Fully uninstall first
-npm uninstall -g @zamaz/claude-agents
+npm uninstall -g claude-agents
 
 # Then reinstall
-npm install -g @zamaz/claude-agents@latest
+npm install -g claude-agents@latest
 ```
 
 ### Rollback to Previous Version
 ```bash
 # Install specific version
-npm install -g @zamaz/claude-agents@1.0.2
+npm install -g claude-agents@1.0.2
 
 # View all available versions
-npm view @zamaz/claude-agents versions --json
+npm view claude-agents versions --json
 ```
 
 ## Best Practices
