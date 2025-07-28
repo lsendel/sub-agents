@@ -5,19 +5,68 @@ import { readFileSync, writeFileSync } from 'fs';
  * Keywords that trigger auto-delegation in Claude Code
  */
 const TRIGGER_KEYWORDS = {
-  'code-reviewer': ['review', 'code review', 'quality', 'security check', 'after edits', 'before commit'],
-  'test-runner': ['run tests', 'test', 'failing tests', 'test failure', 'coverage'],
-  'debugger': ['debug', 'error', 'crash', 'stack trace', 'bug', 'fix issue'],
-  'refactor': ['refactor', 'restructure', 'improve code', 'clean up', 'modernize'],
+  'code-reviewer': [
+    'review',
+    'code review',
+    'quality',
+    'security check',
+    'after edits',
+    'before commit',
+  ],
+  'test-runner': [
+    'run tests',
+    'test',
+    'failing tests',
+    'test failure',
+    'coverage',
+  ],
+  debugger: ['debug', 'error', 'crash', 'stack trace', 'bug', 'fix issue'],
+  refactor: [
+    'refactor',
+    'restructure',
+    'improve code',
+    'clean up',
+    'modernize',
+  ],
   'doc-writer': ['document', 'documentation', 'readme', 'api docs', 'comments'],
-  'security-scanner': ['security', 'vulnerability', 'scan', 'audit', 'compliance'],
-  'requirements-analyst': ['analyze', 'requirements', 'architecture', 'dependencies'],
-  'design-director-platform': ['redesign', 'platform', 'accessibility', 'conversion'],
-  'design-system-architect': ['design system', 'UI components', 'brand', 'theming'],
-  'interaction-design-optimizer': ['UX', 'interaction', 'conversion rate', 'user flow'],
-  'system-architect-2025': ['architecture', 'system design', 'scalability', 'microservices']
+  'security-scanner': [
+    'security',
+    'vulnerability',
+    'scan',
+    'audit',
+    'compliance',
+  ],
+  'requirements-analyst': [
+    'analyze',
+    'requirements',
+    'architecture',
+    'dependencies',
+  ],
+  'design-director-platform': [
+    'redesign',
+    'platform',
+    'accessibility',
+    'conversion',
+  ],
+  'design-system-architect': [
+    'design system',
+    'UI components',
+    'brand',
+    'theming',
+  ],
+  'interaction-design-optimizer': [
+    'UX',
+    'interaction',
+    'conversion rate',
+    'user flow',
+  ],
+  'system-architect-2025': [
+    'architecture',
+    'system design',
+    'scalability',
+    'microservices',
+  ],
 };
-
 
 /**
  * Optimize agent description for Claude Code auto-delegation
@@ -43,15 +92,24 @@ export function optimizeDescription(currentDescription, agentName) {
  */
 function createDefaultDescription(agentName) {
   const defaults = {
-    'code-reviewer': 'Automatically reviews code after edits. Checks for quality, security vulnerabilities, performance issues, and best practices.',
-    'test-runner': 'Runs tests when code changes or tests fail. Automatically detects test framework and fixes failing tests.',
-    'debugger': 'Analyzes and fixes errors, crashes, and unexpected behavior. Interprets stack traces and identifies root causes.',
-    'refactor': 'Improves code structure without changing functionality. Applies design patterns and modernizes legacy code.',
-    'doc-writer': 'Creates and updates documentation. Generates API docs, README files, and inline comments.',
-    'security-scanner': 'Scans for security vulnerabilities and compliance issues. Detects exposed secrets and suggests fixes.'
+    'code-reviewer':
+      'Automatically reviews code after edits. Checks for quality, security vulnerabilities, performance issues, and best practices.',
+    'test-runner':
+      'Runs tests when code changes or tests fail. Automatically detects test framework and fixes failing tests.',
+    debugger:
+      'Analyzes and fixes errors, crashes, and unexpected behavior. Interprets stack traces and identifies root causes.',
+    refactor:
+      'Improves code structure without changing functionality. Applies design patterns and modernizes legacy code.',
+    'doc-writer':
+      'Creates and updates documentation. Generates API docs, README files, and inline comments.',
+    'security-scanner':
+      'Scans for security vulnerabilities and compliance issues. Detects exposed secrets and suggests fixes.',
   };
 
-  return defaults[agentName] || `${agentName} agent for specialized tasks. Use when working with ${agentName.replace(/-/g, ' ')} related tasks.`;
+  return (
+    defaults[agentName] ||
+    `${agentName} agent for specialized tasks. Use when working with ${agentName.replace(/-/g, ' ')} related tasks.`
+  );
 }
 
 /**
@@ -60,7 +118,7 @@ function createDefaultDescription(agentName) {
 function checkTriggerWords(description, agentName) {
   const keywords = TRIGGER_KEYWORDS[agentName] || [];
   const descLower = description.toLowerCase();
-  
+
   let matchCount = 0;
   for (const keyword of keywords) {
     if (descLower.includes(keyword.toLowerCase())) {
@@ -70,7 +128,7 @@ function checkTriggerWords(description, agentName) {
 
   return {
     score: keywords.length > 0 ? matchCount / keywords.length : 0,
-    missing: keywords.filter(k => !descLower.includes(k.toLowerCase()))
+    missing: keywords.filter((k) => !descLower.includes(k.toLowerCase())),
   };
 }
 
@@ -79,7 +137,7 @@ function checkTriggerWords(description, agentName) {
  */
 function enhanceDescription(description, agentName) {
   const { missing } = checkTriggerWords(description, agentName);
-  
+
   // Add trigger conditions if missing
   if (missing.length > 0 && !description.includes('Use when')) {
     const triggers = missing.slice(0, 2).join(' or ');
@@ -87,8 +145,15 @@ function enhanceDescription(description, agentName) {
   }
 
   // Ensure it starts with action verb
-  if (!/^(Automatically|Analyzes|Creates|Generates|Scans|Runs|Modifies|Improves)/.test(description)) {
-    description = 'Automatically ' + description.charAt(0).toLowerCase() + description.slice(1);
+  if (
+    !/^(Automatically|Analyzes|Creates|Generates|Scans|Runs|Modifies|Improves)/.test(
+      description,
+    )
+  ) {
+    description =
+      'Automatically ' +
+      description.charAt(0).toLowerCase() +
+      description.slice(1);
   }
 
   return description;
@@ -103,13 +168,13 @@ export function analyzeAgentDescriptions(agents) {
   for (const agent of agents) {
     const currentDesc = agent.frontmatter?.description || agent.description;
     const optimized = optimizeDescription(currentDesc, agent.name);
-    
+
     if (currentDesc !== optimized) {
       suggestions.push({
         name: agent.name,
         current: currentDesc,
         suggested: optimized,
-        triggerScore: checkTriggerWords(currentDesc, agent.name).score
+        triggerScore: checkTriggerWords(currentDesc, agent.name).score,
       });
     }
   }
@@ -123,7 +188,7 @@ export function analyzeAgentDescriptions(agents) {
 export function updateAgentDescription(agentPath, newDescription) {
   const content = readFileSync(agentPath, 'utf-8');
   const frontmatterMatch = /^---\n([\s\S]*?)\n---/.exec(content);
-  
+
   if (!frontmatterMatch) {
     throw new Error('No frontmatter found in agent file');
   }
@@ -134,7 +199,7 @@ export function updateAgentDescription(agentPath, newDescription) {
   const newFrontmatter = yaml.stringify(frontmatter).trim();
   const newContent = content.replace(
     frontmatterMatch[0],
-    `---\n${newFrontmatter}\n---`
+    `---\n${newFrontmatter}\n---`,
   );
 
   writeFileSync(agentPath, newContent);
@@ -168,6 +233,6 @@ export function validateDescription(description, agentName) {
   return {
     valid: issues.length === 0,
     issues,
-    score: 1 - (issues.length / 4) // Simple quality score
+    score: 1 - issues.length / 4, // Simple quality score
   };
 }

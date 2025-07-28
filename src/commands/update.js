@@ -6,7 +6,11 @@ import inquirer from 'inquirer';
 import ora from 'ora';
 import { loadConfig, saveConfig } from '../utils/config.js';
 import { loadAgent, formatAgentForInstall } from '../utils/agents.js';
-import { getUserAgentsDir, getProjectAgentsDir, ensureDir } from '../utils/paths.js';
+import {
+  getUserAgentsDir,
+  getProjectAgentsDir,
+  ensureDir,
+} from '../utils/paths.js';
 import { logger } from '../utils/logger.js';
 import { validateAgentName } from '../utils/validation.js';
 import { Errors, handleError } from '../utils/errors.js';
@@ -26,14 +30,17 @@ function displayHeader() {
  * Get list of agents to update based on options
  */
 async function getAgentsToUpdate(config, agentName, options) {
-  if (!config.installedAgents || Object.keys(config.installedAgents).length === 0) {
+  if (
+    !config.installedAgents ||
+    Object.keys(config.installedAgents).length === 0
+  ) {
     throw Errors.noAgentsInstalled();
   }
 
   if (options.all) {
     return Object.keys(config.installedAgents);
   }
-  
+
   if (agentName) {
     if (!config.installedAgents[agentName]) {
       throw Errors.agentNotInstalled(agentName);
@@ -42,19 +49,24 @@ async function getAgentsToUpdate(config, agentName, options) {
   }
 
   // Interactive selection
-  const choices = Object.entries(config.installedAgents).map(([name, info]) => ({
-    name: `${name} (${info.version || 'unknown'}) - ${info.scope}`,
-    value: name,
-    checked: true
-  }));
+  const choices = Object.entries(config.installedAgents).map(
+    ([name, info]) => ({
+      name: `${name} (${info.version || 'unknown'}) - ${info.scope}`,
+      value: name,
+      checked: true,
+    }),
+  );
 
-  const answers = await inquirer.prompt([{
-    type: 'checkbox',
-    name: 'agents',
-    message: 'Select agents to update:',
-    choices,
-    validate: (input) => input.length > 0 || 'Please select at least one agent'
-  }]);
+  const answers = await inquirer.prompt([
+    {
+      type: 'checkbox',
+      name: 'agents',
+      message: 'Select agents to update:',
+      choices,
+      validate: (input) =>
+        input.length > 0 || 'Please select at least one agent',
+    },
+  ]);
 
   return answers.agents;
 }
@@ -68,13 +80,15 @@ async function confirmUpdate(agentsToUpdate, options) {
   }
 
   logger.info(chalk.cyan(`\nAgents to update: ${agentsToUpdate.join(', ')}`));
-  
-  const { confirm } = await inquirer.prompt([{
-    type: 'confirm',
-    name: 'confirm',
-    message: 'Proceed with update?',
-    default: true
-  }]);
+
+  const { confirm } = await inquirer.prompt([
+    {
+      type: 'confirm',
+      name: 'confirm',
+      message: 'Proceed with update?',
+      default: true,
+    },
+  ]);
 
   return confirm;
 }
@@ -86,7 +100,7 @@ function hasCustomModifications(targetAgentFile) {
   if (!fs.existsSync(targetAgentFile)) {
     return false;
   }
-  
+
   const currentContent = fs.readFileSync(targetAgentFile, 'utf8');
   return currentContent.includes('# Custom modifications below');
 }
@@ -103,9 +117,10 @@ async function updateSingleAgent(agent, config, options) {
 
   const agentInfo = config.installedAgents[agent];
   const sourceDir = path.join(__dirname, '..', '..', 'agents', agent);
-  const targetDir = agentInfo.scope === 'project' 
-    ? getProjectAgentsDir(options.project)
-    : getUserAgentsDir();
+  const targetDir =
+    agentInfo.scope === 'project'
+      ? getProjectAgentsDir(options.project)
+      : getUserAgentsDir();
 
   // Check if source exists
   if (!fs.existsSync(sourceDir)) {
@@ -121,7 +136,7 @@ async function updateSingleAgent(agent, config, options) {
   // Check for custom modifications
   const targetPath = path.join(targetDir, agent);
   const targetAgentFile = path.join(targetPath, 'agent.md');
-  
+
   if (options.preserveCustom && hasCustomModifications(targetAgentFile)) {
     return { status: 'skipped', reason: 'Custom modifications' };
   }
@@ -134,7 +149,7 @@ async function updateSingleAgent(agent, config, options) {
   config.installedAgents[agent] = {
     ...agentInfo,
     version: metadata.version || '1.0.0',
-    updatedAt: new Date().toISOString()
+    updatedAt: new Date().toISOString(),
   };
 
   return { status: 'updated', version: metadata.version };
@@ -149,7 +164,7 @@ async function updateAgentFiles(sourceAgent, targetPath, sourceDir) {
 
   // Ensure directory exists
   ensureDir(targetPath);
-  
+
   // Write updated agent.md
   const targetAgentFile = path.join(targetPath, 'agent.md');
   fs.writeFileSync(targetAgentFile, agentContent);
@@ -159,7 +174,7 @@ async function updateAgentFiles(sourceAgent, targetPath, sourceDir) {
   const metadata = {
     ...sourceAgent.metadata,
     version: sourceAgent.metadata.version || '1.0.0',
-    updatedAt: new Date().toISOString()
+    updatedAt: new Date().toISOString(),
   };
   fs.writeFileSync(metadataPath, JSON.stringify(metadata, null, 2));
 
@@ -177,13 +192,22 @@ async function updateSlashCommands(updatedAgents, options) {
   const commandsDir = options.project
     ? path.join(process.cwd(), '.claude', 'commands')
     : path.join(process.env.HOME, '.claude', 'commands');
-  
+
   ensureDir(commandsDir);
 
   for (const agent of updatedAgents) {
-    const sourceCommand = path.join(__dirname, '..', '..', 'commands', `${agent.replace(/-/g, '')}.md`);
+    const sourceCommand = path.join(
+      __dirname,
+      '..',
+      '..',
+      'commands',
+      `${agent.replace(/-/g, '')}.md`,
+    );
     if (fs.existsSync(sourceCommand)) {
-      const targetCommand = path.join(commandsDir, `${agent.replace(/-/g, '')}.md`);
+      const targetCommand = path.join(
+        commandsDir,
+        `${agent.replace(/-/g, '')}.md`,
+      );
       fs.copyFileSync(sourceCommand, targetCommand);
     }
   }
@@ -194,17 +218,21 @@ async function updateSlashCommands(updatedAgents, options) {
  */
 function displaySummary(results) {
   logger.section('Update Summary');
-  
+
   if (results.updated.length > 0) {
     logger.success(`Updated: ${results.updated.join(', ')}`);
   }
-  
+
   if (results.skipped.length > 0) {
-    logger.warn(`Skipped: ${results.skipped.map(s => `${s.agent} (${s.reason})`).join(', ')}`);
+    logger.warn(
+      `Skipped: ${results.skipped.map((s) => `${s.agent} (${s.reason})`).join(', ')}`,
+    );
   }
-  
+
   if (results.failed.length > 0) {
-    logger.error(`Failed: ${results.failed.map(f => `${f.agent} (${f.reason})`).join(', ')}`);
+    logger.error(
+      `Failed: ${results.failed.map((f) => `${f.agent} (${f.reason})`).join(', ')}`,
+    );
   }
 }
 
@@ -218,18 +246,22 @@ export const updateCommand = {
     ['-a, --all', 'Update all installed agents'],
     ['-p, --project', 'Update agents in project scope'],
     ['-f, --force', 'Force update without confirmation'],
-    ['--preserve-custom', 'Preserve custom modifications']
+    ['--preserve-custom', 'Preserve custom modifications'],
   ],
   action: async (agentName, options) => {
     const spinner = ora();
-    
+
     try {
       displayHeader();
-      
+
       const config = loadConfig(options.project);
-      const agentsToUpdate = await getAgentsToUpdate(config, agentName, options);
-      
-      if (!await confirmUpdate(agentsToUpdate, options)) {
+      const agentsToUpdate = await getAgentsToUpdate(
+        config,
+        agentName,
+        options,
+      );
+
+      if (!(await confirmUpdate(agentsToUpdate, options))) {
         logger.warn('Update cancelled.');
         return;
       }
@@ -238,15 +270,15 @@ export const updateCommand = {
       const results = {
         updated: [],
         failed: [],
-        skipped: []
+        skipped: [],
       };
 
       for (const agent of agentsToUpdate) {
         spinner.start(`Updating ${agent}...`);
-        
+
         try {
           const result = await updateSingleAgent(agent, config, options);
-          
+
           if (result.status === 'updated') {
             spinner.succeed(`Updated ${agent} to version ${result.version}`);
             results.updated.push(agent);
@@ -275,14 +307,16 @@ export const updateCommand = {
       }
 
       displaySummary(results);
-      
+
       if (results.updated.length > 0) {
         logger.success('\n✓ Update complete!');
-        logger.info(chalk.cyan('Updated agents are ready to use in Claude Code.'));
+        logger.info(
+          chalk.cyan('Updated agents are ready to use in Claude Code.'),
+        );
       }
     } catch (error) {
       spinner.stop();
       handleError(error, 'Update command');
     }
-  }
+  },
 };

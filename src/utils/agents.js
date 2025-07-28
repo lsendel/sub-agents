@@ -13,14 +13,14 @@ const __dirname = dirname(__filename);
 function loadAgentFromFile(agentName, agentPath) {
   try {
     const agentContent = readFileSync(agentPath, 'utf-8');
-    
+
     // Use custom parser that supports Claude Code format
     const { frontmatter, content } = extractFrontmatter(agentContent);
-    
+
     if (!frontmatter) {
       throw new Error('No YAML frontmatter found');
     }
-    
+
     // Extract metadata from frontmatter
     const metadata = {
       name: frontmatter.name || agentName,
@@ -29,14 +29,14 @@ function loadAgentFromFile(agentName, agentPath) {
       author: frontmatter.author || 'Unknown',
       tags: frontmatter.tags || [],
       requirements: {
-        tools: frontmatter.tools ? 
-          (typeof frontmatter.tools === 'string' ? 
-            frontmatter.tools.split(',').map(t => t.trim()) : 
-            frontmatter.tools) : 
-          []
-      }
+        tools: frontmatter.tools
+          ? typeof frontmatter.tools === 'string'
+            ? frontmatter.tools.split(',').map((t) => t.trim())
+            : frontmatter.tools
+          : [],
+      },
     };
-    
+
     return {
       name: agentName,
       ...metadata,
@@ -44,7 +44,7 @@ function loadAgentFromFile(agentName, agentPath) {
       content,
       fullContent: agentContent,
       commands: frontmatter.commands || [],
-      hooks: frontmatter.hooks_config || null
+      hooks: frontmatter.hooks_config || null,
     };
   } catch (error) {
     console.error(`Error loading agent from file ${agentPath}:`, error);
@@ -55,31 +55,37 @@ function loadAgentFromFile(agentName, agentPath) {
 /**
  * Load agent from old format (directory structure)
  */
-function loadAgentFromDirectory(agentName, agentPath, metadataPath, hooksPath = null) {
+function loadAgentFromDirectory(
+  agentName,
+  agentPath,
+  metadataPath,
+  hooksPath = null,
+) {
   try {
     const metadata = JSON.parse(readFileSync(metadataPath, 'utf-8'));
     const agentContent = readFileSync(agentPath, 'utf-8');
-    const hooks = hooksPath && existsSync(hooksPath) ? 
-      JSON.parse(readFileSync(hooksPath, 'utf-8')) : 
-      null;
-    
+    const hooks =
+      hooksPath && existsSync(hooksPath)
+        ? JSON.parse(readFileSync(hooksPath, 'utf-8'))
+        : null;
+
     // Parse YAML frontmatter
     const frontmatterMatch = RegExp(/^---\n([\s\S]*?)\n---/).exec(agentContent);
     let frontmatter = {};
     let content = agentContent;
-    
+
     if (frontmatterMatch) {
       frontmatter = yaml.parse(frontmatterMatch[1]);
       content = agentContent.replace(frontmatterMatch[0], '').trim();
     }
-    
+
     return {
       name: agentName,
       ...metadata,
       frontmatter,
       content,
       fullContent: agentContent,
-      hooks
+      hooks,
     };
   } catch (error) {
     console.error(`Error loading agent from directory ${agentName}:`, error);
@@ -90,24 +96,24 @@ function loadAgentFromDirectory(agentName, agentPath, metadataPath, hooksPath = 
 export function getAvailableAgents() {
   const agentsDir = join(__dirname, '..', '..', 'agents');
   const agents = [];
-  
+
   if (!existsSync(agentsDir)) {
     return agents;
   }
-  
+
   const entries = readdirSync(agentsDir, { withFileTypes: true });
-  
+
   // Handle both old format (directories) and new format (.md files)
   for (const entry of entries) {
     try {
       let agent = null;
-      
+
       if (entry.isDirectory()) {
         // Old format: agent in directory
         const agentName = entry.name;
         const metadataPath = join(agentsDir, agentName, 'metadata.json');
         const agentPath = join(agentsDir, agentName, 'agent.md');
-        
+
         if (existsSync(metadataPath) && existsSync(agentPath)) {
           agent = loadAgentFromDirectory(agentName, agentPath, metadataPath);
         }
@@ -117,7 +123,7 @@ export function getAvailableAgents() {
         const agentPath = join(agentsDir, entry.name);
         agent = loadAgentFromFile(agentName, agentPath);
       }
-      
+
       if (agent) {
         agents.push(agent);
       }
@@ -125,56 +131,63 @@ export function getAvailableAgents() {
       console.error(`Error loading agent ${entry.name}:`, error);
     }
   }
-  
+
   return agents;
 }
 
 export function getAgentDetails(agentName) {
   const agentsDir = join(__dirname, '..', '..', 'agents');
-  
+
   // Try new format first (single .md file)
   const singleFilePath = join(agentsDir, `${agentName}.md`);
   if (existsSync(singleFilePath)) {
     return loadAgentFromFile(agentName, singleFilePath);
   }
-  
+
   // Fall back to old format (directory)
   const agentDir = join(agentsDir, agentName);
   const metadataPath = join(agentDir, 'metadata.json');
   const agentPath = join(agentDir, 'agent.md');
-  
+
   if (existsSync(metadataPath) && existsSync(agentPath)) {
     const hooksPath = join(agentDir, 'hooks.json');
-    return loadAgentFromDirectory(agentName, agentPath, metadataPath, hooksPath);
+    return loadAgentFromDirectory(
+      agentName,
+      agentPath,
+      metadataPath,
+      hooksPath,
+    );
   }
-  
+
   return null;
 }
 
 export function formatAgentForInstall(agent) {
   const { frontmatter, fullContent } = agent;
-  
+
   // For new format, just return the full content as-is
   if (fullContent && fullContent.includes('---')) {
     return fullContent;
   }
-  
+
   // For old format or creating new agents, ensure proper frontmatter
   const formattedFrontmatter = {
     name: agent.name,
     description: frontmatter.description || agent.description,
-    tools: frontmatter.tools || agent.requirements?.tools?.join(', ') || ''
+    tools: frontmatter.tools || agent.requirements?.tools?.join(', ') || '',
   };
-  
+
   // Add optional fields if present
   if (agent.version) formattedFrontmatter.version = agent.version;
   if (agent.author) formattedFrontmatter.author = agent.author;
-  if (agent.tags && agent.tags.length > 0) formattedFrontmatter.tags = agent.tags;
-  
+  if (agent.tags && agent.tags.length > 0)
+    formattedFrontmatter.tags = agent.tags;
+
   // Create the properly formatted agent file
   const yamlFrontmatter = yaml.stringify(formattedFrontmatter).trim();
-  const content = agent.content || fullContent.replace(/^---\n[\s\S]*?\n---/, '').trim();
-  
+  const content =
+    agent.content || fullContent.replace(/^---\n[\s\S]*?\n---/, '').trim();
+
   return `---\n${yamlFrontmatter}\n---\n\n${content}`;
 }
 
@@ -186,28 +199,28 @@ export async function loadAgent(agentDir) {
   const metadataPath = join(agentDir, 'metadata.json');
   const agentPath = join(agentDir, 'agent.md');
   const hooksPath = join(agentDir, 'hooks.json');
-  
+
   if (!existsSync(metadataPath) || !existsSync(agentPath)) {
     return null;
   }
-  
+
   try {
     const metadata = JSON.parse(readFileSync(metadataPath, 'utf-8'));
     const agentContent = readFileSync(agentPath, 'utf-8');
-    const hooks = existsSync(hooksPath) 
+    const hooks = existsSync(hooksPath)
       ? JSON.parse(readFileSync(hooksPath, 'utf-8'))
       : null;
-    
+
     // Parse YAML frontmatter
     const frontmatterMatch = RegExp(/^---\n([\s\S]*?)\n---/).exec(agentContent);
     let frontmatter = {};
     let content = agentContent;
-    
+
     if (frontmatterMatch) {
       frontmatter = yaml.parse(frontmatterMatch[1]);
       content = agentContent.replace(frontmatterMatch[0], '').trim();
     }
-    
+
     return {
       name: metadata.name,
       ...metadata,
@@ -215,7 +228,7 @@ export async function loadAgent(agentDir) {
       content,
       fullContent: agentContent,
       hooks,
-      metadata
+      metadata,
     };
   } catch (error) {
     console.error(`Error loading agent from ${agentDir}:`, error);

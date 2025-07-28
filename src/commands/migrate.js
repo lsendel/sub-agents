@@ -8,10 +8,12 @@ import { logger } from '../utils/logger.js';
 
 export async function migrateCommand(options) {
   const spinner = ora();
-  
+
   try {
     console.log(chalk.blue.bold('\n📦 Claude Agents Format Migration\n'));
-    console.log('This will migrate your agents to the new Claude Code compatible format:');
+    console.log(
+      'This will migrate your agents to the new Claude Code compatible format:',
+    );
     console.log('  • Flatten agent directories to single .md files');
     console.log('  • Merge metadata.json into YAML frontmatter');
     console.log('  • Remove slash commands');
@@ -51,7 +53,7 @@ export async function migrateCommand(options) {
     for (const dir of dirsToMigrate) {
       console.log(`  • ${dir.scope} scope: ${dir.path}`);
     }
-    
+
     if (commandDirsToRemove.length > 0) {
       console.log(chalk.bold('\nSlash commands will be removed from:'));
       for (const dir of commandDirsToRemove) {
@@ -62,12 +64,12 @@ export async function migrateCommand(options) {
     // Confirm migration
     const shouldBackup = !options.noBackup;
     const backupMsg = shouldBackup ? ' (with backup)' : ' (without backup)';
-    
+
     if (!options.yes) {
       const confirmed = await confirmAction(
-        `Proceed with migration${backupMsg}?`
+        `Proceed with migration${backupMsg}?`,
       );
-      
+
       if (!confirmed) {
         console.log(chalk.yellow('\nMigration cancelled.'));
         return;
@@ -83,22 +85,22 @@ export async function migrateCommand(options) {
     // Migrate each directory
     for (const dir of dirsToMigrate) {
       spinner.start(`Migrating ${dir.scope} agents...`);
-      
+
       try {
         const results = await migrator.migrateDirectory(dir.path, {
           backup: shouldBackup,
-          cleanup: options.cleanup || false
+          cleanup: options.cleanup || false,
         });
-        
+
         totalMigrated += results.migrated.length;
         totalFailed += results.failed.length;
         totalSkipped += results.skipped.length;
-        
+
         spinner.succeed(
           `${dir.scope} agents: ${results.migrated.length} migrated, ` +
-          `${results.skipped.length} skipped, ${results.failed.length} failed`
+            `${results.skipped.length} skipped, ${results.failed.length} failed`,
         );
-        
+
         // Show details if verbose
         if (options.verbose && results.migrated.length > 0) {
           console.log(chalk.gray('  Migrated: ' + results.migrated.join(', ')));
@@ -116,18 +118,20 @@ export async function migrateCommand(options) {
       console.log('');
       for (const dir of commandDirsToRemove) {
         spinner.start(`Removing ${dir.scope} slash commands...`);
-        
+
         try {
           const results = await migrator.migrateCommands(dir.path);
           spinner.succeed(
-            `Removed ${results.removed} slash command(s) from ${dir.scope} scope`
+            `Removed ${results.removed} slash command(s) from ${dir.scope} scope`,
           );
-          
+
           if (shouldBackup) {
             console.log(chalk.gray(`  Backup: ${results.backupPath}`));
           }
         } catch (error) {
-          spinner.fail(`Failed to remove ${dir.scope} commands: ${error.message}`);
+          spinner.fail(
+            `Failed to remove ${dir.scope} commands: ${error.message}`,
+          );
         }
       }
     }
@@ -137,7 +141,9 @@ export async function migrateCommand(options) {
     console.log('Summary:');
     console.log(`  • Agents migrated: ${chalk.green(totalMigrated)}`);
     if (totalSkipped > 0) {
-      console.log(`  • Agents skipped: ${chalk.yellow(totalSkipped)} (already migrated)`);
+      console.log(
+        `  • Agents skipped: ${chalk.yellow(totalSkipped)} (already migrated)`,
+      );
     }
     if (totalFailed > 0) {
       console.log(`  • Agents failed: ${chalk.red(totalFailed)}`);
@@ -148,11 +154,16 @@ export async function migrateCommand(options) {
     console.log('1. Review migrated agents in their new location');
     console.log('2. Test agents work correctly in Claude Code');
     if (!options.cleanup) {
-      console.log('3. Run with --cleanup to remove old directories once verified');
+      console.log(
+        '3. Run with --cleanup to remove old directories once verified',
+      );
     }
-    console.log('\nAgents now use description-based auto-delegation instead of slash commands.');
-    console.log('Example: "I need to review my code" will trigger the code-reviewer agent.\n');
-
+    console.log(
+      '\nAgents now use description-based auto-delegation instead of slash commands.',
+    );
+    console.log(
+      'Example: "I need to review my code" will trigger the code-reviewer agent.\n',
+    );
   } catch (error) {
     spinner.fail('Migration failed');
     logger.error(error.message);
@@ -172,7 +183,7 @@ export const migrateCommandConfig = {
     ['--no-backup', 'Skip creating backup'],
     ['--cleanup', 'Remove old directories after successful migration'],
     ['--keep-commands', 'Keep slash command files (not recommended)'],
-    ['-v, --verbose', 'Show detailed migration information']
+    ['-v, --verbose', 'Show detailed migration information'],
   ],
-  action: migrateCommand
+  action: migrateCommand,
 };

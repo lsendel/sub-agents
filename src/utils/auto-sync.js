@@ -19,33 +19,37 @@ const SYNC_CHECK_INTERVAL = 60000; // 1 minute
 export async function shouldAutoSync(force = false) {
   try {
     // Check if enough time has passed since last check
-    if (!force && lastSyncCheck && Date.now() - lastSyncCheck < SYNC_CHECK_INTERVAL) {
+    if (
+      !force &&
+      lastSyncCheck &&
+      Date.now() - lastSyncCheck < SYNC_CHECK_INTERVAL
+    ) {
       return false;
     }
-    
+
     lastSyncCheck = Date.now();
-    
+
     const config = loadConfig();
     const lastSyncTime = config.lastSyncTime || 0;
-    
+
     // Check both user and project agent directories
     const userAgentsDir = getAgentsDir(false);
     const projectAgentsDir = getAgentsDir(true);
-    
+
     for (const dir of [userAgentsDir, projectAgentsDir]) {
       if (!existsSync(dir)) continue;
-      
+
       // Get directory modification time
       const stats = statSync(dir);
       const dirModTime = stats.mtimeMs;
-      
+
       // If directory was modified after last sync, sync is needed
       if (dirModTime > lastSyncTime) {
         logger.debug(`Directory ${dir} modified after last sync`);
         return true;
       }
     }
-    
+
     return false;
   } catch (error) {
     logger.debug(`Error checking auto-sync: ${error.message}`);
@@ -70,9 +74,11 @@ export function updateLastSyncTime() {
 export async function runAutoSyncIfNeeded(silent = false) {
   if (await shouldAutoSync()) {
     if (!silent) {
-      console.log(chalk.dim('Detected external agent changes, running sync...'));
+      console.log(
+        chalk.dim('Detected external agent changes, running sync...'),
+      );
     }
-    
+
     try {
       // Import sync command dynamically to avoid circular dependencies
       const { syncCommand } = await import('../commands/sync.js');
@@ -84,7 +90,7 @@ export async function runAutoSyncIfNeeded(silent = false) {
       return false;
     }
   }
-  
+
   return false;
 }
 

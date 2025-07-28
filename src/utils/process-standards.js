@@ -13,14 +13,14 @@ const __dirname = dirname(__filename);
 export function loadProcessFromFile(processName, processPath) {
   try {
     const content = readFileSync(processPath, 'utf-8');
-    
+
     // Use custom parser that supports Claude Code format
     const { frontmatter, content: body } = extractFrontmatter(content);
-    
+
     if (!frontmatter) {
       throw new Error('No YAML frontmatter found');
     }
-    
+
     // Extract metadata from frontmatter
     const metadata = {
       name: frontmatter.name || processName,
@@ -30,15 +30,15 @@ export function loadProcessFromFile(processName, processPath) {
       author: frontmatter.author || 'Unknown',
       tags: frontmatter.tags || [],
       related_commands: frontmatter.related_commands || [],
-      dependencies: frontmatter.dependencies || []
+      dependencies: frontmatter.dependencies || [],
     };
-    
+
     return {
       name: processName,
       ...metadata,
       frontmatter,
       content: body,
-      fullContent: content
+      fullContent: content,
     };
   } catch (error) {
     console.error(`Error loading process ${processName}:`, error.message);
@@ -52,14 +52,14 @@ export function loadProcessFromFile(processName, processPath) {
 export function loadStandardFromFile(standardName, standardPath) {
   try {
     const content = readFileSync(standardPath, 'utf-8');
-    
+
     // Use custom parser that supports Claude Code format
     const { frontmatter, content: body } = extractFrontmatter(content);
-    
+
     if (!frontmatter) {
       throw new Error('No YAML frontmatter found');
     }
-    
+
     // Extract metadata from frontmatter
     const metadata = {
       name: frontmatter.name || standardName,
@@ -69,15 +69,15 @@ export function loadStandardFromFile(standardName, standardPath) {
       author: frontmatter.author || 'Unknown',
       tags: frontmatter.tags || [],
       related_commands: frontmatter.related_commands || [],
-      dependencies: frontmatter.dependencies || []
+      dependencies: frontmatter.dependencies || [],
     };
-    
+
     return {
       name: standardName,
       ...metadata,
       frontmatter,
       content: body,
-      fullContent: content
+      fullContent: content,
     };
   } catch (error) {
     console.error(`Error loading standard ${standardName}:`, error.message);
@@ -91,14 +91,14 @@ export function loadStandardFromFile(standardName, standardPath) {
 export function getAvailableProcesses() {
   const projectRoot = join(__dirname, '..', '..');
   const processesDir = join(projectRoot, 'processes');
-  
+
   if (!existsSync(processesDir)) {
     return [];
   }
-  
+
   const processes = [];
   const entries = readdirSync(processesDir, { withFileTypes: true });
-  
+
   for (const entry of entries) {
     if (entry.isDirectory()) {
       const processPath = join(processesDir, entry.name, 'process.md');
@@ -110,13 +110,16 @@ export function getAvailableProcesses() {
       }
     } else if (entry.isFile() && entry.name.endsWith('.md')) {
       const processName = basename(entry.name, '.md');
-      const process = loadProcessFromFile(processName, join(processesDir, entry.name));
+      const process = loadProcessFromFile(
+        processName,
+        join(processesDir, entry.name),
+      );
       if (process) {
         processes.push(process);
       }
     }
   }
-  
+
   return processes;
 }
 
@@ -126,14 +129,14 @@ export function getAvailableProcesses() {
 export function getAvailableStandards() {
   const projectRoot = join(__dirname, '..', '..');
   const standardsDir = join(projectRoot, 'standards');
-  
+
   if (!existsSync(standardsDir)) {
     return [];
   }
-  
+
   const standards = [];
   const entries = readdirSync(standardsDir, { withFileTypes: true });
-  
+
   for (const entry of entries) {
     if (entry.isDirectory()) {
       const standardPath = join(standardsDir, entry.name, 'standard.md');
@@ -145,13 +148,16 @@ export function getAvailableStandards() {
       }
     } else if (entry.isFile() && entry.name.endsWith('.md')) {
       const standardName = basename(entry.name, '.md');
-      const standard = loadStandardFromFile(standardName, join(standardsDir, entry.name));
+      const standard = loadStandardFromFile(
+        standardName,
+        join(standardsDir, entry.name),
+      );
       if (standard) {
         standards.push(standard);
       }
     }
   }
-  
+
   return standards;
 }
 
@@ -164,21 +170,25 @@ export function findProcess(processName, searchProject = true) {
   if (existsSync(userProcessPath)) {
     return loadProcessFromFile(processName, userProcessPath);
   }
-  
+
   // Check project directory
   if (searchProject) {
     const projectProcessPath = join(getProcessesDir(true), `${processName}.md`);
     if (existsSync(projectProcessPath)) {
       return loadProcessFromFile(processName, projectProcessPath);
     }
-    
+
     // Also check subdirectory format
-    const projectProcessDirPath = join(getProcessesDir(true), processName, 'process.md');
+    const projectProcessDirPath = join(
+      getProcessesDir(true),
+      processName,
+      'process.md',
+    );
     if (existsSync(projectProcessDirPath)) {
       return loadProcessFromFile(processName, projectProcessDirPath);
     }
   }
-  
+
   return null;
 }
 
@@ -191,20 +201,27 @@ export function findStandard(standardName, searchProject = true) {
   if (existsSync(userStandardPath)) {
     return loadStandardFromFile(standardName, userStandardPath);
   }
-  
+
   // Check project directory
   if (searchProject) {
-    const projectStandardPath = join(getStandardsDir(true), `${standardName}.md`);
+    const projectStandardPath = join(
+      getStandardsDir(true),
+      `${standardName}.md`,
+    );
     if (existsSync(projectStandardPath)) {
       return loadStandardFromFile(standardName, projectStandardPath);
     }
-    
+
     // Also check subdirectory format
-    const projectStandardDirPath = join(getStandardsDir(true), standardName, 'standard.md');
+    const projectStandardDirPath = join(
+      getStandardsDir(true),
+      standardName,
+      'standard.md',
+    );
     if (existsSync(projectStandardDirPath)) {
       return loadStandardFromFile(standardName, projectStandardDirPath);
     }
   }
-  
+
   return null;
 }

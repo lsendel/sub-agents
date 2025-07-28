@@ -1,13 +1,8 @@
 import path from 'path';
 
-
 // Regex patterns for validation
 const AGENT_NAME_PATTERN = /^[a-z0-9-]+$/;
-const COMMAND_INJECTION_PATTERNS = [
-  /[;&|`$(){}[\]<>]/,
-  /\.\./,
-  /~\//
-];
+const COMMAND_INJECTION_PATTERNS = [/[;&|`$(){}[\]<>]/, /\.\./, /~\//];
 
 /**
  * Validates agent name format
@@ -20,27 +15,52 @@ export function validateAgentName(agentName) {
   }
 
   if (agentName.length < 3 || agentName.length > 50) {
-    return { valid: false, error: 'Agent name must be between 3 and 50 characters' };
+    return {
+      valid: false,
+      error: 'Agent name must be between 3 and 50 characters',
+    };
   }
 
   if (!AGENT_NAME_PATTERN.test(agentName)) {
-    return { valid: false, error: 'Agent name can only contain lowercase letters, numbers, and hyphens' };
+    return {
+      valid: false,
+      error:
+        'Agent name can only contain lowercase letters, numbers, and hyphens',
+    };
   }
 
   if (agentName.startsWith('-') || agentName.endsWith('-')) {
-    return { valid: false, error: 'Agent name cannot start or end with a hyphen' };
+    return {
+      valid: false,
+      error: 'Agent name cannot start or end with a hyphen',
+    };
   }
 
   // Prevent path traversal attacks
-  if (agentName.includes('..') || agentName.includes('/') || agentName.includes('\\')) {
+  if (
+    agentName.includes('..') ||
+    agentName.includes('/') ||
+    agentName.includes('\\')
+  ) {
     return { valid: false, error: 'Agent name contains invalid characters' };
   }
 
   // Block common path traversal patterns
-  const dangerousPatterns = ['%2e', '%2f', '%5c', '%252e', '%252f', '%255c', '~'];
+  const dangerousPatterns = [
+    '%2e',
+    '%2f',
+    '%5c',
+    '%252e',
+    '%252f',
+    '%255c',
+    '~',
+  ];
   for (const pattern of dangerousPatterns) {
     if (agentName.toLowerCase().includes(pattern)) {
-      return { valid: false, error: 'Agent name contains potentially dangerous patterns' };
+      return {
+        valid: false,
+        error: 'Agent name contains potentially dangerous patterns',
+      };
     }
   }
 
@@ -67,9 +87,12 @@ export function validateFilePath(filePath) {
   // Ensure path doesn't escape project boundaries
   const normalizedPath = path.normalize(filePath);
   const resolvedPath = path.resolve(filePath);
-  
+
   if (normalizedPath !== filePath || !resolvedPath.startsWith(process.cwd())) {
-    return { valid: false, error: 'File path attempts to access restricted directories' };
+    return {
+      valid: false,
+      error: 'File path attempts to access restricted directories',
+    };
   }
 
   return { valid: true };
@@ -111,12 +134,14 @@ export function validateCommandOptions(options, allowedOptions) {
   }
 
   const optionKeys = Object.keys(options);
-  const invalidOptions = optionKeys.filter(key => !allowedOptions.includes(key));
+  const invalidOptions = optionKeys.filter(
+    (key) => !allowedOptions.includes(key),
+  );
 
   if (invalidOptions.length > 0) {
-    return { 
-      valid: false, 
-      error: `Invalid options: ${invalidOptions.join(', ')}` 
+    return {
+      valid: false,
+      error: `Invalid options: ${invalidOptions.join(', ')}`,
     };
   }
 
@@ -168,7 +193,7 @@ export function validateAgentMetadata(metadata) {
 
   return {
     valid: errors.length === 0,
-    errors
+    errors,
   };
 }
 
@@ -188,13 +213,14 @@ export function validateEnvironment() {
   const nodeVersion = process.version;
   const majorVersion = parseInt(nodeVersion.split('.')[0].substring(1));
   if (majorVersion < 16) {
-    warnings.push(`Node.js ${nodeVersion} is outdated. Please upgrade to v16 or later`);
+    warnings.push(
+      `Node.js ${nodeVersion} is outdated. Please upgrade to v16 or later`,
+    );
   }
-
 
   return {
     valid: true,
-    warnings
+    warnings,
   };
 }
 

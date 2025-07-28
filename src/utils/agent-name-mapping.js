@@ -7,14 +7,14 @@ export const AGENT_NAME_MAPPING = {
   'design-director-platform': 'platform-redesigner',
   'design-system-architect': 'design-system-creator',
   'doc-writer': 'documentation-writer',
-  'refactor': 'code-refactorer',
+  refactor: 'code-refactorer',
   'interaction-design-optimizer': 'ux-optimizer',
   'requirements-analyst': 'codebase-analyzer',
   'system-architect-2025': 'system-architect',
-  'debugger': 'performance-optimizer',
+  debugger: 'performance-optimizer',
   'security-scanner': 'security-scanner', // Keep same name but ensure it's removed if not in new set
   'test-runner': 'test-runner', // Keep same name but ensure it's removed if not in new set
-  'code-reviewer': 'code-reviewer' // Keep same name but ensure it's removed if not in new set
+  'code-reviewer': 'code-reviewer', // Keep same name but ensure it's removed if not in new set
 };
 
 /**
@@ -50,11 +50,11 @@ export function getDeprecatedAgentNames() {
  */
 export function cleanupOldAgents(installedAgents) {
   const cleaned = { ...installedAgents };
-  
+
   // Remove all deprecated agent names
   for (const oldName of getDeprecatedAgentNames()) {
     delete cleaned[oldName];
   }
-  
+
   return cleaned;
 }

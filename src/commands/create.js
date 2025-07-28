@@ -2,8 +2,16 @@ import chalk from 'chalk';
 import { writeFileSync } from 'fs';
 import { join } from 'path';
 import yaml from 'yaml';
-import { inputAgentDetails, confirmAction, selectInstallScope } from '../utils/prompts.js';
-import { getAgentsDir, ensureDirectories, ensureProjectDirectories } from '../utils/paths.js';
+import {
+  inputAgentDetails,
+  confirmAction,
+  selectInstallScope,
+} from '../utils/prompts.js';
+import {
+  getAgentsDir,
+  ensureDirectories,
+  ensureProjectDirectories,
+} from '../utils/paths.js';
 import { addInstalledAgent } from '../utils/config.js';
 import { logger } from '../utils/logger.js';
 
@@ -64,8 +72,10 @@ Remember: [KEY PRINCIPLE OR MOTTO]`;
 export async function createCommand(options) {
   try {
     console.log(chalk.bold.blue('Create Custom Agent'));
-    console.log(chalk.gray('This wizard will help you create a new custom agent.\n'));
-    
+    console.log(
+      chalk.gray('This wizard will help you create a new custom agent.\n'),
+    );
+
     // Get agent details
     let agentDetails;
     if (options.name) {
@@ -74,57 +84,58 @@ export async function createCommand(options) {
         name: options.name,
         description: 'Custom agent',
         tools: [],
-        systemPrompt: BASIC_TEMPLATE
+        systemPrompt: BASIC_TEMPLATE,
       };
     } else {
       // Interactive mode
       agentDetails = await inputAgentDetails();
     }
-    
+
     // Select template if not provided
     const template = options.template || 'basic';
     if (!agentDetails.systemPrompt || agentDetails.systemPrompt.trim() === '') {
-      agentDetails.systemPrompt = template === 'advanced' ? ADVANCED_TEMPLATE : BASIC_TEMPLATE;
+      agentDetails.systemPrompt =
+        template === 'advanced' ? ADVANCED_TEMPLATE : BASIC_TEMPLATE;
     }
-    
+
     // Select installation scope
     const scope = await selectInstallScope();
     const isProject = scope === 'project';
-    
+
     if (isProject) {
       ensureProjectDirectories();
     } else {
       ensureDirectories();
     }
-    
+
     const agentsDir = getAgentsDir(isProject);
-    
+
     // Create agent content
     const frontmatter = {
       name: agentDetails.name,
       description: agentDetails.description,
-      tools: agentDetails.tools.join(', ')
+      tools: agentDetails.tools.join(', '),
     };
-    
+
     const yamlFrontmatter = yaml.stringify(frontmatter).trim();
     const agentContent = `---\n${yamlFrontmatter}\n---\n\n${agentDetails.systemPrompt}`;
-    
+
     // Preview
     console.log('\n' + chalk.bold('Agent Preview:'));
     console.log(chalk.gray('─'.repeat(50)));
     console.log(agentContent);
     console.log(chalk.gray('─'.repeat(50)));
-    
+
     // Confirm creation
-    if (!await confirmAction('\nCreate this agent?')) {
+    if (!(await confirmAction('\nCreate this agent?'))) {
       console.log(chalk.yellow('Agent creation cancelled.'));
       return;
     }
-    
+
     // Write agent file
     const agentPath = join(agentsDir, `${agentDetails.name}.md`);
     writeFileSync(agentPath, agentContent);
-    
+
     // Add to config
     const metadata = {
       name: agentDetails.name,
@@ -133,23 +144,26 @@ export async function createCommand(options) {
       author: 'Custom',
       custom: true,
       requirements: {
-        tools: agentDetails.tools
-      }
+        tools: agentDetails.tools,
+      },
     };
-    
+
     addInstalledAgent(agentDetails.name, metadata, isProject);
-    
-    console.log(chalk.green(`\n✓ Agent "${agentDetails.name}" created successfully!`));
+
+    console.log(
+      chalk.green(`\n✓ Agent "${agentDetails.name}" created successfully!`),
+    );
     console.log(chalk.gray(`Location: ${agentPath}`));
     console.log(chalk.gray('The agent is now enabled and ready to use.'));
-    
+
     // Provide next steps
     console.log('\n' + chalk.bold('Next steps:'));
     console.log('1. Edit the agent file to customize the system prompt');
     console.log('2. Create slash commands in the commands directory');
     console.log('3. Configure hooks in your settings.json if needed');
-    console.log(`4. Test your agent by mentioning it: "Use the ${agentDetails.name} agent to..."`);
-    
+    console.log(
+      `4. Test your agent by mentioning it: "Use the ${agentDetails.name} agent to..."`,
+    );
   } catch (error) {
     logger.error(error.message);
     throw error;

@@ -8,14 +8,16 @@ const LogLevel = {
   INFO: 1,
   WARN: 2,
   ERROR: 3,
-  SILENT: 4
+  SILENT: 4,
 };
 
 class Logger {
   constructor() {
     // Default to INFO level, can be configured via environment variable
-    this.level = LogLevel[process.env.LOG_LEVEL?.toUpperCase()] ?? LogLevel.INFO;
-    this.silent = process.env.NODE_ENV === 'test' || process.env.SILENT === 'true';
+    this.level =
+      LogLevel[process.env.LOG_LEVEL?.toUpperCase()] ?? LogLevel.INFO;
+    this.silent =
+      process.env.NODE_ENV === 'test' || process.env.SILENT === 'true';
   }
 
   debug(...args) {
@@ -56,9 +58,17 @@ class Logger {
   // Special methods for CLI output
   header(title) {
     if (this.level <= LogLevel.INFO && !this.silent) {
-      console.log(chalk.blue.bold('\n╔═══════════════════════════════════════════╗'));
-      console.log(chalk.blue.bold('║'), chalk.white.bold(title.padEnd(41)), chalk.blue.bold('║'));
-      console.log(chalk.blue.bold('╚═══════════════════════════════════════════╝\n'));
+      console.log(
+        chalk.blue.bold('\n╔═══════════════════════════════════════════╗'),
+      );
+      console.log(
+        chalk.blue.bold('║'),
+        chalk.white.bold(title.padEnd(41)),
+        chalk.blue.bold('║'),
+      );
+      console.log(
+        chalk.blue.bold('╚═══════════════════════════════════════════╝\n'),
+      );
     }
   }
 
@@ -75,7 +85,7 @@ class Logger {
         timestamp: new Date().toISOString(),
         level,
         message,
-        ...data
+        ...data,
       };
       console.log(JSON.stringify(logEntry));
     }

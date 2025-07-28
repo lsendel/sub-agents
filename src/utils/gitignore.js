@@ -23,7 +23,7 @@ const DEFAULT_IGNORE_PATTERNS = [
   'build/**',
   '*.tgz',
   '.npm/**',
-  '.npmrc'
+  '.npmrc',
 ];
 
 /**
@@ -33,14 +33,14 @@ export function parseGitignore(gitignorePath) {
   if (!existsSync(gitignorePath)) {
     return [];
   }
-  
+
   try {
     const content = readFileSync(gitignorePath, 'utf-8');
     return content
       .split('\n')
-      .map(line => line.trim())
-      .filter(line => line && !line.startsWith('#'))
-      .map(pattern => {
+      .map((line) => line.trim())
+      .filter((line) => line && !line.startsWith('#'))
+      .map((pattern) => {
         // Convert gitignore patterns to minimatch patterns
         if (pattern.endsWith('/')) {
           return pattern + '**';
@@ -56,23 +56,27 @@ export function parseGitignore(gitignorePath) {
 /**
  * Check if a file path should be ignored based on gitignore patterns
  */
-export function shouldIgnore(filePath, patterns = [], basePath = process.cwd()) {
+export function shouldIgnore(
+  filePath,
+  patterns = [],
+  basePath = process.cwd(),
+) {
   const relativePath = relative(basePath, filePath);
-  
+
   // Always use default patterns
   const allPatterns = [...DEFAULT_IGNORE_PATTERNS, ...patterns];
-  
+
   // Check if the file matches any ignore pattern
-  return allPatterns.some(pattern => {
+  return allPatterns.some((pattern) => {
     // Handle negation patterns (starting with !)
     if (pattern.startsWith('!')) {
       return false; // Negation patterns need special handling
     }
-    
+
     // Check if the pattern matches
-    return minimatch(relativePath, pattern, { 
+    return minimatch(relativePath, pattern, {
       dot: true,
-      matchBase: true
+      matchBase: true,
     });
   });
 }
@@ -82,19 +86,19 @@ export function shouldIgnore(filePath, patterns = [], basePath = process.cwd()) 
  */
 export function getProjectIgnorePatterns(projectPath = process.cwd()) {
   const patterns = [];
-  
+
   // Check for .gitignore in project root
   const gitignorePath = join(projectPath, '.gitignore');
   if (existsSync(gitignorePath)) {
     patterns.push(...parseGitignore(gitignorePath));
   }
-  
+
   // Check for .claude-ignore (custom ignore file for Claude agents)
   const claudeIgnorePath = join(projectPath, '.claude-ignore');
   if (existsSync(claudeIgnorePath)) {
     patterns.push(...parseGitignore(claudeIgnorePath));
   }
-  
+
   return patterns;
 }
 
@@ -103,7 +107,7 @@ export function getProjectIgnorePatterns(projectPath = process.cwd()) {
  */
 export function createIgnoreFilter(basePath = process.cwd()) {
   const patterns = getProjectIgnorePatterns(basePath);
-  
+
   return (filePath) => {
     return !shouldIgnore(filePath, patterns, basePath);
   };
@@ -114,10 +118,10 @@ export function createIgnoreFilter(basePath = process.cwd()) {
  */
 export function formatIgnorePatternsForPrompt(patterns = []) {
   const allPatterns = [...DEFAULT_IGNORE_PATTERNS, ...patterns];
-  
+
   return `
 The following patterns should be ignored:
-${allPatterns.map(p => `  - ${p}`).join('\n')}
+${allPatterns.map((p) => `  - ${p}`).join('\n')}
 
 Always use these patterns when:
 - Searching for files (Glob, Grep)

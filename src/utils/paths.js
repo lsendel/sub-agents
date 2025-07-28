@@ -11,8 +11,14 @@ export const CLAUDE_USER_STANDARDS_DIR = join(CLAUDE_USER_DIR, 'standards');
 
 export const CLAUDE_PROJECT_DIR = join(process.cwd(), '.claude');
 export const CLAUDE_PROJECT_AGENTS_DIR = join(CLAUDE_PROJECT_DIR, 'agents');
-export const CLAUDE_PROJECT_PROCESSES_DIR = join(CLAUDE_PROJECT_DIR, 'processes');
-export const CLAUDE_PROJECT_STANDARDS_DIR = join(CLAUDE_PROJECT_DIR, 'standards');
+export const CLAUDE_PROJECT_PROCESSES_DIR = join(
+  CLAUDE_PROJECT_DIR,
+  'processes',
+);
+export const CLAUDE_PROJECT_STANDARDS_DIR = join(
+  CLAUDE_PROJECT_DIR,
+  'standards',
+);
 // Commands directory no longer used - agents use description-based delegation
 // export const CLAUDE_PROJECT_COMMANDS_DIR = join(CLAUDE_PROJECT_DIR, 'commands');
 
@@ -45,10 +51,10 @@ export function ensureDirectories() {
     CLAUDE_USER_DIR,
     CLAUDE_USER_AGENTS_DIR,
     CLAUDE_USER_PROCESSES_DIR,
-    CLAUDE_USER_STANDARDS_DIR
+    CLAUDE_USER_STANDARDS_DIR,
   ];
-  
-  dirs.forEach(dir => {
+
+  dirs.forEach((dir) => {
     if (!existsSync(dir)) {
       mkdirSync(dir, { recursive: true });
     }
@@ -60,10 +66,10 @@ export function ensureProjectDirectories() {
     CLAUDE_PROJECT_DIR,
     CLAUDE_PROJECT_AGENTS_DIR,
     CLAUDE_PROJECT_PROCESSES_DIR,
-    CLAUDE_PROJECT_STANDARDS_DIR
+    CLAUDE_PROJECT_STANDARDS_DIR,
   ];
-  
-  dirs.forEach(dir => {
+
+  dirs.forEach((dir) => {
     if (!existsSync(dir)) {
       mkdirSync(dir, { recursive: true });
     }

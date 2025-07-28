@@ -1,4 +1,12 @@
-import { readFileSync, writeFileSync, existsSync, mkdirSync, readdirSync, copyFileSync, rmSync } from 'fs';
+import {
+  readFileSync,
+  writeFileSync,
+  existsSync,
+  mkdirSync,
+  readdirSync,
+  copyFileSync,
+  rmSync,
+} from 'fs';
 import { join, basename, dirname } from 'path';
 import yaml from 'yaml';
 import { logger } from './logger.js';
@@ -18,7 +26,7 @@ export class AgentMigrator {
     const results = {
       migrated: [],
       failed: [],
-      skipped: []
+      skipped: [],
     };
 
     if (!existsSync(agentsDir)) {
@@ -32,11 +40,11 @@ export class AgentMigrator {
 
     // Get all agent directories
     const entries = readdirSync(agentsDir, { withFileTypes: true });
-    const agentDirs = entries.filter(d => d.isDirectory()).map(d => d.name);
+    const agentDirs = entries.filter((d) => d.isDirectory()).map((d) => d.name);
 
     for (const agentName of agentDirs) {
       const agentPath = join(agentsDir, agentName);
-      
+
       try {
         // Check if already migrated (single .md file exists)
         const mdPath = join(agentsDir, `${agentName}.md`);
@@ -50,7 +58,7 @@ export class AgentMigrator {
         const migrated = await this.migrateAgent(agentPath);
         if (migrated) {
           results.migrated.push(agentName);
-          
+
           // Remove old directory if cleanup enabled
           if (options.cleanup) {
             rmSync(agentPath, { recursive: true, force: true });
@@ -88,7 +96,9 @@ export class AgentMigrator {
     let content = agentContent;
 
     // Parse existing frontmatter
-    const frontmatterMatch = /^---\n([\s\S]*?)\n---\n([\s\S]*)/.exec(agentContent);
+    const frontmatterMatch = /^---\n([\s\S]*?)\n---\n([\s\S]*)/.exec(
+      agentContent,
+    );
     if (frontmatterMatch) {
       try {
         frontmatter = yaml.parse(frontmatterMatch[1]);
@@ -102,15 +112,17 @@ export class AgentMigrator {
     if (existsSync(metadataFile)) {
       try {
         const metadata = JSON.parse(readFileSync(metadataFile, 'utf-8'));
-        
+
         // Merge metadata into frontmatter
         frontmatter = {
           name: agentName,
           description: frontmatter.description || metadata.description,
-          tools: frontmatter.tools || (metadata.requirements?.tools || []).join(', '),
+          tools:
+            frontmatter.tools ||
+            (metadata.requirements?.tools || []).join(', '),
           version: metadata.version || '1.0.0',
           author: metadata.author || 'Claude Sub-Agents',
-          tags: metadata.tags || []
+          tags: metadata.tags || [],
         };
 
         // Add hooks information if exists
@@ -137,15 +149,18 @@ export class AgentMigrator {
     }
 
     // Optimize description for Claude Code auto-delegation
-    frontmatter.description = this.optimizeDescription(frontmatter.description, agentName);
+    frontmatter.description = this.optimizeDescription(
+      frontmatter.description,
+      agentName,
+    );
 
     // Create new agent file
     const newAgentPath = join(dirname(agentDir), `${agentName}.md`);
     const newContent = this.formatAgent(frontmatter, content);
-    
+
     writeFileSync(newAgentPath, newContent);
     logger.debug(`Migrated ${agentName} to ${newAgentPath}`);
-    
+
     return true;
   }
 
@@ -156,17 +171,28 @@ export class AgentMigrator {
     if (!description) return `${agentName} agent`;
 
     const optimizations = {
-      'code-reviewer': 'Automatically reviews code after edits. Checks for quality, security vulnerabilities, performance issues, and best practices. Use after writing or modifying code.',
-      'test-runner': 'Runs tests when code changes or tests fail. Automatically detects test framework, executes tests, and fixes failing tests. Use when tests need to be run or fixed.',
-      'debugger': 'Analyzes and fixes errors, crashes, and unexpected behavior. Interprets stack traces, identifies root causes, and suggests solutions. Use when debugging issues.',
-      'refactor': 'Improves code structure without changing functionality. Applies design patterns, modernizes legacy code, and enhances maintainability. Use when code needs restructuring.',
-      'doc-writer': 'Creates and updates documentation. Generates API docs, README files, architecture documentation, and inline comments. Use when documentation is needed.',
-      'security-scanner': 'Scans for security vulnerabilities and compliance issues. Detects exposed secrets, OWASP violations, and suggests fixes. Use for security analysis.',
-      'requirements-analyst': 'Analyzes codebase to extract requirements and dependencies. Maps architecture patterns and identifies technical debt. Use for codebase analysis.',
-      'design-director-platform': 'Coordinates comprehensive platform redesigns. Addresses accessibility, conversion rates, and technical debt. Use for large-scale platform improvements.',
-      'design-system-architect': 'Creates and enhances design systems with AI personalization. Implements adaptive interfaces and brand consistency. Use for design system work.',
-      'interaction-design-optimizer': 'Optimizes user interactions and conversion rates. Implements psychological triggers and adaptive personalization. Use for UX optimization.',
-      'system-architect-2025': 'Provides modern system architecture guidance. Designs scalable, cloud-native solutions with cutting-edge patterns. Use for architecture decisions.'
+      'code-reviewer':
+        'Automatically reviews code after edits. Checks for quality, security vulnerabilities, performance issues, and best practices. Use after writing or modifying code.',
+      'test-runner':
+        'Runs tests when code changes or tests fail. Automatically detects test framework, executes tests, and fixes failing tests. Use when tests need to be run or fixed.',
+      debugger:
+        'Analyzes and fixes errors, crashes, and unexpected behavior. Interprets stack traces, identifies root causes, and suggests solutions. Use when debugging issues.',
+      refactor:
+        'Improves code structure without changing functionality. Applies design patterns, modernizes legacy code, and enhances maintainability. Use when code needs restructuring.',
+      'doc-writer':
+        'Creates and updates documentation. Generates API docs, README files, architecture documentation, and inline comments. Use when documentation is needed.',
+      'security-scanner':
+        'Scans for security vulnerabilities and compliance issues. Detects exposed secrets, OWASP violations, and suggests fixes. Use for security analysis.',
+      'requirements-analyst':
+        'Analyzes codebase to extract requirements and dependencies. Maps architecture patterns and identifies technical debt. Use for codebase analysis.',
+      'design-director-platform':
+        'Coordinates comprehensive platform redesigns. Addresses accessibility, conversion rates, and technical debt. Use for large-scale platform improvements.',
+      'design-system-architect':
+        'Creates and enhances design systems with AI personalization. Implements adaptive interfaces and brand consistency. Use for design system work.',
+      'interaction-design-optimizer':
+        'Optimizes user interactions and conversion rates. Implements psychological triggers and adaptive personalization. Use for UX optimization.',
+      'system-architect-2025':
+        'Provides modern system architecture guidance. Designs scalable, cloud-native solutions with cutting-edge patterns. Use for architecture decisions.',
     };
 
     return optimizations[agentName] || description;
@@ -180,7 +206,7 @@ export class AgentMigrator {
     const cleanFrontmatter = {
       name: frontmatter.name,
       description: frontmatter.description,
-      tools: frontmatter.tools || ''
+      tools: frontmatter.tools || '',
     };
 
     // Add optional fields if present
@@ -200,12 +226,12 @@ export class AgentMigrator {
   async createBackup(agentsDir) {
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
     const backupPath = join(this.backupDir, timestamp);
-    
+
     mkdirSync(backupPath, { recursive: true });
-    
+
     // Copy entire agents directory
     this.copyDirectory(agentsDir, backupPath);
-    
+
     logger.info(`Backup created at: ${backupPath}`);
     return backupPath;
   }
@@ -215,13 +241,13 @@ export class AgentMigrator {
    */
   copyDirectory(src, dest) {
     mkdirSync(dest, { recursive: true });
-    
+
     const entries = readdirSync(src, { withFileTypes: true });
-    
+
     for (const entry of entries) {
       const srcPath = join(src, entry.name);
       const destPath = join(dest, entry.name);
-      
+
       if (entry.isDirectory()) {
         this.copyDirectory(srcPath, destPath);
       } else {
@@ -239,7 +265,7 @@ export class AgentMigrator {
     }
 
     const files = readdirSync(commandsDir);
-    const removed = files.filter(f => f.endsWith('.md')).length;
+    const removed = files.filter((f) => f.endsWith('.md')).length;
 
     // Create backup
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-');

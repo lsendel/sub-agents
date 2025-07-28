@@ -25,7 +25,7 @@ export function handleError(error, context = '') {
       logger.debug(error.stack);
     }
   }
-  
+
   // In the main CLI handler, we'll catch these and call process.exit
   // This allows the commands to be testable and reusable
   throw error;
@@ -35,11 +35,16 @@ export function handleError(error, context = '') {
  * Creates a standard error for common scenarios
  */
 export const Errors = {
-  noAgentsInstalled: () => new CLIError('No agents installed. Use "claude-agents install" first.'),
+  noAgentsInstalled: () =>
+    new CLIError('No agents installed. Use "claude-agents install" first.'),
   agentNotFound: (name) => new CLIError(`Agent "${name}" not found.`),
-  agentNotInstalled: (name) => new CLIError(`Agent "${name}" is not installed.`),
-  installationFailed: (name, reason) => new CLIError(`Failed to install "${name}": ${reason}`),
+  agentNotInstalled: (name) =>
+    new CLIError(`Agent "${name}" is not installed.`),
+  installationFailed: (name, reason) =>
+    new CLIError(`Failed to install "${name}": ${reason}`),
   invalidAgentName: (name) => new CLIError(`Invalid agent name: "${name}"`),
-  configLoadFailed: (reason) => new CLIError(`Failed to load configuration: ${reason}`),
-  configSaveFailed: (reason) => new CLIError(`Failed to save configuration: ${reason}`),
+  configLoadFailed: (reason) =>
+    new CLIError(`Failed to load configuration: ${reason}`),
+  configSaveFailed: (reason) =>
+    new CLIError(`Failed to save configuration: ${reason}`),
 };

@@ -3,7 +3,7 @@
  * Ensures we always use the latest agent names and removes deprecated ones
  */
 
-import { existsSync, unlinkSync, readFileSync } from 'fs';
+import { existsSync, unlinkSync } from 'fs';
 import { join } from 'path';
 import { getAgentsDir } from './paths.js';
 import { getConfig, updateConfig } from './config.js';
@@ -24,7 +24,7 @@ export const DEPRECATED_AGENTS = [
   'debugger',
   'security-scanner',
   'test-runner',
-  'code-reviewer'
+  'code-reviewer',
 ];
 
 /**
@@ -35,15 +35,15 @@ export const AGENT_REPLACEMENTS = {
   'design-director-platform': 'platform-redesigner',
   'design-system-architect': 'design-system-creator',
   'doc-writer': 'documentation-writer',
-  'refactor': 'code-refactorer',
+  refactor: 'code-refactorer',
   'interaction-design-optimizer': 'ux-optimizer',
   'requirements-analyst': 'codebase-analyzer',
   'system-architect-2025': 'system-architect',
   // These don't have direct replacements in the new set
-  'debugger': null,
+  debugger: null,
   'security-scanner': null,
   'test-runner': null,
-  'code-reviewer': null
+  'code-reviewer': null,
 };
 
 /**
@@ -55,7 +55,7 @@ export function removeDeprecatedAgents(dryRun = false) {
   const summary = {
     removed: [],
     errors: [],
-    configCleaned: false
+    configCleaned: false,
   };
 
   // Get current config
@@ -66,10 +66,10 @@ export function removeDeprecatedAgents(dryRun = false) {
   // Remove deprecated agents from both user and project directories
   for (const scope of [false, true]) {
     const agentsDir = getAgentsDir(scope);
-    
+
     for (const deprecatedAgent of DEPRECATED_AGENTS) {
       const agentPath = join(agentsDir, `${deprecatedAgent}.md`);
-      
+
       // Remove from filesystem
       if (existsSync(agentPath)) {
         try {
@@ -79,18 +79,20 @@ export function removeDeprecatedAgents(dryRun = false) {
           summary.removed.push({
             name: deprecatedAgent,
             path: agentPath,
-            scope: scope ? 'project' : 'user'
+            scope: scope ? 'project' : 'user',
           });
-          logger.debug(`${dryRun ? 'Would remove' : 'Removed'} deprecated agent: ${agentPath}`);
+          logger.debug(
+            `${dryRun ? 'Would remove' : 'Removed'} deprecated agent: ${agentPath}`,
+          );
         } catch (error) {
           summary.errors.push({
             name: deprecatedAgent,
-            error: error.message
+            error: error.message,
           });
           logger.error(`Failed to remove ${deprecatedAgent}: ${error.message}`);
         }
       }
-      
+
       // Remove from config
       if (installedAgents[deprecatedAgent]) {
         delete installedAgents[deprecatedAgent];
@@ -135,7 +137,7 @@ export function cleanupAgentConfiguration() {
   const summary = {
     deprecatedRemoved: [],
     configUpdated: false,
-    errors: []
+    errors: [],
   };
 
   try {
@@ -143,7 +145,7 @@ export function cleanupAgentConfiguration() {
     const removalSummary = removeDeprecatedAgents(false);
     summary.deprecatedRemoved = removalSummary.removed;
     summary.configUpdated = removalSummary.configCleaned;
-    
+
     if (removalSummary.errors.length > 0) {
       summary.errors = removalSummary.errors;
     }
@@ -163,11 +165,10 @@ export function cleanupAgentConfiguration() {
         logger.info(`  ${old} → ${newAgent}`);
       }
     }
-
   } catch (error) {
     summary.errors.push({
       operation: 'cleanup',
-      error: error.message
+      error: error.message,
     });
     logger.error(`Cleanup failed: ${error.message}`);
   }
@@ -183,19 +184,23 @@ export function cleanupAgentConfiguration() {
 export function ensureLatestAgents() {
   try {
     logger.info('Ensuring only latest agents are installed...');
-    
+
     // Clean up deprecated agents
     const cleanupSummary = cleanupAgentConfiguration();
-    
+
     if (cleanupSummary.deprecatedRemoved.length > 0) {
-      logger.info(`Removed ${cleanupSummary.deprecatedRemoved.length} deprecated agent(s)`);
+      logger.info(
+        `Removed ${cleanupSummary.deprecatedRemoved.length} deprecated agent(s)`,
+      );
     }
-    
+
     if (cleanupSummary.errors.length > 0) {
-      logger.warn(`Encountered ${cleanupSummary.errors.length} error(s) during cleanup`);
+      logger.warn(
+        `Encountered ${cleanupSummary.errors.length} error(s) during cleanup`,
+      );
       return false;
     }
-    
+
     return true;
   } catch (error) {
     logger.error(`Failed to ensure latest agents: ${error.message}`);
