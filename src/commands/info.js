@@ -1,7 +1,7 @@
-import chalk from 'chalk';
-import { getAgentDetails } from '../utils/agents.js';
-import { getInstalledAgents, isAgentEnabled } from '../utils/config.js';
-import { logger } from '../utils/logger.js';
+import chalk from "chalk";
+import { getAgentDetails } from "../utils/agents.js";
+import { getInstalledAgents, isAgentEnabled } from "../utils/config.js";
+import { logger } from "../utils/logger.js";
 
 export async function infoCommand(agentName) {
   try {
@@ -22,100 +22,100 @@ export async function infoCommand(agentName) {
 
     // Display agent information
     console.log(
-      chalk.bold.blue(`\n${agentName}\n${'='.repeat(agentName.length)}`),
+      chalk.bold.blue(`\n${agentName}\n${"=".repeat(agentName.length)}`),
     );
 
     if (agentDetails) {
-      console.log(chalk.bold('Description:'), agentDetails.description);
-      console.log(chalk.bold('Version:'), agentDetails.version);
-      console.log(chalk.bold('Author:'), agentDetails.author || 'Unknown');
+      console.log(chalk.bold("Description:"), agentDetails.description);
+      console.log(chalk.bold("Version:"), agentDetails.version);
+      console.log(chalk.bold("Author:"), agentDetails.author || "Unknown");
 
       if (agentDetails.tags && agentDetails.tags.length > 0) {
-        console.log(chalk.bold('Tags:'), agentDetails.tags.join(', '));
+        console.log(chalk.bold("Tags:"), agentDetails.tags.join(", "));
       }
 
-      console.log('');
-      console.log(chalk.bold('Installation Status:'));
+      console.log("");
+      console.log(chalk.bold("Installation Status:"));
       if (isInstalled) {
         const enabled = isAgentEnabled(agentName);
         const installedInfo = installedAgents[agentName];
         console.log(
-          `  Status: ${enabled ? chalk.green('Enabled') : chalk.gray('Disabled')}`,
+          `  Status: ${enabled ? chalk.green("Enabled") : chalk.gray("Disabled")}`,
         );
         console.log(`  Scope: ${installedInfo.scope}`);
         console.log(
           `  Installed: ${new Date(installedInfo.installedAt).toLocaleDateString()}`,
         );
       } else {
-        console.log(`  Status: ${chalk.blue('Available for installation')}`);
+        console.log(`  Status: ${chalk.blue("Available for installation")}`);
       }
 
-      console.log('');
-      console.log(chalk.bold('Requirements:'));
+      console.log("");
+      console.log(chalk.bold("Requirements:"));
       if (agentDetails.requirements?.tools) {
-        console.log('  Tools:', agentDetails.requirements.tools.join(', '));
+        console.log("  Tools:", agentDetails.requirements.tools.join(", "));
       }
       if (agentDetails.requirements?.optional_tools) {
         console.log(
-          '  Optional tools:',
-          agentDetails.requirements.optional_tools.join(', '),
+          "  Optional tools:",
+          agentDetails.requirements.optional_tools.join(", "),
         );
       }
 
       if (agentDetails.hooks) {
-        console.log('');
-        console.log(chalk.bold('Hooks:'));
+        console.log("");
+        console.log(chalk.bold("Hooks:"));
         if (agentDetails.hooks.recommended) {
           console.log(
-            '  Recommended:',
-            agentDetails.hooks.recommended.join(', '),
+            "  Recommended:",
+            agentDetails.hooks.recommended.join(", "),
           );
         }
         if (agentDetails.hooks.optional) {
-          console.log('  Optional:', agentDetails.hooks.optional.join(', '));
+          console.log("  Optional:", agentDetails.hooks.optional.join(", "));
         }
       }
 
       if (agentDetails.commands && agentDetails.commands.length > 0) {
-        console.log('');
-        console.log(chalk.bold('Slash Commands:'));
+        console.log("");
+        console.log(chalk.bold("Slash Commands:"));
         agentDetails.commands.forEach((cmd) => {
           console.log(`  /${cmd}`);
         });
       }
 
-      console.log('');
-      console.log(chalk.bold('System Prompt Preview:'));
+      console.log("");
+      console.log(chalk.bold("System Prompt Preview:"));
       const promptPreview = agentDetails.content
-        .split('\n')
+        .split("\n")
         .slice(0, 5)
-        .join('\n');
+        .join("\n");
       console.log(chalk.gray(promptPreview));
-      if (agentDetails.content.split('\n').length > 5) {
-        console.log(chalk.gray('  [... truncated ...]'));
+      if (agentDetails.content.split("\n").length > 5) {
+        console.log(chalk.gray("  [... truncated ...]"));
       }
     } else if (isInstalled) {
       // Agent is installed but not in available agents (custom agent)
       const installedInfo = installedAgents[agentName];
       console.log(
-        chalk.bold('Description:'),
-        installedInfo.description || 'Custom agent',
+        chalk.bold("Description:"),
+        installedInfo.description || "Custom agent",
       );
-      console.log(chalk.bold('Version:'), installedInfo.version || 'Unknown');
-      console.log(chalk.bold('Scope:'), installedInfo.scope);
+      console.log(chalk.bold("Version:"), installedInfo.version || "Unknown");
+      console.log(chalk.bold("Scope:"), installedInfo.scope);
       console.log(
-        chalk.bold('Installed:'),
+        chalk.bold("Installed:"),
         new Date(installedInfo.installedAt).toLocaleDateString(),
       );
       console.log(
-        chalk.bold('Status:'),
+        chalk.bold("Status:"),
         isAgentEnabled(agentName)
-          ? chalk.green('Enabled')
-          : chalk.gray('Disabled'),
+          ? chalk.green("Enabled")
+          : chalk.gray("Disabled"),
       );
     }
 
-    console.log('');
+    console.log("");
   } catch (error) {
     logger.error(error.message);
     throw error;

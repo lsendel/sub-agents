@@ -1,19 +1,19 @@
-import chalk from 'chalk';
-import ora from 'ora';
+import chalk from "chalk";
+import ora from "ora";
 import {
   readdirSync,
   readFileSync,
   existsSync,
   writeFileSync,
   mkdirSync,
-} from 'fs';
-import { join, basename, dirname } from 'path';
-import { fileURLToPath } from 'url';
-import { extractFrontmatter } from '../utils/yaml-parser.js';
-import { getAgentsDir, ensureDirectories } from '../utils/paths.js';
-import { getInstalledAgents, addInstalledAgent } from '../utils/config.js';
-import { logger } from '../utils/logger.js';
-import { ensureLatestAgents, isDeprecated } from '../utils/agent-updater.js';
+} from "fs";
+import { join, basename, dirname } from "path";
+import { fileURLToPath } from "url";
+import { extractFrontmatter } from "../utils/yaml-parser.js";
+import { getAgentsDir, ensureDirectories } from "../utils/paths.js";
+import { getInstalledAgents, addInstalledAgent } from "../utils/config.js";
+import { logger } from "../utils/logger.js";
+import { ensureLatestAgents, isDeprecated } from "../utils/agent-updater.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -22,7 +22,7 @@ const __dirname = dirname(__filename);
  * Get the project root directory (where package.json is)
  */
 function getProjectRoot() {
-  return join(__dirname, '..', '..');
+  return join(__dirname, "..", "..");
 }
 
 /**
@@ -31,16 +31,16 @@ function getProjectRoot() {
 function createAgentMetadata(agent) {
   return {
     name: agent.name,
-    version: '1.0.0',
+    version: "1.0.0",
     description: agent.frontmatter.description || `${agent.name} agent`,
-    author: 'External',
+    author: "External",
     tags: agent.frontmatter.tags || [],
     requirements: {
       tools: agent.frontmatter.tools
-        ? agent.frontmatter.tools.split(',').map((t) => t.trim())
+        ? agent.frontmatter.tools.split(",").map((t) => t.trim())
         : [],
     },
-    compatible_with: ['claude-code@>=1.0.0'],
+    compatible_with: ["claude-code@>=1.0.0"],
   };
 }
 
@@ -49,22 +49,22 @@ function createAgentMetadata(agent) {
  */
 async function copyAgentToProject(agent) {
   const projectRoot = getProjectRoot();
-  const projectAgentsDir = join(projectRoot, 'agents', agent.name);
+  const projectAgentsDir = join(projectRoot, "agents", agent.name);
 
   try {
     // Create agent directory
     mkdirSync(projectAgentsDir, { recursive: true });
 
     // Copy agent.md file
-    const agentTargetPath = join(projectAgentsDir, 'agent.md');
+    const agentTargetPath = join(projectAgentsDir, "agent.md");
     writeFileSync(
       agentTargetPath,
-      agent.fullContent || readFileSync(agent.path, 'utf-8'),
+      agent.fullContent || readFileSync(agent.path, "utf-8"),
     );
 
     // Create metadata.json
     const metadata = createAgentMetadata(agent);
-    const metadataPath = join(projectAgentsDir, 'metadata.json');
+    const metadataPath = join(projectAgentsDir, "metadata.json");
     writeFileSync(metadataPath, JSON.stringify(metadata, null, 2));
 
     return true;
@@ -87,17 +87,17 @@ export async function syncCommand(options) {
     ensureDirectories();
 
     // Ensure only latest agents are present
-    spinner.start('Removing deprecated agents and ensuring latest versions...');
+    spinner.start("Removing deprecated agents and ensuring latest versions...");
     const cleanupSuccess = ensureLatestAgents();
     if (cleanupSuccess) {
-      spinner.succeed('Ensured only latest agents are present');
+      spinner.succeed("Ensured only latest agents are present");
     } else {
-      spinner.warn('Some deprecated agents could not be removed');
+      spinner.warn("Some deprecated agents could not be removed");
     }
 
     // Force copy mode - copy all registered agents to project
     if (options.forceCopy) {
-      spinner.start('Copying all agents to project directory...');
+      spinner.start("Copying all agents to project directory...");
 
       const registeredAgents = getInstalledAgents();
       let copied = 0;
@@ -109,7 +109,7 @@ export async function syncCommand(options) {
           const userAgentPath = join(getAgentsDir(false), `${agentName}.md`);
 
           if (existsSync(userAgentPath)) {
-            const fullContent = readFileSync(userAgentPath, 'utf-8');
+            const fullContent = readFileSync(userAgentPath, "utf-8");
 
             const agent = {
               name: agentName,
@@ -117,7 +117,7 @@ export async function syncCommand(options) {
               frontmatter: agentData.frontmatter || {
                 name: agentName,
                 description: agentData.description,
-                tools: agentData.requirements?.tools?.join(', ') || '',
+                tools: agentData.requirements?.tools?.join(", ") || "",
               },
               fullContent,
             };
@@ -139,12 +139,12 @@ export async function syncCommand(options) {
       }
 
       spinner.succeed(
-        `Copied ${copied} agent(s) to project directory${failed > 0 ? ` (${failed} failed)` : ''}`,
+        `Copied ${copied} agent(s) to project directory${failed > 0 ? ` (${failed} failed)` : ""}`,
       );
       return;
     }
 
-    spinner.start('Scanning for unregistered agents...');
+    spinner.start("Scanning for unregistered agents...");
 
     // Get paths for both user and project scopes
     const userAgentsDir = getAgentsDir(false);
@@ -157,19 +157,19 @@ export async function syncCommand(options) {
     // Scan both directories for agent files
     const unregisteredAgents = [];
     const scopes = [
-      { dir: userAgentsDir, scope: 'user' },
-      { dir: projectAgentsDir, scope: 'project' },
+      { dir: userAgentsDir, scope: "user" },
+      { dir: projectAgentsDir, scope: "project" },
     ];
 
     for (const { dir, scope } of scopes) {
       if (!existsSync(dir)) continue;
 
       const files = readdirSync(dir, { withFileTypes: true })
-        .filter((dirent) => dirent.isFile() && dirent.name.endsWith('.md'))
+        .filter((dirent) => dirent.isFile() && dirent.name.endsWith(".md"))
         .map((dirent) => dirent.name);
 
       for (const file of files) {
-        const agentName = basename(file, '.md');
+        const agentName = basename(file, ".md");
 
         // Skip if this is a deprecated agent
         if (isDeprecated(agentName)) {
@@ -185,7 +185,7 @@ export async function syncCommand(options) {
 
         try {
           const agentPath = join(dir, file);
-          const fullContent = readFileSync(agentPath, 'utf-8');
+          const fullContent = readFileSync(agentPath, "utf-8");
 
           // Use custom parser that supports Claude Code format
           const { frontmatter, content } = extractFrontmatter(fullContent);
@@ -215,7 +215,7 @@ export async function syncCommand(options) {
     spinner.stop();
 
     if (unregisteredAgents.length === 0) {
-      console.log(chalk.green('✓ All agents are properly registered'));
+      console.log(chalk.green("✓ All agents are properly registered"));
       return;
     }
 
@@ -228,28 +228,28 @@ export async function syncCommand(options) {
 
     for (const agent of unregisteredAgents) {
       console.log(chalk.bold(`  • ${agent.name}`));
-      const desc = agent.frontmatter.description || 'No description available';
-      const shortDesc = desc.split('\\n')[0].substring(0, 60);
+      const desc = agent.frontmatter.description || "No description available";
+      const shortDesc = desc.split("\\n")[0].substring(0, 60);
       console.log(
-        chalk.gray(`    ${shortDesc}${desc.length > 60 ? '...' : ''}`),
+        chalk.gray(`    ${shortDesc}${desc.length > 60 ? "..." : ""}`),
       );
     }
-    console.log('');
+    console.log("");
 
     // In auto mode, register all. Otherwise, let user select
     let agentsToRegister = unregisteredAgents;
 
     if (!options.auto) {
-      const { default: inquirer } = await import('inquirer');
+      const { default: inquirer } = await import("inquirer");
 
       // Let user select which agents to register
       const { selectedAgents } = await inquirer.prompt([
         {
-          type: 'checkbox',
-          name: 'selectedAgents',
-          message: 'Select agents to register:',
+          type: "checkbox",
+          name: "selectedAgents",
+          message: "Select agents to register:",
           choices: unregisteredAgents.map((agent) => ({
-            name: `${agent.name} - ${agent.frontmatter.description || 'No description'}`.substring(
+            name: `${agent.name} - ${agent.frontmatter.description || "No description"}`.substring(
               0,
               80,
             ),
@@ -260,7 +260,7 @@ export async function syncCommand(options) {
       ]);
 
       if (selectedAgents.length === 0) {
-        console.log(chalk.yellow('No agents selected'));
+        console.log(chalk.yellow("No agents selected"));
         return;
       }
 
@@ -271,7 +271,7 @@ export async function syncCommand(options) {
     }
 
     // Register each selected agent
-    spinner.start('Registering agents and copying to project...');
+    spinner.start("Registering agents and copying to project...");
     let registered = 0;
     let copied = 0;
 
@@ -279,7 +279,7 @@ export async function syncCommand(options) {
       try {
         // Ensure we have the full content
         if (!agent.fullContent) {
-          agent.fullContent = readFileSync(agent.path, 'utf-8');
+          agent.fullContent = readFileSync(agent.path, "utf-8");
         }
 
         // Copy agent files to project directory
@@ -300,7 +300,7 @@ export async function syncCommand(options) {
           fullContent: agent.fullContent,
         };
 
-        addInstalledAgent(agent.name, agentData, agent.scope === 'project');
+        addInstalledAgent(agent.name, agentData, agent.scope === "project");
         registered++;
 
         logger.debug(`Registered agent: ${agent.name}`);
@@ -315,11 +315,11 @@ export async function syncCommand(options) {
 
     // Commands feature removed - agents use description-based delegation
 
-    console.log('');
-    console.log(chalk.green('✓ Sync complete!'));
+    console.log("");
+    console.log(chalk.green("✓ Sync complete!"));
     console.log(chalk.gray('Use "claude-agents list" to see all agents'));
   } catch (error) {
-    spinner.fail('Sync failed');
+    spinner.fail("Sync failed");
     logger.error(error.message);
     logger.debug(error.stack);
     throw error;

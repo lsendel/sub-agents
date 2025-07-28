@@ -1,4 +1,4 @@
-import yaml from 'yaml';
+import yaml from "yaml";
 
 /**
  * Parse YAML frontmatter with support for Claude Code format
@@ -20,9 +20,9 @@ export function parseYamlFrontmatter(yamlContent) {
  */
 function parseClaudeCodeFormat(yamlContent) {
   const result = {};
-  const lines = yamlContent.split('\n');
+  const lines = yamlContent.split("\n");
   let currentKey = null;
-  let currentValue = '';
+  let currentValue = "";
   let inMultilineValue = false;
 
   for (let i = 0; i < lines.length; i++) {
@@ -45,15 +45,15 @@ function parseClaudeCodeFormat(yamlContent) {
 
       // Check if this is a multi-line value (contains \n or very long)
       if (
-        currentKey === 'description' &&
-        (currentValue.includes('\\n') || currentValue.length > 100)
+        currentKey === "description" &&
+        (currentValue.includes("\\n") || currentValue.length > 100)
       ) {
         inMultilineValue = true;
       } else {
         // Single line value - save it immediately
         result[currentKey] = processValue(currentValue);
         currentKey = null;
-        currentValue = '';
+        currentValue = "";
       }
     } else if (inMultilineValue) {
       // Check if this line starts a new key (not part of description)
@@ -69,10 +69,10 @@ function parseClaudeCodeFormat(yamlContent) {
         // Process this line as a new key
         i--; // Reprocess this line
         currentKey = null;
-        currentValue = '';
+        currentValue = "";
       } else {
         // Continue multi-line value
-        currentValue += ' ' + line.trim();
+        currentValue += " " + line.trim();
       }
     }
   }
@@ -92,19 +92,19 @@ function processValue(value) {
   // Remove surrounding quotes if present
   if (
     (value.startsWith('"') && value.endsWith('"')) ||
-    (value.startsWith('\'') && value.endsWith('\''))
+    (value.startsWith("'") && value.endsWith("'"))
   ) {
     value = value.slice(1, -1);
   }
 
   // Handle empty values
-  if (value === '""' || value === '\'\'') {
-    return '';
+  if (value === '""' || value === "''") {
+    return "";
   }
 
   // Handle boolean values
-  if (value === 'true') return true;
-  if (value === 'false') return false;
+  if (value === "true") return true;
+  if (value === "false") return false;
 
   // Handle numeric values
   if (/^\d+$/.test(value)) return parseInt(value, 10);
@@ -125,7 +125,7 @@ export function extractFrontmatter(content) {
 
   const yamlContent = frontmatterMatch[1];
   const frontmatter = parseYamlFrontmatter(yamlContent);
-  const remainingContent = content.replace(frontmatterMatch[0], '').trim();
+  const remainingContent = content.replace(frontmatterMatch[0], "").trim();
 
   return { frontmatter, content: remainingContent };
 }

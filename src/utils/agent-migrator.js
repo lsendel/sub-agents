@@ -6,17 +6,17 @@ import {
   readdirSync,
   copyFileSync,
   rmSync,
-} from 'fs';
-import { join, basename, dirname } from 'path';
-import yaml from 'yaml';
-import { logger } from './logger.js';
+} from "fs";
+import { join, basename, dirname } from "path";
+import yaml from "yaml";
+import { logger } from "./logger.js";
 
 /**
  * Migrates agents from old multi-file format to new single .md format
  */
 export class AgentMigrator {
   constructor() {
-    this.backupDir = join(process.cwd(), '.claude-agents-backup');
+    this.backupDir = join(process.cwd(), ".claude-agents-backup");
   }
 
   /**
@@ -80,9 +80,9 @@ export class AgentMigrator {
    */
   async migrateAgent(agentDir) {
     const agentName = basename(agentDir);
-    const agentFile = join(agentDir, 'agent.md');
-    const metadataFile = join(agentDir, 'metadata.json');
-    const hooksFile = join(agentDir, 'hooks.json');
+    const agentFile = join(agentDir, "agent.md");
+    const metadataFile = join(agentDir, "metadata.json");
+    const hooksFile = join(agentDir, "hooks.json");
 
     // Check required files exist
     if (!existsSync(agentFile)) {
@@ -91,7 +91,7 @@ export class AgentMigrator {
     }
 
     // Read agent content
-    const agentContent = readFileSync(agentFile, 'utf-8');
+    const agentContent = readFileSync(agentFile, "utf-8");
     let frontmatter = {};
     let content = agentContent;
 
@@ -111,7 +111,7 @@ export class AgentMigrator {
     // Read and merge metadata if exists
     if (existsSync(metadataFile)) {
       try {
-        const metadata = JSON.parse(readFileSync(metadataFile, 'utf-8'));
+        const metadata = JSON.parse(readFileSync(metadataFile, "utf-8"));
 
         // Merge metadata into frontmatter
         frontmatter = {
@@ -119,9 +119,9 @@ export class AgentMigrator {
           description: frontmatter.description || metadata.description,
           tools:
             frontmatter.tools ||
-            (metadata.requirements?.tools || []).join(', '),
-          version: metadata.version || '1.0.0',
-          author: metadata.author || 'Claude Sub-Agents',
+            (metadata.requirements?.tools || []).join(", "),
+          version: metadata.version || "1.0.0",
+          author: metadata.author || "Claude Sub-Agents",
           tags: metadata.tags || [],
         };
 
@@ -138,7 +138,7 @@ export class AgentMigrator {
     // Read hooks file if exists
     if (existsSync(hooksFile)) {
       try {
-        const hooks = JSON.parse(readFileSync(hooksFile, 'utf-8'));
+        const hooks = JSON.parse(readFileSync(hooksFile, "utf-8"));
         // Add hooks info to frontmatter if not already present
         if (!frontmatter.hooks_config) {
           frontmatter.hooks_config = hooks;
@@ -171,28 +171,28 @@ export class AgentMigrator {
     if (!description) return `${agentName} agent`;
 
     const optimizations = {
-      'code-reviewer':
-        'Automatically reviews code after edits. Checks for quality, security vulnerabilities, performance issues, and best practices. Use after writing or modifying code.',
-      'test-runner':
-        'Runs tests when code changes or tests fail. Automatically detects test framework, executes tests, and fixes failing tests. Use when tests need to be run or fixed.',
+      "code-reviewer":
+        "Automatically reviews code after edits. Checks for quality, security vulnerabilities, performance issues, and best practices. Use after writing or modifying code.",
+      "test-runner":
+        "Runs tests when code changes or tests fail. Automatically detects test framework, executes tests, and fixes failing tests. Use when tests need to be run or fixed.",
       debugger:
-        'Analyzes and fixes errors, crashes, and unexpected behavior. Interprets stack traces, identifies root causes, and suggests solutions. Use when debugging issues.',
+        "Analyzes and fixes errors, crashes, and unexpected behavior. Interprets stack traces, identifies root causes, and suggests solutions. Use when debugging issues.",
       refactor:
-        'Improves code structure without changing functionality. Applies design patterns, modernizes legacy code, and enhances maintainability. Use when code needs restructuring.',
-      'doc-writer':
-        'Creates and updates documentation. Generates API docs, README files, architecture documentation, and inline comments. Use when documentation is needed.',
-      'security-scanner':
-        'Scans for security vulnerabilities and compliance issues. Detects exposed secrets, OWASP violations, and suggests fixes. Use for security analysis.',
-      'requirements-analyst':
-        'Analyzes codebase to extract requirements and dependencies. Maps architecture patterns and identifies technical debt. Use for codebase analysis.',
-      'design-director-platform':
-        'Coordinates comprehensive platform redesigns. Addresses accessibility, conversion rates, and technical debt. Use for large-scale platform improvements.',
-      'design-system-architect':
-        'Creates and enhances design systems with AI personalization. Implements adaptive interfaces and brand consistency. Use for design system work.',
-      'interaction-design-optimizer':
-        'Optimizes user interactions and conversion rates. Implements psychological triggers and adaptive personalization. Use for UX optimization.',
-      'system-architect-2025':
-        'Provides modern system architecture guidance. Designs scalable, cloud-native solutions with cutting-edge patterns. Use for architecture decisions.',
+        "Improves code structure without changing functionality. Applies design patterns, modernizes legacy code, and enhances maintainability. Use when code needs restructuring.",
+      "doc-writer":
+        "Creates and updates documentation. Generates API docs, README files, architecture documentation, and inline comments. Use when documentation is needed.",
+      "security-scanner":
+        "Scans for security vulnerabilities and compliance issues. Detects exposed secrets, OWASP violations, and suggests fixes. Use for security analysis.",
+      "requirements-analyst":
+        "Analyzes codebase to extract requirements and dependencies. Maps architecture patterns and identifies technical debt. Use for codebase analysis.",
+      "design-director-platform":
+        "Coordinates comprehensive platform redesigns. Addresses accessibility, conversion rates, and technical debt. Use for large-scale platform improvements.",
+      "design-system-architect":
+        "Creates and enhances design systems with AI personalization. Implements adaptive interfaces and brand consistency. Use for design system work.",
+      "interaction-design-optimizer":
+        "Optimizes user interactions and conversion rates. Implements psychological triggers and adaptive personalization. Use for UX optimization.",
+      "system-architect-2025":
+        "Provides modern system architecture guidance. Designs scalable, cloud-native solutions with cutting-edge patterns. Use for architecture decisions.",
     };
 
     return optimizations[agentName] || description;
@@ -206,7 +206,7 @@ export class AgentMigrator {
     const cleanFrontmatter = {
       name: frontmatter.name,
       description: frontmatter.description,
-      tools: frontmatter.tools || '',
+      tools: frontmatter.tools || "",
     };
 
     // Add optional fields if present
@@ -224,7 +224,7 @@ export class AgentMigrator {
    * Create backup of agents directory
    */
   async createBackup(agentsDir) {
-    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+    const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
     const backupPath = join(this.backupDir, timestamp);
 
     mkdirSync(backupPath, { recursive: true });
@@ -265,10 +265,10 @@ export class AgentMigrator {
     }
 
     const files = readdirSync(commandsDir);
-    const removed = files.filter((f) => f.endsWith('.md')).length;
+    const removed = files.filter((f) => f.endsWith(".md")).length;
 
     // Create backup
-    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+    const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
     const backupPath = join(this.backupDir, `commands-${timestamp}`);
     this.copyDirectory(commandsDir, backupPath);
 

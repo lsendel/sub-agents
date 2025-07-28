@@ -1,32 +1,32 @@
-import chalk from 'chalk';
-import inquirer from 'inquirer';
+import chalk from "chalk";
+import inquirer from "inquirer";
 import {
   readdirSync,
   writeFileSync,
   existsSync,
   mkdirSync,
   copyFileSync,
-} from 'fs';
-import { join, basename } from 'path';
+} from "fs";
+import { join, basename } from "path";
 import {
   getStandardsDir,
   ensureDirectories,
   ensureProjectDirectories,
-} from '../utils/paths.js';
+} from "../utils/paths.js";
 import {
   getStandardsConfig,
   updateStandardsConfig,
   initializeStandardsConfig,
-} from '../utils/config.js';
-import { loadStandardFromFile } from '../utils/process-standards.js';
-import { logger } from '../utils/logger.js';
+} from "../utils/config.js";
+import { loadStandardFromFile } from "../utils/process-standards.js";
+import { logger } from "../utils/logger.js";
 
 /**
  * Sync standards from ~/.claude/standards to project
  */
 export async function syncStandardsCommand(options) {
   try {
-    console.log(chalk.blue.bold('\n🔄 Standards Sync Tool\n'));
+    console.log(chalk.blue.bold("\n🔄 Standards Sync Tool\n"));
 
     // Ensure directories exist
     ensureDirectories();
@@ -36,7 +36,7 @@ export async function syncStandardsCommand(options) {
     initializeStandardsConfig(options.project);
 
     // Step 1: Scan for standards in ~/.claude/standards
-    console.log(chalk.cyan('Scanning for standards...'));
+    console.log(chalk.cyan("Scanning for standards..."));
     const userStandardsDir = getStandardsDir(false);
     const projectStandardsDir = getStandardsDir(true);
 
@@ -50,8 +50,8 @@ export async function syncStandardsCommand(options) {
 
       for (const entry of entries) {
         try {
-          if (entry.isFile() && entry.name.endsWith('.md')) {
-            const standardName = basename(entry.name, '.md');
+          if (entry.isFile() && entry.name.endsWith(".md")) {
+            const standardName = basename(entry.name, ".md");
             const standardPath = join(userStandardsDir, entry.name);
             const standard = loadStandardFromFile(standardName, standardPath);
 
@@ -72,7 +72,7 @@ export async function syncStandardsCommand(options) {
     }
 
     if (availableStandards.length === 0) {
-      console.log(chalk.yellow('No standards found in ~/.claude/standards'));
+      console.log(chalk.yellow("No standards found in ~/.claude/standards"));
       return;
     }
 
@@ -82,10 +82,10 @@ export async function syncStandardsCommand(options) {
     );
     availableStandards.forEach((standard) => {
       const status = standard.installed
-        ? chalk.green('✓ installed')
-        : chalk.gray('not installed');
+        ? chalk.green("✓ installed")
+        : chalk.gray("not installed");
       console.log(
-        `  • ${standard.name} ${status} - ${standard.description || 'No description'}`,
+        `  • ${standard.name} ${status} - ${standard.description || "No description"}`,
       );
     });
 
@@ -95,12 +95,12 @@ export async function syncStandardsCommand(options) {
     );
 
     if (unregisteredStandards.length === 0) {
-      console.log(chalk.green('\nAll standards are already synced!'));
+      console.log(chalk.green("\nAll standards are already synced!"));
 
       if (options.forceCopy) {
         console.log(
           chalk.cyan(
-            '\nForce copy mode enabled - copying all standards to project...',
+            "\nForce copy mode enabled - copying all standards to project...",
           ),
         );
         for (const standard of availableStandards) {
@@ -120,11 +120,11 @@ export async function syncStandardsCommand(options) {
     if (!options.all && unregisteredStandards.length > 1) {
       const { selectedStandards } = await inquirer.prompt([
         {
-          type: 'checkbox',
-          name: 'selectedStandards',
-          message: 'Select standards to sync:',
+          type: "checkbox",
+          name: "selectedStandards",
+          message: "Select standards to sync:",
           choices: unregisteredStandards.map((s) => ({
-            name: `${s.name} - ${s.description || 'No description'}`,
+            name: `${s.name} - ${s.description || "No description"}`,
             value: s.name,
             checked: true,
           })),
@@ -137,7 +137,7 @@ export async function syncStandardsCommand(options) {
     }
 
     if (standardsToSync.length === 0) {
-      console.log(chalk.yellow('No standards selected for sync.'));
+      console.log(chalk.yellow("No standards selected for sync."));
       return;
     }
 
@@ -149,10 +149,10 @@ export async function syncStandardsCommand(options) {
 
     for (const standard of standardsToSync) {
       updatedStandards[standard.name] = {
-        version: standard.version || '1.0.0',
+        version: standard.version || "1.0.0",
         installedAt: new Date().toISOString(),
         installedFrom: standard.path,
-        type: standard.type || 'standard',
+        type: standard.type || "standard",
         description: standard.description,
       };
 
@@ -183,7 +183,7 @@ export async function syncStandardsCommand(options) {
     // Copy all standards if force-copy
     if (options.forceCopy) {
       console.log(
-        chalk.cyan('\nCopying all registered standards to project...'),
+        chalk.cyan("\nCopying all registered standards to project..."),
       );
       for (const standard of availableStandards.filter((s) => s.installed)) {
         await copyStandardToProject(standard, projectStandardsDir);
@@ -229,10 +229,10 @@ async function copyStandardToProject(standard, projectStandardsDir) {
 function formatStandardContent(standard) {
   const frontmatter = {
     name: standard.name,
-    type: standard.type || 'standard',
-    version: standard.version || '1.0.0',
-    description: standard.description || '',
-    author: standard.author || 'Unknown',
+    type: standard.type || "standard",
+    version: standard.version || "1.0.0",
+    description: standard.description || "",
+    author: standard.author || "Unknown",
     tags: standard.tags || [],
     related_commands: standard.related_commands || [],
   };
@@ -240,13 +240,13 @@ function formatStandardContent(standard) {
   const yamlContent = Object.entries(frontmatter)
     .map(([key, value]) => {
       if (Array.isArray(value)) {
-        return `${key}: [${value.join(', ')}]`;
+        return `${key}: [${value.join(", ")}]`;
       }
       return `${key}: ${value}`;
     })
-    .join('\n');
+    .join("\n");
 
-  return `---\n${yamlContent}\n---\n\n${standard.content || ''}`;
+  return `---\n${yamlContent}\n---\n\n${standard.content || ""}`;
 }
 
 /**
@@ -260,12 +260,12 @@ function ensureDir(dir) {
 
 // Command configuration for commander
 export const syncStandardsCommandConfig = {
-  command: 'sync-standards',
-  description: 'Sync standards from ~/.claude/standards',
+  command: "sync-standards",
+  description: "Sync standards from ~/.claude/standards",
   options: [
-    ['--all', 'Sync all unregistered standards without prompting'],
-    ['--force-copy', 'Copy all standards to project directory'],
-    ['--project', 'Use project scope instead of user scope'],
+    ["--all", "Sync all unregistered standards without prompting"],
+    ["--force-copy", "Copy all standards to project directory"],
+    ["--project", "Use project scope instead of user scope"],
   ],
   action: syncStandardsCommand,
 };

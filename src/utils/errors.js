@@ -1,4 +1,4 @@
-import { logger } from './logger.js';
+import { logger } from "./logger.js";
 
 /**
  * Custom error class for CLI operations
@@ -6,7 +6,7 @@ import { logger } from './logger.js';
 export class CLIError extends Error {
   constructor(message, code = 1) {
     super(message);
-    this.name = 'CLIError';
+    this.name = "CLIError";
     this.code = code;
   }
 }
@@ -16,12 +16,12 @@ export class CLIError extends Error {
  * @param {Error} error - The error to handle
  * @param {string} context - Context where the error occurred
  */
-export function handleError(error, context = '') {
+export function handleError(error, context = "") {
   if (error instanceof CLIError) {
     logger.error(error.message);
   } else {
-    logger.error(context ? `${context}:` : 'Error:', error.message);
-    if (process.env.DEBUG === 'true') {
+    logger.error(context ? `${context}:` : "Error:", error.message);
+    if (process.env.DEBUG === "true") {
       logger.debug(error.stack);
     }
   }

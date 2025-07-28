@@ -1,32 +1,32 @@
-import chalk from 'chalk';
-import inquirer from 'inquirer';
+import chalk from "chalk";
+import inquirer from "inquirer";
 import {
   readdirSync,
   writeFileSync,
   existsSync,
   mkdirSync,
   copyFileSync,
-} from 'fs';
-import { join, basename } from 'path';
+} from "fs";
+import { join, basename } from "path";
 import {
   getProcessesDir,
   ensureDirectories,
   ensureProjectDirectories,
-} from '../utils/paths.js';
+} from "../utils/paths.js";
 import {
   getProcessesConfig,
   updateProcessesConfig,
   initializeProcessesConfig,
-} from '../utils/config.js';
-import { loadProcessFromFile } from '../utils/process-standards.js';
-import { logger } from '../utils/logger.js';
+} from "../utils/config.js";
+import { loadProcessFromFile } from "../utils/process-standards.js";
+import { logger } from "../utils/logger.js";
 
 /**
  * Sync processes from ~/.claude/processes to project
  */
 export async function syncProcessesCommand(options) {
   try {
-    console.log(chalk.blue.bold('\n🔄 Process Sync Tool\n'));
+    console.log(chalk.blue.bold("\n🔄 Process Sync Tool\n"));
 
     // Ensure directories exist
     ensureDirectories();
@@ -36,7 +36,7 @@ export async function syncProcessesCommand(options) {
     initializeProcessesConfig(options.project);
 
     // Step 1: Scan for processes in ~/.claude/processes
-    console.log(chalk.cyan('Scanning for processes...'));
+    console.log(chalk.cyan("Scanning for processes..."));
     const userProcessesDir = getProcessesDir(false);
     const projectProcessesDir = getProcessesDir(true);
 
@@ -50,8 +50,8 @@ export async function syncProcessesCommand(options) {
 
       for (const entry of entries) {
         try {
-          if (entry.isFile() && entry.name.endsWith('.md')) {
-            const processName = basename(entry.name, '.md');
+          if (entry.isFile() && entry.name.endsWith(".md")) {
+            const processName = basename(entry.name, ".md");
             const processPath = join(userProcessesDir, entry.name);
             const process = loadProcessFromFile(processName, processPath);
 
@@ -72,7 +72,7 @@ export async function syncProcessesCommand(options) {
     }
 
     if (availableProcesses.length === 0) {
-      console.log(chalk.yellow('No processes found in ~/.claude/processes'));
+      console.log(chalk.yellow("No processes found in ~/.claude/processes"));
       return;
     }
 
@@ -82,10 +82,10 @@ export async function syncProcessesCommand(options) {
     );
     availableProcesses.forEach((process) => {
       const status = process.installed
-        ? chalk.green('✓ installed')
-        : chalk.gray('not installed');
+        ? chalk.green("✓ installed")
+        : chalk.gray("not installed");
       console.log(
-        `  • ${process.name} ${status} - ${process.description || 'No description'}`,
+        `  • ${process.name} ${status} - ${process.description || "No description"}`,
       );
     });
 
@@ -95,12 +95,12 @@ export async function syncProcessesCommand(options) {
     );
 
     if (unregisteredProcesses.length === 0) {
-      console.log(chalk.green('\nAll processes are already synced!'));
+      console.log(chalk.green("\nAll processes are already synced!"));
 
       if (options.forceCopy) {
         console.log(
           chalk.cyan(
-            '\nForce copy mode enabled - copying all processes to project...',
+            "\nForce copy mode enabled - copying all processes to project...",
           ),
         );
         for (const process of availableProcesses) {
@@ -120,11 +120,11 @@ export async function syncProcessesCommand(options) {
     if (!options.all && unregisteredProcesses.length > 1) {
       const { selectedProcesses } = await inquirer.prompt([
         {
-          type: 'checkbox',
-          name: 'selectedProcesses',
-          message: 'Select processes to sync:',
+          type: "checkbox",
+          name: "selectedProcesses",
+          message: "Select processes to sync:",
           choices: unregisteredProcesses.map((p) => ({
-            name: `${p.name} - ${p.description || 'No description'}`,
+            name: `${p.name} - ${p.description || "No description"}`,
             value: p.name,
             checked: true,
           })),
@@ -137,7 +137,7 @@ export async function syncProcessesCommand(options) {
     }
 
     if (processesToSync.length === 0) {
-      console.log(chalk.yellow('No processes selected for sync.'));
+      console.log(chalk.yellow("No processes selected for sync."));
       return;
     }
 
@@ -149,10 +149,10 @@ export async function syncProcessesCommand(options) {
 
     for (const process of processesToSync) {
       updatedProcesses[process.name] = {
-        version: process.version || '1.0.0',
+        version: process.version || "1.0.0",
         installedAt: new Date().toISOString(),
         installedFrom: process.path,
-        type: process.type || 'process',
+        type: process.type || "process",
         description: process.description,
       };
 
@@ -183,7 +183,7 @@ export async function syncProcessesCommand(options) {
     // Copy all processes if force-copy
     if (options.forceCopy) {
       console.log(
-        chalk.cyan('\nCopying all registered processes to project...'),
+        chalk.cyan("\nCopying all registered processes to project..."),
       );
       for (const process of availableProcesses.filter((p) => p.installed)) {
         await copyProcessToProject(process, projectProcessesDir);
@@ -229,10 +229,10 @@ async function copyProcessToProject(process, projectProcessesDir) {
 function formatProcessContent(process) {
   const frontmatter = {
     name: process.name,
-    type: process.type || 'process',
-    version: process.version || '1.0.0',
-    description: process.description || '',
-    author: process.author || 'Unknown',
+    type: process.type || "process",
+    version: process.version || "1.0.0",
+    description: process.description || "",
+    author: process.author || "Unknown",
     tags: process.tags || [],
     related_commands: process.related_commands || [],
   };
@@ -240,13 +240,13 @@ function formatProcessContent(process) {
   const yamlContent = Object.entries(frontmatter)
     .map(([key, value]) => {
       if (Array.isArray(value)) {
-        return `${key}: [${value.join(', ')}]`;
+        return `${key}: [${value.join(", ")}]`;
       }
       return `${key}: ${value}`;
     })
-    .join('\n');
+    .join("\n");
 
-  return `---\n${yamlContent}\n---\n\n${process.content || ''}`;
+  return `---\n${yamlContent}\n---\n\n${process.content || ""}`;
 }
 
 /**
@@ -260,12 +260,12 @@ function ensureDir(dir) {
 
 // Command configuration for commander
 export const syncProcessesCommandConfig = {
-  command: 'sync-processes',
-  description: 'Sync processes from ~/.claude/processes',
+  command: "sync-processes",
+  description: "Sync processes from ~/.claude/processes",
   options: [
-    ['--all', 'Sync all unregistered processes without prompting'],
-    ['--force-copy', 'Copy all processes to project directory'],
-    ['--project', 'Use project scope instead of user scope'],
+    ["--all", "Sync all unregistered processes without prompting"],
+    ["--force-copy", "Copy all processes to project directory"],
+    ["--project", "Use project scope instead of user scope"],
   ],
   action: syncProcessesCommand,
 };

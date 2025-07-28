@@ -1,70 +1,70 @@
-import yaml from 'yaml';
-import { readFileSync, writeFileSync } from 'fs';
+import yaml from "yaml";
+import { readFileSync, writeFileSync } from "fs";
 
 /**
  * Keywords that trigger auto-delegation in Claude Code
  */
 const TRIGGER_KEYWORDS = {
-  'code-reviewer': [
-    'review',
-    'code review',
-    'quality',
-    'security check',
-    'after edits',
-    'before commit',
+  "code-reviewer": [
+    "review",
+    "code review",
+    "quality",
+    "security check",
+    "after edits",
+    "before commit",
   ],
-  'test-runner': [
-    'run tests',
-    'test',
-    'failing tests',
-    'test failure',
-    'coverage',
+  "test-runner": [
+    "run tests",
+    "test",
+    "failing tests",
+    "test failure",
+    "coverage",
   ],
-  debugger: ['debug', 'error', 'crash', 'stack trace', 'bug', 'fix issue'],
+  debugger: ["debug", "error", "crash", "stack trace", "bug", "fix issue"],
   refactor: [
-    'refactor',
-    'restructure',
-    'improve code',
-    'clean up',
-    'modernize',
+    "refactor",
+    "restructure",
+    "improve code",
+    "clean up",
+    "modernize",
   ],
-  'doc-writer': ['document', 'documentation', 'readme', 'api docs', 'comments'],
-  'security-scanner': [
-    'security',
-    'vulnerability',
-    'scan',
-    'audit',
-    'compliance',
+  "doc-writer": ["document", "documentation", "readme", "api docs", "comments"],
+  "security-scanner": [
+    "security",
+    "vulnerability",
+    "scan",
+    "audit",
+    "compliance",
   ],
-  'requirements-analyst': [
-    'analyze',
-    'requirements',
-    'architecture',
-    'dependencies',
+  "requirements-analyst": [
+    "analyze",
+    "requirements",
+    "architecture",
+    "dependencies",
   ],
-  'design-director-platform': [
-    'redesign',
-    'platform',
-    'accessibility',
-    'conversion',
+  "design-director-platform": [
+    "redesign",
+    "platform",
+    "accessibility",
+    "conversion",
   ],
-  'design-system-architect': [
-    'design system',
-    'UI components',
-    'brand',
-    'theming',
+  "design-system-architect": [
+    "design system",
+    "UI components",
+    "brand",
+    "theming",
   ],
-  'interaction-design-optimizer': [
-    'UX',
-    'interaction',
-    'conversion rate',
-    'user flow',
+  "interaction-design-optimizer": [
+    "UX",
+    "interaction",
+    "conversion rate",
+    "user flow",
   ],
-  'system-architect-2025': [
-    'architecture',
-    'system design',
-    'scalability',
-    'microservices',
+  "system-architect-2025": [
+    "architecture",
+    "system design",
+    "scalability",
+    "microservices",
   ],
 };
 
@@ -92,23 +92,23 @@ export function optimizeDescription(currentDescription, agentName) {
  */
 function createDefaultDescription(agentName) {
   const defaults = {
-    'code-reviewer':
-      'Automatically reviews code after edits. Checks for quality, security vulnerabilities, performance issues, and best practices.',
-    'test-runner':
-      'Runs tests when code changes or tests fail. Automatically detects test framework and fixes failing tests.',
+    "code-reviewer":
+      "Automatically reviews code after edits. Checks for quality, security vulnerabilities, performance issues, and best practices.",
+    "test-runner":
+      "Runs tests when code changes or tests fail. Automatically detects test framework and fixes failing tests.",
     debugger:
-      'Analyzes and fixes errors, crashes, and unexpected behavior. Interprets stack traces and identifies root causes.',
+      "Analyzes and fixes errors, crashes, and unexpected behavior. Interprets stack traces and identifies root causes.",
     refactor:
-      'Improves code structure without changing functionality. Applies design patterns and modernizes legacy code.',
-    'doc-writer':
-      'Creates and updates documentation. Generates API docs, README files, and inline comments.',
-    'security-scanner':
-      'Scans for security vulnerabilities and compliance issues. Detects exposed secrets and suggests fixes.',
+      "Improves code structure without changing functionality. Applies design patterns and modernizes legacy code.",
+    "doc-writer":
+      "Creates and updates documentation. Generates API docs, README files, and inline comments.",
+    "security-scanner":
+      "Scans for security vulnerabilities and compliance issues. Detects exposed secrets and suggests fixes.",
   };
 
   return (
     defaults[agentName] ||
-    `${agentName} agent for specialized tasks. Use when working with ${agentName.replace(/-/g, ' ')} related tasks.`
+    `${agentName} agent for specialized tasks. Use when working with ${agentName.replace(/-/g, " ")} related tasks.`
   );
 }
 
@@ -139,8 +139,8 @@ function enhanceDescription(description, agentName) {
   const { missing } = checkTriggerWords(description, agentName);
 
   // Add trigger conditions if missing
-  if (missing.length > 0 && !description.includes('Use when')) {
-    const triggers = missing.slice(0, 2).join(' or ');
+  if (missing.length > 0 && !description.includes("Use when")) {
+    const triggers = missing.slice(0, 2).join(" or ");
     description += ` Use when ${triggers}.`;
   }
 
@@ -151,7 +151,7 @@ function enhanceDescription(description, agentName) {
     )
   ) {
     description =
-      'Automatically ' +
+      "Automatically " +
       description.charAt(0).toLowerCase() +
       description.slice(1);
   }
@@ -186,11 +186,11 @@ export function analyzeAgentDescriptions(agents) {
  * Update agent file with optimized description
  */
 export function updateAgentDescription(agentPath, newDescription) {
-  const content = readFileSync(agentPath, 'utf-8');
+  const content = readFileSync(agentPath, "utf-8");
   const frontmatterMatch = /^---\n([\s\S]*?)\n---/.exec(content);
 
   if (!frontmatterMatch) {
-    throw new Error('No frontmatter found in agent file');
+    throw new Error("No frontmatter found in agent file");
   }
 
   const frontmatter = yaml.parse(frontmatterMatch[1]);
@@ -213,21 +213,21 @@ export function validateDescription(description, agentName) {
 
   // Check length
   if (!description || description.length < 20) {
-    issues.push('Description too short (min 20 characters)');
+    issues.push("Description too short (min 20 characters)");
   }
   if (description && description.length > 200) {
-    issues.push('Description too long (max 200 characters)');
+    issues.push("Description too long (max 200 characters)");
   }
 
   // Check for trigger words
   const { score } = checkTriggerWords(description, agentName);
   if (score < 0.5) {
-    issues.push('Missing trigger keywords for auto-delegation');
+    issues.push("Missing trigger keywords for auto-delegation");
   }
 
   // Check for action clarity
   if (description && !/(when|after|before|during|for|to)/.test(description)) {
-    issues.push('Description should indicate when to use the agent');
+    issues.push("Description should indicate when to use the agent");
   }
 
   return {

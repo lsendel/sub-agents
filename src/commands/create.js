@@ -1,19 +1,19 @@
-import chalk from 'chalk';
-import { writeFileSync } from 'fs';
-import { join } from 'path';
-import yaml from 'yaml';
+import chalk from "chalk";
+import { writeFileSync } from "fs";
+import { join } from "path";
+import yaml from "yaml";
 import {
   inputAgentDetails,
   confirmAction,
   selectInstallScope,
-} from '../utils/prompts.js';
+} from "../utils/prompts.js";
 import {
   getAgentsDir,
   ensureDirectories,
   ensureProjectDirectories,
-} from '../utils/paths.js';
-import { addInstalledAgent } from '../utils/config.js';
-import { logger } from '../utils/logger.js';
+} from "../utils/paths.js";
+import { addInstalledAgent } from "../utils/config.js";
+import { logger } from "../utils/logger.js";
 
 const BASIC_TEMPLATE = `You are a specialized assistant focused on [TASK].
 
@@ -71,9 +71,9 @@ Remember: [KEY PRINCIPLE OR MOTTO]`;
 
 export async function createCommand(options) {
   try {
-    console.log(chalk.bold.blue('Create Custom Agent'));
+    console.log(chalk.bold.blue("Create Custom Agent"));
     console.log(
-      chalk.gray('This wizard will help you create a new custom agent.\n'),
+      chalk.gray("This wizard will help you create a new custom agent.\n"),
     );
 
     // Get agent details
@@ -82,7 +82,7 @@ export async function createCommand(options) {
       // Non-interactive mode with provided options
       agentDetails = {
         name: options.name,
-        description: 'Custom agent',
+        description: "Custom agent",
         tools: [],
         systemPrompt: BASIC_TEMPLATE,
       };
@@ -92,15 +92,15 @@ export async function createCommand(options) {
     }
 
     // Select template if not provided
-    const template = options.template || 'basic';
-    if (!agentDetails.systemPrompt || agentDetails.systemPrompt.trim() === '') {
+    const template = options.template || "basic";
+    if (!agentDetails.systemPrompt || agentDetails.systemPrompt.trim() === "") {
       agentDetails.systemPrompt =
-        template === 'advanced' ? ADVANCED_TEMPLATE : BASIC_TEMPLATE;
+        template === "advanced" ? ADVANCED_TEMPLATE : BASIC_TEMPLATE;
     }
 
     // Select installation scope
     const scope = await selectInstallScope();
-    const isProject = scope === 'project';
+    const isProject = scope === "project";
 
     if (isProject) {
       ensureProjectDirectories();
@@ -114,21 +114,21 @@ export async function createCommand(options) {
     const frontmatter = {
       name: agentDetails.name,
       description: agentDetails.description,
-      tools: agentDetails.tools.join(', '),
+      tools: agentDetails.tools.join(", "),
     };
 
     const yamlFrontmatter = yaml.stringify(frontmatter).trim();
     const agentContent = `---\n${yamlFrontmatter}\n---\n\n${agentDetails.systemPrompt}`;
 
     // Preview
-    console.log('\n' + chalk.bold('Agent Preview:'));
-    console.log(chalk.gray('─'.repeat(50)));
+    console.log("\n" + chalk.bold("Agent Preview:"));
+    console.log(chalk.gray("─".repeat(50)));
     console.log(agentContent);
-    console.log(chalk.gray('─'.repeat(50)));
+    console.log(chalk.gray("─".repeat(50)));
 
     // Confirm creation
-    if (!(await confirmAction('\nCreate this agent?'))) {
-      console.log(chalk.yellow('Agent creation cancelled.'));
+    if (!(await confirmAction("\nCreate this agent?"))) {
+      console.log(chalk.yellow("Agent creation cancelled."));
       return;
     }
 
@@ -139,9 +139,9 @@ export async function createCommand(options) {
     // Add to config
     const metadata = {
       name: agentDetails.name,
-      version: '1.0.0',
+      version: "1.0.0",
       description: agentDetails.description,
-      author: 'Custom',
+      author: "Custom",
       custom: true,
       requirements: {
         tools: agentDetails.tools,
@@ -154,13 +154,13 @@ export async function createCommand(options) {
       chalk.green(`\n✓ Agent "${agentDetails.name}" created successfully!`),
     );
     console.log(chalk.gray(`Location: ${agentPath}`));
-    console.log(chalk.gray('The agent is now enabled and ready to use.'));
+    console.log(chalk.gray("The agent is now enabled and ready to use."));
 
     // Provide next steps
-    console.log('\n' + chalk.bold('Next steps:'));
-    console.log('1. Edit the agent file to customize the system prompt');
-    console.log('2. Create slash commands in the commands directory');
-    console.log('3. Configure hooks in your settings.json if needed');
+    console.log("\n" + chalk.bold("Next steps:"));
+    console.log("1. Edit the agent file to customize the system prompt");
+    console.log("2. Create slash commands in the commands directory");
+    console.log("3. Configure hooks in your settings.json if needed");
     console.log(
       `4. Test your agent by mentioning it: "Use the ${agentDetails.name} agent to..."`,
     );

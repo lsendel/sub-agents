@@ -4,17 +4,17 @@
  */
 export const AGENT_NAME_MAPPING = {
   // Old name -> New name
-  'design-director-platform': 'platform-redesigner',
-  'design-system-architect': 'design-system-creator',
-  'doc-writer': 'documentation-writer',
-  refactor: 'code-refactorer',
-  'interaction-design-optimizer': 'ux-optimizer',
-  'requirements-analyst': 'codebase-analyzer',
-  'system-architect-2025': 'system-architect',
-  debugger: 'performance-optimizer',
-  'security-scanner': 'security-scanner', // Keep same name but ensure it's removed if not in new set
-  'test-runner': 'test-runner', // Keep same name but ensure it's removed if not in new set
-  'code-reviewer': 'code-reviewer', // Keep same name but ensure it's removed if not in new set
+  "design-director-platform": "platform-redesigner",
+  "design-system-architect": "design-system-creator",
+  "doc-writer": "documentation-writer",
+  refactor: "code-refactorer",
+  "interaction-design-optimizer": "ux-optimizer",
+  "requirements-analyst": "codebase-analyzer",
+  "system-architect-2025": "system-architect",
+  debugger: "performance-optimizer",
+  "security-scanner": "security-scanner", // Keep same name but ensure it's removed if not in new set
+  "test-runner": "test-runner", // Keep same name but ensure it's removed if not in new set
+  "code-reviewer": "code-reviewer", // Keep same name but ensure it's removed if not in new set
 };
 
 /**

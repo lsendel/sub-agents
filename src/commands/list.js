@@ -1,8 +1,8 @@
-import chalk from 'chalk';
-import Table from 'cli-table3';
-import { getAvailableAgents } from '../utils/agents.js';
-import { getInstalledAgents, isAgentEnabled } from '../utils/config.js';
-import { logger } from '../utils/logger.js';
+import chalk from "chalk";
+import Table from "cli-table3";
+import { getAvailableAgents } from "../utils/agents.js";
+import { getInstalledAgents, isAgentEnabled } from "../utils/config.js";
+import { logger } from "../utils/logger.js";
 export async function listCommand(options) {
   try {
     const availableAgents = getAvailableAgents();
@@ -11,11 +11,11 @@ export async function listCommand(options) {
     // Create table
     const table = new Table({
       head: [
-        chalk.bold('Agent'),
-        chalk.bold('Status'),
-        chalk.bold('Scope'),
-        chalk.bold('Version'),
-        chalk.bold('Description'),
+        chalk.bold("Agent"),
+        chalk.bold("Status"),
+        chalk.bold("Scope"),
+        chalk.bold("Version"),
+        chalk.bold("Description"),
       ],
       colWidths: [20, 12, 10, 10, 50],
       wordWrap: true,
@@ -60,21 +60,21 @@ export async function listCommand(options) {
 
     // Add to table
     agentsToShow.forEach((agent) => {
-      let status = '';
-      let scope = '-';
-      let version = agent.version || '-';
+      let status = "";
+      let scope = "-";
+      let version = agent.version || "-";
 
       if (agent.installed) {
         const enabled = isAgentEnabled(agent.name);
         if (enabled) {
-          status = chalk.green('✓ In Use');
+          status = chalk.green("✓ In Use");
         } else {
-          status = chalk.yellow('⚠ Disabled');
+          status = chalk.yellow("⚠ Disabled");
         }
-        scope = agent.installedInfo?.scope || 'unknown';
+        scope = agent.installedInfo?.scope || "unknown";
         version = agent.installedInfo?.version || version;
       } else {
-        status = chalk.gray('Available');
+        status = chalk.gray("Available");
       }
 
       table.push([
@@ -82,27 +82,27 @@ export async function listCommand(options) {
         status,
         scope,
         version,
-        agent.description || '-',
+        agent.description || "-",
       ]);
     });
 
     // Display results
     if (agentsToShow.length === 0) {
       if (options.installed) {
-        logger.warn('No agents installed yet.');
+        logger.warn("No agents installed yet.");
         logger.info(
           chalk.gray('Use "claude-agents install" to install agents.'),
         );
       } else if (options.available) {
-        logger.warn('No new agents available.');
+        logger.warn("No new agents available.");
       } else {
-        logger.warn('No agents found.');
+        logger.warn("No agents found.");
       }
     } else {
       logger.info(table.toString());
 
       // Show summary
-      logger.info('');
+      logger.info("");
       const installedCount = agentsToShow.filter((a) => a.installed).length;
       const availableCount = agentsToShow.filter((a) => !a.installed).length;
       const enabledCount = agentsToShow.filter(
@@ -118,7 +118,7 @@ export async function listCommand(options) {
       }
     }
   } catch (error) {
-    logger.error('Error:', error.message);
+    logger.error("Error:", error.message);
     throw error;
   }
 }

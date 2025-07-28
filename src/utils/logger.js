@@ -1,4 +1,4 @@
-import chalk from 'chalk';
+import chalk from "chalk";
 
 // Simple logger utility to replace console statements
 // In production, this could be replaced with a proper logging library like winston or pino
@@ -17,12 +17,12 @@ class Logger {
     this.level =
       LogLevel[process.env.LOG_LEVEL?.toUpperCase()] ?? LogLevel.INFO;
     this.silent =
-      process.env.NODE_ENV === 'test' || process.env.SILENT === 'true';
+      process.env.NODE_ENV === "test" || process.env.SILENT === "true";
   }
 
   debug(...args) {
     if (this.level <= LogLevel.DEBUG && !this.silent) {
-      console.log(chalk.gray('[DEBUG]'), ...args);
+      console.log(chalk.gray("[DEBUG]"), ...args);
     }
   }
 
@@ -39,19 +39,19 @@ class Logger {
 
   warn(...args) {
     if (this.level <= LogLevel.WARN && !this.silent) {
-      console.warn(chalk.yellow('[WARN]'), ...args);
+      console.warn(chalk.yellow("[WARN]"), ...args);
     }
   }
 
   error(...args) {
     if (this.level <= LogLevel.ERROR && !this.silent) {
-      console.error(chalk.red('[ERROR]'), ...args);
+      console.error(chalk.red("[ERROR]"), ...args);
     }
   }
 
   success(...args) {
     if (this.level <= LogLevel.INFO && !this.silent) {
-      console.log(chalk.green('✓'), ...args);
+      console.log(chalk.green("✓"), ...args);
     }
   }
 
@@ -59,15 +59,15 @@ class Logger {
   header(title) {
     if (this.level <= LogLevel.INFO && !this.silent) {
       console.log(
-        chalk.blue.bold('\n╔═══════════════════════════════════════════╗'),
+        chalk.blue.bold("\n╔═══════════════════════════════════════════╗"),
       );
       console.log(
-        chalk.blue.bold('║'),
+        chalk.blue.bold("║"),
         chalk.white.bold(title.padEnd(41)),
-        chalk.blue.bold('║'),
+        chalk.blue.bold("║"),
       );
       console.log(
-        chalk.blue.bold('╚═══════════════════════════════════════════╝\n'),
+        chalk.blue.bold("╚═══════════════════════════════════════════╝\n"),
       );
     }
   }
@@ -80,7 +80,7 @@ class Logger {
 
   // For structured logging in production
   json(level, message, data = {}) {
-    if (process.env.LOG_FORMAT === 'json' && !this.silent) {
+    if (process.env.LOG_FORMAT === "json" && !this.silent) {
       const logEntry = {
         timestamp: new Date().toISOString(),
         level,

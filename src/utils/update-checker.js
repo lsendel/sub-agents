@@ -1,9 +1,9 @@
-import { execSync } from 'child_process';
-import chalk from 'chalk';
-import semver from 'semver';
-import { readFileSync } from 'fs';
-import { join, dirname } from 'path';
-import { fileURLToPath } from 'url';
+import { execSync } from "child_process";
+import chalk from "chalk";
+import semver from "semver";
+import { readFileSync } from "fs";
+import { join, dirname } from "path";
+import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -15,7 +15,7 @@ const __dirname = dirname(__filename);
 export async function checkForUpdates(silent = true) {
   try {
     const packageJson = JSON.parse(
-      readFileSync(join(__dirname, '../../package.json'), 'utf-8'),
+      readFileSync(join(__dirname, "../../package.json"), "utf-8"),
     );
     const currentVersion = packageJson.version;
     const packageName = packageJson.name;
@@ -23,31 +23,31 @@ export async function checkForUpdates(silent = true) {
     // Get latest version from npm
     const latestVersion = execSync(
       `npm view ${packageName} version 2>/dev/null`,
-      { encoding: 'utf-8', stdio: ['pipe', 'pipe', 'ignore'] },
+      { encoding: "utf-8", stdio: ["pipe", "pipe", "ignore"] },
     ).trim();
 
     if (!latestVersion) {
       if (!silent) {
-        console.log(chalk.gray('Package not yet published to npm'));
+        console.log(chalk.gray("Package not yet published to npm"));
       }
       return;
     }
 
     if (semver.gt(latestVersion, currentVersion)) {
-      console.log(chalk.yellow('\n📦 Update available!'));
+      console.log(chalk.yellow("\n📦 Update available!"));
       console.log(chalk.gray(`   Current: ${currentVersion}`));
       console.log(chalk.green(`   Latest:  ${latestVersion}`));
       console.log(chalk.cyan(`   Run: npm update -g ${packageName}\n`));
       return true;
     } else if (!silent) {
-      console.log(chalk.green('✓ You are using the latest version'));
+      console.log(chalk.green("✓ You are using the latest version"));
     }
 
     return false;
   } catch (error) {
     // Silently fail - don't interrupt user
     if (!silent) {
-      console.log(chalk.gray('Could not check for updates'));
+      console.log(chalk.gray("Could not check for updates"));
     }
     return false;
   }
@@ -59,7 +59,7 @@ export async function checkForUpdates(silent = true) {
 export function getVersionInfo() {
   try {
     const packageJson = JSON.parse(
-      readFileSync(join(__dirname, '../../package.json'), 'utf-8'),
+      readFileSync(join(__dirname, "../../package.json"), "utf-8"),
     );
 
     return {
@@ -69,9 +69,9 @@ export function getVersionInfo() {
     };
   } catch (error) {
     return {
-      name: 'claude-agents',
-      version: 'unknown',
-      description: 'Claude Sub-Agents Manager',
+      name: "claude-agents",
+      version: "unknown",
+      description: "Claude Sub-Agents Manager",
     };
   }
 }

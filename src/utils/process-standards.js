@@ -1,8 +1,8 @@
-import { readdirSync, readFileSync, existsSync } from 'fs';
-import { join, dirname, basename } from 'path';
-import { fileURLToPath } from 'url';
-import { extractFrontmatter } from './yaml-parser.js';
-import { getProcessesDir, getStandardsDir } from './paths.js';
+import { readdirSync, readFileSync, existsSync } from "fs";
+import { join, dirname, basename } from "path";
+import { fileURLToPath } from "url";
+import { extractFrontmatter } from "./yaml-parser.js";
+import { getProcessesDir, getStandardsDir } from "./paths.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -12,22 +12,22 @@ const __dirname = dirname(__filename);
  */
 export function loadProcessFromFile(processName, processPath) {
   try {
-    const content = readFileSync(processPath, 'utf-8');
+    const content = readFileSync(processPath, "utf-8");
 
     // Use custom parser that supports Claude Code format
     const { frontmatter, content: body } = extractFrontmatter(content);
 
     if (!frontmatter) {
-      throw new Error('No YAML frontmatter found');
+      throw new Error("No YAML frontmatter found");
     }
 
     // Extract metadata from frontmatter
     const metadata = {
       name: frontmatter.name || processName,
-      type: frontmatter.type || 'process',
-      version: frontmatter.version || '1.0.0',
-      description: frontmatter.description || '',
-      author: frontmatter.author || 'Unknown',
+      type: frontmatter.type || "process",
+      version: frontmatter.version || "1.0.0",
+      description: frontmatter.description || "",
+      author: frontmatter.author || "Unknown",
       tags: frontmatter.tags || [],
       related_commands: frontmatter.related_commands || [],
       dependencies: frontmatter.dependencies || [],
@@ -51,22 +51,22 @@ export function loadProcessFromFile(processName, processPath) {
  */
 export function loadStandardFromFile(standardName, standardPath) {
   try {
-    const content = readFileSync(standardPath, 'utf-8');
+    const content = readFileSync(standardPath, "utf-8");
 
     // Use custom parser that supports Claude Code format
     const { frontmatter, content: body } = extractFrontmatter(content);
 
     if (!frontmatter) {
-      throw new Error('No YAML frontmatter found');
+      throw new Error("No YAML frontmatter found");
     }
 
     // Extract metadata from frontmatter
     const metadata = {
       name: frontmatter.name || standardName,
-      type: frontmatter.type || 'standard',
-      version: frontmatter.version || '1.0.0',
-      description: frontmatter.description || '',
-      author: frontmatter.author || 'Unknown',
+      type: frontmatter.type || "standard",
+      version: frontmatter.version || "1.0.0",
+      description: frontmatter.description || "",
+      author: frontmatter.author || "Unknown",
       tags: frontmatter.tags || [],
       related_commands: frontmatter.related_commands || [],
       dependencies: frontmatter.dependencies || [],
@@ -89,8 +89,8 @@ export function loadStandardFromFile(standardName, standardPath) {
  * Get available processes from project
  */
 export function getAvailableProcesses() {
-  const projectRoot = join(__dirname, '..', '..');
-  const processesDir = join(projectRoot, 'processes');
+  const projectRoot = join(__dirname, "..", "..");
+  const processesDir = join(projectRoot, "processes");
 
   if (!existsSync(processesDir)) {
     return [];
@@ -101,15 +101,15 @@ export function getAvailableProcesses() {
 
   for (const entry of entries) {
     if (entry.isDirectory()) {
-      const processPath = join(processesDir, entry.name, 'process.md');
+      const processPath = join(processesDir, entry.name, "process.md");
       if (existsSync(processPath)) {
         const process = loadProcessFromFile(entry.name, processPath);
         if (process) {
           processes.push(process);
         }
       }
-    } else if (entry.isFile() && entry.name.endsWith('.md')) {
-      const processName = basename(entry.name, '.md');
+    } else if (entry.isFile() && entry.name.endsWith(".md")) {
+      const processName = basename(entry.name, ".md");
       const process = loadProcessFromFile(
         processName,
         join(processesDir, entry.name),
@@ -127,8 +127,8 @@ export function getAvailableProcesses() {
  * Get available standards from project
  */
 export function getAvailableStandards() {
-  const projectRoot = join(__dirname, '..', '..');
-  const standardsDir = join(projectRoot, 'standards');
+  const projectRoot = join(__dirname, "..", "..");
+  const standardsDir = join(projectRoot, "standards");
 
   if (!existsSync(standardsDir)) {
     return [];
@@ -139,15 +139,15 @@ export function getAvailableStandards() {
 
   for (const entry of entries) {
     if (entry.isDirectory()) {
-      const standardPath = join(standardsDir, entry.name, 'standard.md');
+      const standardPath = join(standardsDir, entry.name, "standard.md");
       if (existsSync(standardPath)) {
         const standard = loadStandardFromFile(entry.name, standardPath);
         if (standard) {
           standards.push(standard);
         }
       }
-    } else if (entry.isFile() && entry.name.endsWith('.md')) {
-      const standardName = basename(entry.name, '.md');
+    } else if (entry.isFile() && entry.name.endsWith(".md")) {
+      const standardName = basename(entry.name, ".md");
       const standard = loadStandardFromFile(
         standardName,
         join(standardsDir, entry.name),
@@ -182,7 +182,7 @@ export function findProcess(processName, searchProject = true) {
     const projectProcessDirPath = join(
       getProcessesDir(true),
       processName,
-      'process.md',
+      "process.md",
     );
     if (existsSync(projectProcessDirPath)) {
       return loadProcessFromFile(processName, projectProcessDirPath);
@@ -216,7 +216,7 @@ export function findStandard(standardName, searchProject = true) {
     const projectStandardDirPath = join(
       getStandardsDir(true),
       standardName,
-      'standard.md',
+      "standard.md",
     );
     if (existsSync(projectStandardDirPath)) {
       return loadStandardFromFile(standardName, projectStandardDirPath);

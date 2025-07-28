@@ -1,29 +1,29 @@
-import chalk from 'chalk';
-import ora from 'ora';
-import { existsSync } from 'fs';
-import { join } from 'path';
-import inquirer from 'inquirer';
-import { getAgentsDir } from '../utils/paths.js';
-import { getInstalledAgents } from '../utils/config.js';
+import chalk from "chalk";
+import ora from "ora";
+import { existsSync } from "fs";
+import { join } from "path";
+import inquirer from "inquirer";
+import { getAgentsDir } from "../utils/paths.js";
+import { getInstalledAgents } from "../utils/config.js";
 import {
   analyzeAgentDescriptions,
   updateAgentDescription,
   validateDescription,
-} from '../utils/description-optimizer.js';
-import { logger } from '../utils/logger.js';
+} from "../utils/description-optimizer.js";
+import { logger } from "../utils/logger.js";
 
 export async function optimizeCommand(agentName, options) {
   const spinner = ora();
 
   try {
-    console.log(chalk.blue.bold('\n🔧 Agent Description Optimizer\n'));
+    console.log(chalk.blue.bold("\n🔧 Agent Description Optimizer\n"));
 
     // Get installed agents
     const installedAgents = getInstalledAgents();
     const agentNames = Object.keys(installedAgents);
 
     if (agentNames.length === 0) {
-      console.log(chalk.yellow('No agents installed to optimize.'));
+      console.log(chalk.yellow("No agents installed to optimize."));
       return;
     }
 
@@ -38,7 +38,7 @@ export async function optimizeCommand(agentName, options) {
     }
 
     // Analyze all agents
-    spinner.start('Analyzing agent descriptions...');
+    spinner.start("Analyzing agent descriptions...");
     const agents = agentNames.map((name) => ({
       name,
       ...installedAgents[name],
@@ -49,7 +49,7 @@ export async function optimizeCommand(agentName, options) {
 
     if (suggestions.length === 0) {
       console.log(
-        chalk.green('✓ All agent descriptions are already well-optimized!'),
+        chalk.green("✓ All agent descriptions are already well-optimized!"),
       );
       return;
     }
@@ -61,8 +61,8 @@ export async function optimizeCommand(agentName, options) {
 
     for (const suggestion of suggestions) {
       console.log(chalk.bold(`📝 ${suggestion.name}`));
-      console.log(chalk.gray('  Current:  ') + suggestion.current);
-      console.log(chalk.green('  Suggested: ') + suggestion.suggested);
+      console.log(chalk.gray("  Current:  ") + suggestion.current);
+      console.log(chalk.green("  Suggested: ") + suggestion.suggested);
       console.log(
         chalk.gray(
           `  Trigger score: ${(suggestion.triggerScore * 100).toFixed(0)}%\n`,
@@ -74,9 +74,9 @@ export async function optimizeCommand(agentName, options) {
     if (!options.all && !options.auto) {
       const { selectedAgents } = await inquirer.prompt([
         {
-          type: 'checkbox',
-          name: 'selectedAgents',
-          message: 'Select agents to optimize:',
+          type: "checkbox",
+          name: "selectedAgents",
+          message: "Select agents to optimize:",
           choices: suggestions.map((s) => ({
             name: `${s.name} - ${s.suggested.substring(0, 60)}...`,
             value: s.name,
@@ -86,7 +86,7 @@ export async function optimizeCommand(agentName, options) {
       ]);
 
       if (selectedAgents.length === 0) {
-        console.log(chalk.yellow('No agents selected.'));
+        console.log(chalk.yellow("No agents selected."));
         return;
       }
 
@@ -102,14 +102,14 @@ export async function optimizeCommand(agentName, options) {
       }
     }
 
-    console.log(chalk.green('\n✓ Optimization complete!'));
+    console.log(chalk.green("\n✓ Optimization complete!"));
     console.log(
       chalk.gray(
-        'Agent descriptions have been updated for better auto-delegation.',
+        "Agent descriptions have been updated for better auto-delegation.",
       ),
     );
   } catch (error) {
-    spinner.fail('Optimization failed');
+    spinner.fail("Optimization failed");
     logger.error(error.message);
     throw error;
   }
@@ -126,11 +126,11 @@ async function optimizeAgent(agentName, agentData, options) {
   const validation = validateDescription(currentDesc, agentName);
 
   console.log(chalk.bold(`\nAnalyzing ${agentName}...\n`));
-  console.log('Current description:');
-  console.log(chalk.gray(`  ${currentDesc || '(none)'}`));
+  console.log("Current description:");
+  console.log(chalk.gray(`  ${currentDesc || "(none)"}`));
 
   if (validation.valid) {
-    console.log(chalk.green('\n✓ Description is already well-optimized!'));
+    console.log(chalk.green("\n✓ Description is already well-optimized!"));
     console.log(
       chalk.gray(`  Quality score: ${(validation.score * 100).toFixed(0)}%`),
     );
@@ -138,7 +138,7 @@ async function optimizeAgent(agentName, agentData, options) {
   }
 
   // Show issues
-  console.log(chalk.yellow('\nIssues found:'));
+  console.log(chalk.yellow("\nIssues found:"));
   validation.issues.forEach((issue) => {
     console.log(chalk.yellow(`  • ${issue}`));
   });
@@ -148,12 +148,12 @@ async function optimizeAgent(agentName, agentData, options) {
   const suggestions = analyzeAgentDescriptions(agents);
 
   if (suggestions.length === 0) {
-    console.log(chalk.gray('\nNo optimization needed.'));
+    console.log(chalk.gray("\nNo optimization needed."));
     return;
   }
 
   const suggestion = suggestions[0];
-  console.log(chalk.green('\nSuggested improvement:'));
+  console.log(chalk.green("\nSuggested improvement:"));
   console.log(chalk.green(`  ${suggestion.suggested}`));
 
   // Apply if confirmed or auto mode
@@ -201,9 +201,9 @@ async function applyOptimization(agentName, newDescription) {
 async function confirmOptimization() {
   const { confirmed } = await inquirer.prompt([
     {
-      type: 'confirm',
-      name: 'confirmed',
-      message: 'Apply this optimization?',
+      type: "confirm",
+      name: "confirmed",
+      message: "Apply this optimization?",
       default: true,
     },
   ]);
@@ -213,12 +213,12 @@ async function confirmOptimization() {
 
 // Command configuration for commander
 export const optimizeCommandConfig = {
-  command: 'optimize [agent]',
-  description: 'Optimize agent descriptions for better auto-delegation',
+  command: "optimize [agent]",
+  description: "Optimize agent descriptions for better auto-delegation",
   options: [
-    ['-a, --all', 'Optimize all agents without prompting'],
-    ['--auto', 'Apply optimizations without confirmation'],
-    ['-v, --validate', 'Only validate descriptions without changing'],
+    ["-a, --all", "Optimize all agents without prompting"],
+    ["--auto", "Apply optimizations without confirmation"],
+    ["-v, --validate", "Only validate descriptions without changing"],
   ],
   action: optimizeCommand,
 };
