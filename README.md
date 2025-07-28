@@ -3,8 +3,8 @@
 <div align="center">
 
 ![Claude Sub-Agents](https://img.shields.io/badge/Claude-Sub--Agents-blue?style=for-the-badge&logo=anthropic)
-[![npm version](https://img.shields.io/npm/v/@webdevtoday/claude-agents?style=flat-square)](https://www.npmjs.com/package/@webdevtoday/claude-agents)
-[![npm downloads](https://img.shields.io/npm/dm/@webdevtoday/claude-agents?style=flat-square)](https://www.npmjs.com/package/@webdevtoday/claude-agents)
+[![npm version](https://img.shields.io/npm/v/@zamaz/claude-agents?style=flat-square)](https://www.npmjs.com/package/@zamaz/claude-agents)
+[![npm downloads](https://img.shields.io/npm/dm/@zamaz/claude-agents?style=flat-square)](https://www.npmjs.com/package/@zamaz/claude-agents)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 [![GitHub release](https://img.shields.io/github/release/lsendel/sub-agents.svg?style=flat-square)](https://github.com/lsendel/sub-agents/releases)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
@@ -104,11 +104,14 @@ claude-agents install
 # Or install all agents at once
 claude-agents install --all
 
-# Install specific agents directly (NEW!)
+# Install specific agents directly
 claude-agents install code-reviewer test-runner
 
-# Sync externally installed agents
-claude-agents sync
+# Validate all agents (supports Claude Code format)
+claude-agents validate
+
+# Optimize agent descriptions for better auto-delegation
+claude-agents optimize --all
 
 # Agents now use description-based auto-delegation
 # In Claude Code, just describe what you need:
@@ -119,20 +122,44 @@ claude-agents sync
 
 ## 🔄 Keeping Agents in Sync
 
-Claude Code may install agents directly to `~/.claude/agents/`. Use the sync command to register these agents:
+Claude Code may install agents directly to `~/.claude/agents/`. Use the sync command to register these agents and copy them to your project:
 
 ```bash
 # Detect and register externally installed agents
 claude-agents sync
 
-# Enable automatic synchronization
-claude-agents config autosync on
+# Force copy all agents to project directory (NEW!)
+claude-agents sync --force-copy
 
-# Check sync status
-claude-agents config autosync
+# Fix YAML parsing issues in Claude Code agents
+make fix-yaml
+
+# The sync feature now:
+# - Detects agents installed by Claude Code
+# - Registers them in configuration
+# - Copies them to your project's agents/ directory
+# - Preserves Claude Code's complex YAML format
 ```
 
-The sync feature ensures all agents are properly tracked and managed, regardless of how they were installed. See [SYNC_PROCESS.md](docs/SYNC_PROCESS.md) for details.
+The sync feature ensures all agents are properly tracked, managed, and version-controlled. See [SYNC_PROCESS.md](docs/SYNC_PROCESS.md) for details.
+
+## 🔑 Key Features
+
+### 🆕 New in v1.0.3
+- **Enhanced Sync**: Automatically copies Claude Code agents to your project directory
+- **YAML Compatibility**: Full support for Claude Code's complex YAML format
+- **Bulk Operations**: Install, validate, and optimize multiple agents at once
+- **Smart Command Detection**: Automatically finds and copies related slash commands
+- **Git-Friendly**: All agents are version-controlled in your project
+
+### Core Features
+- **🔍 Agent Discovery**: Browse and install community agents
+- **📦 Package Management**: Install, update, remove agents like npm packages
+- **✨ Description Optimization**: Improve agent descriptions for better auto-delegation
+- **✅ Quality Validation**: Ensure agents follow best practices
+- **🔄 Format Migration**: Convert legacy agents to Claude Code format
+- **🛡️ Security Scanning**: Check for sensitive data before commits
+- **📊 Update Notifications**: Get notified when new versions are available
 
 ## 📋 Available Sub-Agents
 
@@ -144,6 +171,63 @@ The sync feature ensures all agents are properly tracked and managed, regardless
 | **refactor** | Improves code structure without changing functionality. Applies design patterns and modernizes legacy code. | "Refactor this code", "Apply SOLID principles" |
 | **doc-writer** | Creates and updates documentation. Generates API docs, README files, and inline comments. | "Document this API", "Update the README" |
 | **security-scanner** | Scans for security vulnerabilities and compliance issues. Detects exposed secrets and suggests fixes. | "Scan for vulnerabilities", "Check security" |
+| **requirements-analyst** | Analyzes codebases to identify requirements, dependencies, and potential improvements. | "Analyze this codebase", "What are the dependencies" |
+| **design-director-platform** | Coordinates comprehensive platform redesigns addressing accessibility, conversion rates, and technical debt. | "Redesign our platform", "Fix accessibility issues" |
+| **design-system-architect** | Creates and enhances design systems with AI personalization and adaptive interfaces. | "Create a design system", "Implement adaptive UI" |
+| **interaction-design-optimizer** | Optimizes user interactions and improves UX through data-driven design decisions. | "Optimize user experience", "Improve interaction flow" |
+| **system-architect-2025** | Designs modern system architectures with focus on scalability and best practices. | "Design system architecture", "Plan microservices" |
+
+## 📚 CLI Commands Reference
+
+### Basic Commands
+```bash
+# Install agents
+claude-agents install                    # Interactive installation
+claude-agents install --all              # Install all available agents
+claude-agents install code-reviewer test-runner  # Install specific agents
+
+# List agents
+claude-agents list                       # Show all agents
+claude-agents list --installed           # Show only installed agents
+claude-agents list --available           # Show available to install
+
+# Manage agents
+claude-agents enable <agent>             # Enable an agent
+claude-agents disable <agent>            # Disable an agent
+claude-agents remove <agent>             # Remove an agent
+claude-agents info <agent>               # Show agent details
+```
+
+### Advanced Commands
+```bash
+# Sync and manage external agents
+claude-agents sync                       # Detect and register external agents
+claude-agents sync --force-copy          # Copy all agents to project directory
+
+# Quality and optimization
+claude-agents validate                   # Validate all agents
+claude-agents validate <agent>           # Validate specific agent
+claude-agents optimize --all             # Optimize all agent descriptions
+claude-agents optimize <agent>           # Optimize specific agent
+
+# Migration and maintenance
+claude-agents migrate                    # Convert to Claude Code format
+claude-agents migrate --cleanup          # Migrate and remove old files
+```
+
+### Development Commands (with Makefile)
+```bash
+# Quick commands
+make list-agents                         # List all installed agents
+make sync                               # Sync external agents
+make sync-copy                          # Force copy all agents to project
+make validate                           # Validate all agents
+make fix-yaml                           # Fix YAML frontmatter issues
+
+# Publishing (for contributors)
+make publish-info                       # Show publishing instructions
+make publish-quick                      # Quick publish helper
+```
 
 ## 🤖 Detailed Agent Descriptions
 
@@ -529,7 +613,77 @@ claude --debug
 
 ## 📊 Release Notes
 
-### Version 1.0.0 (Latest)
+## 🐛 Troubleshooting
+
+### Common Issues and Solutions
+
+#### YAML Parsing Errors
+If you see "Invalid YAML frontmatter" errors:
+```bash
+# Fix YAML issues automatically
+make fix-yaml
+# Or manually
+node scripts/fix-yaml-frontmatter.js
+```
+
+#### Agents Not Showing After Claude Code Installation
+```bash
+# Sync externally installed agents
+claude-agents sync
+# Copy all agents to your project
+claude-agents sync --force-copy
+```
+
+#### Git Push Rejected
+```bash
+# Sync with remote before pushing
+git fetch origin
+git pull --rebase origin main
+git push origin main
+```
+
+#### NPM Publishing Issues
+```bash
+# Version already exists
+npm version patch  # Bump version first
+# OTP required
+npm publish --otp=123456  # Use your authenticator code
+```
+
+#### Agent Not Working
+```bash
+# Verify installation
+claude-agents list
+claude-agents info <agent-name>
+# Validate format
+claude-agents validate <agent-name>
+# Re-enable if needed
+claude-agents enable <agent-name>
+```
+
+### Debug Mode
+```bash
+# Run with debug logging
+LOG_LEVEL=DEBUG claude-agents sync
+# Check configuration
+cat ~/.claude-agents.json
+```
+
+## 📊 Release Notes
+
+### Version 1.0.3 (Latest)
+- Enhanced sync with automatic project copying
+- Full Claude Code YAML format support
+- Fixed YAML parsing for complex descriptions
+- Improved command detection
+- Cleaned up Makefile
+
+### Version 1.0.2
+- Added requirements-analyst agent
+- Improved sync functionality
+- Better error handling
+
+### Version 1.0.0
 - 🎉 Initial release
 - 6 production-ready agents
 - Interactive CLI interface
