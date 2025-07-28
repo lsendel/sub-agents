@@ -11,7 +11,7 @@ YELLOW = \033[1;33m
 RED = \033[0;31m
 NC = \033[0m # No Color
 
-.PHONY: help install test lint format clean dev link unlink sync sync-copy sync-processes sync-standards install-agent migrate optimize validate fix-yaml publish-info publish-quick list-agents install-agents
+.PHONY: help install test lint format clean dev link unlink sync sync-copy sync-processes sync-standards sync-commands sync-all cleanup install-agent migrate optimize validate fix-yaml publish-info publish-quick list-agents install-agents
 
 # Default target
 help:
@@ -34,12 +34,15 @@ help:
 	@echo "  $(YELLOW)make sync-copy$(NC)    - Force copy all agents to project"
 	@echo "  $(YELLOW)make sync-processes$(NC) - Sync processes from ~/.claude/processes"
 	@echo "  $(YELLOW)make sync-standards$(NC) - Sync standards from ~/.claude/standards"
+	@echo "  $(YELLOW)make sync-commands$(NC)  - Sync commands to ~/.claude/commands"
+	@echo "  $(YELLOW)make sync-all$(NC)      - Sync agents, processes, standards, and commands"
 	@echo ""
 	@echo "$(GREEN)Maintenance:$(NC)"
 	@echo "  $(YELLOW)make validate$(NC)     - Validate agent configurations"
 	@echo "  $(YELLOW)make optimize$(NC)     - Optimize agent definitions"
 	@echo "  $(YELLOW)make migrate$(NC)      - Migrate agents to new format"
 	@echo "  $(YELLOW)make fix-yaml$(NC)     - Fix YAML frontmatter issues"
+	@echo "  $(YELLOW)make cleanup$(NC)      - Remove deprecated agents"
 	@echo ""
 	@echo "$(GREEN)Publishing to npm:$(NC)"
 	@echo "  To publish this package to npm, use:"
@@ -144,6 +147,33 @@ sync-standards:
 	@echo "$(BLUE)Syncing standards from ~/.claude/standards...$(NC)"
 	@./bin/claude-agents sync-standards --force-copy
 	@echo "$(GREEN)✓ Standards sync complete$(NC)"
+
+# Sync commands to ~/.claude/commands
+sync-commands:
+	@echo "$(BLUE)Syncing commands to ~/.claude/commands...$(NC)"
+	@if [ -d "commands" ]; then \
+		mkdir -p ~/.claude/commands; \
+		cp -f commands/*.md ~/.claude/commands/ 2>/dev/null || true; \
+		sed -i '' 's|@~/.claude/process/|@~/.claude/processes/|g' ~/.claude/commands/*.md 2>/dev/null || true; \
+		echo "$(GREEN)✓ Commands synced to ~/.claude/commands (paths updated)$(NC)"; \
+	else \
+		echo "$(YELLOW)⚠ No commands directory found$(NC)"; \
+	fi
+
+# Sync all: agents, processes, standards, and commands
+sync-all: cleanup sync sync-processes sync-standards sync-commands
+	@echo "$(GREEN)✓ Full sync complete!$(NC)"
+	@echo "$(BLUE)Synced:$(NC)"
+	@echo "  • Agents"
+	@echo "  • Processes"
+	@echo "  • Standards"
+	@echo "  • Commands"
+
+# Clean up deprecated agents
+cleanup:
+	@echo "$(BLUE)Cleaning up deprecated agents...$(NC)"
+	@./bin/claude-agents cleanup --force
+	@echo "$(GREEN)✓ Cleanup complete$(NC)"
 
 # Migrate agents to new format
 migrate:

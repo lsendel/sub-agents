@@ -21,6 +21,7 @@ import { syncStandardsCommandConfig } from './commands/sync-standards.js';
 import { migrateCommandConfig } from './commands/migrate.js';
 import { optimizeCommandConfig } from './commands/optimize.js';
 import { validateCommandConfig } from './commands/validate.js';
+import { cleanupCommandConfig } from './commands/cleanup.js';
 import { checkForUpdates } from './utils/update-checker.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -132,6 +133,15 @@ syncStandardsCommandConfig.options.forEach(opt => {
   syncStandardsCmd.option(...opt);
 });
 syncStandardsCmd.action(syncStandardsCommandConfig.action);
+
+// Cleanup command
+const cleanupCmd = program
+  .command(cleanupCommandConfig.command)
+  .description(cleanupCommandConfig.description);
+cleanupCommandConfig.options.forEach(opt => {
+  cleanupCmd.option(...opt);
+});
+cleanupCmd.action(cleanupCommandConfig.action);
 
 // Migrate command
 const migrateCmd = program

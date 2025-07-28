@@ -124,6 +124,6 @@ This file defines global tech stack defaults that are referenced by all product 
 
 ---
 
-*For more on standards, see [Product Planning Guide](../process/plan-product.md) and [Development Best Practices](./best-practices.md).*
+*For more on standards, see [Product Planning Guide](../processes/plan-product.md) and [Development Best Practices](./best-practices.md).*
 
 *Customize this file with your organization's preferred tech stack. These defaults are used when initializing new projects.*

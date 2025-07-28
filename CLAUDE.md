@@ -69,7 +69,7 @@ This is a CLI tool for managing Claude Code sub-agents. The codebase is organize
 5. **Process/Standards Utilities** (`src/utils/process-standards.js`):
    - Loads process and standard definitions
    - Handles YAML frontmatter with custom parser
-   - Finds and manages process/standard files
+   - Finds and manages processes/standard files
 
 ### Important Implementation Details
 

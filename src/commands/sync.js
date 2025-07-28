@@ -10,9 +10,15 @@ import {
 } from '../utils/paths.js';
 import { 
   getInstalledAgents,
-  addInstalledAgent
+  addInstalledAgent,
+  updateConfig,
+  getConfig
 } from '../utils/config.js';
 import { logger } from '../utils/logger.js';
+import { 
+  ensureLatestAgents,
+  isDeprecated
+} from '../utils/agent-updater.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -79,6 +85,15 @@ export async function syncCommand(options) {
   
   try {
     ensureDirectories();
+    
+    // Ensure only latest agents are present
+    spinner.start('Removing deprecated agents and ensuring latest versions...');
+    const cleanupSuccess = ensureLatestAgents();
+    if (cleanupSuccess) {
+      spinner.succeed('Ensured only latest agents are present');
+    } else {
+      spinner.warn('Some deprecated agents could not be removed');
+    }
     
     // Force copy mode - copy all registered agents to project
     if (options.forceCopy) {
@@ -153,6 +168,12 @@ export async function syncCommand(options) {
       
       for (const file of files) {
         const agentName = basename(file, '.md');
+        
+        // Skip if this is a deprecated agent
+        if (isDeprecated(agentName)) {
+          logger.debug(`Skipping ${agentName} - deprecated agent`);
+          continue;
+        }
         
         // Skip if already registered
         if (registeredNames.includes(agentName)) {

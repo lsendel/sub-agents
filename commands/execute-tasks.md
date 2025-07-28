@@ -2,4 +2,4 @@
 
 Execute the next task.
 
-Refer to the instructions located in @~/.claude/process/execute-tasks.md
+Refer to the instructions located in @~/.claude/processes/execute-tasks.md

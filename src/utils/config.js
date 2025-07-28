@@ -191,6 +191,14 @@ export function getStandardsConfigPath(isProject = false) {
   return join(baseDir, STANDARDS_CONFIG_FILE);
 }
 
+export function getConfig(isProject = false) {
+  return loadConfig(isProject);
+}
+
+export function updateConfig(config, isProject = false) {
+  saveConfig(config, isProject);
+}
+
 export function getStandardsConfig(isProject = false) {
   const configPath = getStandardsConfigPath(isProject);
   

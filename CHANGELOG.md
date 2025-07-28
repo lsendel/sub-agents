@@ -38,9 +38,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - New keywords for process and standards management
 
 ### Changed
-- Updated documentation to include process/standards features
+- Updated documentation to include processes/standards features
 - Enhanced CLAUDE.md with new architecture details
-- Updated Makefile with process/standards sync targets
+- Updated Makefile with processes/standards sync targets
 
 ## [1.0.3] - 2024-07-27
 

@@ -13,7 +13,7 @@
     "agents/**/*",
     "commands/**/*",
     "scripts/**/*",
-    "process/**/*",
+    "processes/**/*",
     "standards/**/*",
     "docs/**/*",
     "README.md",

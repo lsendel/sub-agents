@@ -15,8 +15,13 @@ import {
 } from '../utils/prompts.js';
 import { 
   addInstalledAgent, 
-  getInstalledAgents 
+  getInstalledAgents,
+  updateConfig,
+  getConfig
 } from '../utils/config.js';
+import { 
+  ensureLatestAgents
+} from '../utils/agent-updater.js';
 import { 
   getAvailableAgents, 
   getAgentDetails,
@@ -34,6 +39,9 @@ export async function installCommand(agentNames, options) {
   try {
     // Ensure directories exist
     ensureDirectories();
+    
+    // Ensure only latest agents before installing new ones
+    ensureLatestAgents();
     
     // Get available agents
     spinner.start('Loading available agents...');

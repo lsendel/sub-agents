@@ -74,7 +74,7 @@ When adding third-party dependencies:
 
 ---
 
-*For more details, see [Code Review Process](../process/code-review.md).*
+*For more details, see [Code Review Process](../processes/code-review.md).*
 
 ## Documentation Standards
 - All public functions/classes should have docstrings or comments
@@ -101,7 +101,7 @@ When adding third-party dependencies:
 - See [API Design Standards](./api-design.md) for API-specific guidance
 
 ## Further Resources
-- [Example Code Review Checklist](../process/code-review.md)
+- [Example Code Review Checklist](../processes/code-review.md)
 - [Sample README Template](https://github.com/sindresorhus/awesome-readme)
 - [OWASP Top 10 Security Risks](https://owasp.org/www-project-top-ten/)
 
