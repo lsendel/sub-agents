@@ -1,13 +1,13 @@
-import chalk from "chalk";
-import ora from "ora";
-import { unlinkSync, existsSync } from "fs";
-import { join } from "path";
-import { getAgentsDir } from "../utils/paths.js";
-import { getInstalledAgents, removeInstalledAgent } from "../utils/config.js";
-import { confirmAction } from "../utils/prompts.js";
-import { logger } from "../utils/logger.js";
-import { Errors, handleError } from "../utils/errors.js";
-import { validateAgentName } from "../utils/validation.js";
+import chalk from 'chalk';
+import ora from 'ora';
+import { unlinkSync, existsSync } from 'fs';
+import { join } from 'path';
+import { getAgentsDir } from '../utils/paths.js';
+import { getInstalledAgents, removeInstalledAgent } from '../utils/config.js';
+import { confirmAction } from '../utils/prompts.js';
+import { logger } from '../utils/logger.js';
+import { Errors, handleError } from '../utils/errors.js';
+import { validateAgentName } from '../utils/validation.js';
 
 export async function removeCommand(agentName, options) {
   const spinner = ora();
@@ -29,27 +29,27 @@ export async function removeCommand(agentName, options) {
 
     // Get agent info
     const agentInfo = installedAgents[agentName];
-    const isProject = options.project || agentInfo.scope === "project";
+    const isProject = options.project || agentInfo.scope === 'project';
 
     // Check if trying to remove from wrong scope
-    if (options.project && agentInfo.scope === "user") {
+    if (options.project && agentInfo.scope === 'user') {
       logger.warn(
         `Agent "${agentName}" is installed in user scope, not project scope.`,
       );
       logger.info(
-        chalk.gray("Remove --project flag to uninstall from user scope."),
+        chalk.gray('Remove --project flag to uninstall from user scope.'),
       );
-      throw new Error("Scope mismatch");
+      throw new Error('Scope mismatch');
     }
 
-    if (!options.project && agentInfo.scope === "project") {
+    if (!options.project && agentInfo.scope === 'project') {
       logger.warn(
         `Agent "${agentName}" is installed in project scope, not user scope.`,
       );
       logger.info(
-        chalk.gray("Add --project flag to uninstall from project scope."),
+        chalk.gray('Add --project flag to uninstall from project scope.'),
       );
-      throw new Error("Scope mismatch");
+      throw new Error('Scope mismatch');
     }
 
     // Validate agent name
@@ -61,7 +61,7 @@ export async function removeCommand(agentName, options) {
     // Show agent details
     logger.info(chalk.bold(`\nAgent to remove: ${agentName}`));
     logger.info(`Scope: ${agentInfo.scope}`);
-    logger.info(`Version: ${agentInfo.version || "unknown"}`);
+    logger.info(`Version: ${agentInfo.version || 'unknown'}`);
     logger.info(
       `Installed: ${new Date(agentInfo.installedAt).toLocaleDateString()}`,
     );
@@ -69,7 +69,7 @@ export async function removeCommand(agentName, options) {
     // Confirm removal
     const confirmMessage = `Are you sure you want to remove the "${agentName}" agent?`;
     if (!(await confirmAction(confirmMessage, false))) {
-      logger.warn("Removal cancelled.");
+      logger.warn('Removal cancelled.');
       return;
     }
 
@@ -91,16 +91,16 @@ export async function removeCommand(agentName, options) {
 
     spinner.succeed(`Removed ${chalk.bold(agentName)}`);
 
-    logger.info("");
-    logger.success("Agent removed successfully!");
-    logger.info(chalk.gray("The agent has been uninstalled from your system."));
+    logger.info('');
+    logger.success('Agent removed successfully!');
+    logger.info(chalk.gray('The agent has been uninstalled from your system.'));
 
     // Suggest reinstallation
-    logger.info("");
-    logger.info(chalk.gray("To reinstall this agent, use:"));
+    logger.info('');
+    logger.info(chalk.gray('To reinstall this agent, use:'));
     logger.info(chalk.gray(`claude-agents install ${agentName}`));
   } catch (error) {
-    spinner.fail("Removal failed");
-    handleError(error, "Remove command");
+    spinner.fail('Removal failed');
+    handleError(error, 'Remove command');
   }
 }

@@ -1,29 +1,29 @@
-import { readFileSync, existsSync } from "fs";
-import { join, relative } from "path";
-import { minimatch } from "minimatch";
+import { readFileSync, existsSync } from 'fs';
+import { join, relative } from 'path';
+import { minimatch } from 'minimatch';
 
 /**
  * Default patterns that should always be ignored
  */
 const DEFAULT_IGNORE_PATTERNS = [
-  "node_modules/**",
-  ".git/**",
-  "*.log",
-  ".DS_Store",
-  "Thumbs.db",
-  ".env",
-  ".env.*",
-  "*.swp",
-  "*.swo",
-  "*~",
-  ".idea/**",
-  ".vscode/**",
-  "coverage/**",
-  "dist/**",
-  "build/**",
-  "*.tgz",
-  ".npm/**",
-  ".npmrc",
+  'node_modules/**',
+  '.git/**',
+  '*.log',
+  '.DS_Store',
+  'Thumbs.db',
+  '.env',
+  '.env.*',
+  '*.swp',
+  '*.swo',
+  '*~',
+  '.idea/**',
+  '.vscode/**',
+  'coverage/**',
+  'dist/**',
+  'build/**',
+  '*.tgz',
+  '.npm/**',
+  '.npmrc',
 ];
 
 /**
@@ -35,15 +35,15 @@ export function parseGitignore(gitignorePath) {
   }
 
   try {
-    const content = readFileSync(gitignorePath, "utf-8");
+    const content = readFileSync(gitignorePath, 'utf-8');
     return content
-      .split("\n")
+      .split('\n')
       .map((line) => line.trim())
-      .filter((line) => line && !line.startsWith("#"))
+      .filter((line) => line && !line.startsWith('#'))
       .map((pattern) => {
         // Convert gitignore patterns to minimatch patterns
-        if (pattern.endsWith("/")) {
-          return pattern + "**";
+        if (pattern.endsWith('/')) {
+          return pattern + '**';
         }
         return pattern;
       });
@@ -69,7 +69,7 @@ export function shouldIgnore(
   // Check if the file matches any ignore pattern
   return allPatterns.some((pattern) => {
     // Handle negation patterns (starting with !)
-    if (pattern.startsWith("!")) {
+    if (pattern.startsWith('!')) {
       return false; // Negation patterns need special handling
     }
 
@@ -88,13 +88,13 @@ export function getProjectIgnorePatterns(projectPath = process.cwd()) {
   const patterns = [];
 
   // Check for .gitignore in project root
-  const gitignorePath = join(projectPath, ".gitignore");
+  const gitignorePath = join(projectPath, '.gitignore');
   if (existsSync(gitignorePath)) {
     patterns.push(...parseGitignore(gitignorePath));
   }
 
   // Check for .claude-ignore (custom ignore file for Claude agents)
-  const claudeIgnorePath = join(projectPath, ".claude-ignore");
+  const claudeIgnorePath = join(projectPath, '.claude-ignore');
   if (existsSync(claudeIgnorePath)) {
     patterns.push(...parseGitignore(claudeIgnorePath));
   }
@@ -121,7 +121,7 @@ export function formatIgnorePatternsForPrompt(patterns = []) {
 
   return `
 The following patterns should be ignored:
-${allPatterns.map((p) => `  - ${p}`).join("\n")}
+${allPatterns.map((p) => `  - ${p}`).join('\n')}
 
 Always use these patterns when:
 - Searching for files (Glob, Grep)

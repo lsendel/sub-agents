@@ -1,23 +1,23 @@
-import chalk from "chalk";
-import Table from "cli-table3";
-import { existsSync, readFileSync } from "fs";
-import { join } from "path";
-import { getAgentsDir } from "../utils/paths.js";
-import { getInstalledAgents } from "../utils/config.js";
-import { validateDescription } from "../utils/description-optimizer.js";
-import { extractFrontmatter } from "../utils/yaml-parser.js";
-import { logger } from "../utils/logger.js";
+import chalk from 'chalk';
+import Table from 'cli-table3';
+import { existsSync, readFileSync } from 'fs';
+import { join } from 'path';
+import { getAgentsDir } from '../utils/paths.js';
+import { getInstalledAgents } from '../utils/config.js';
+import { validateDescription } from '../utils/description-optimizer.js';
+import { extractFrontmatter } from '../utils/yaml-parser.js';
+import { logger } from '../utils/logger.js';
 
 export async function validateCommand(agentName, options) {
   try {
-    console.log(chalk.blue.bold("\n🔍 Agent Validator\n"));
+    console.log(chalk.blue.bold('\n🔍 Agent Validator\n'));
 
     // Get installed agents
     const installedAgents = getInstalledAgents();
     const agentNames = agentName ? [agentName] : Object.keys(installedAgents);
 
     if (agentNames.length === 0) {
-      console.log(chalk.yellow("No agents installed to validate."));
+      console.log(chalk.yellow('No agents installed to validate.'));
       return;
     }
 
@@ -44,7 +44,7 @@ export async function validateCommand(agentName, options) {
 
     // Throw error if any validation failed and strict mode
     if (options.strict && results.some((r) => !r.valid)) {
-      throw new Error("Validation failed");
+      throw new Error('Validation failed');
     }
   } catch (error) {
     logger.error(error.message);
@@ -76,32 +76,32 @@ async function validateAgent(agentName) {
 
     if (!agentPath) {
       result.valid = false;
-      result.issues.push("Agent file not found");
+      result.issues.push('Agent file not found');
       result.score = 0;
       return result;
     }
 
     // Read and parse agent file
-    const content = readFileSync(agentPath, "utf-8");
+    const content = readFileSync(agentPath, 'utf-8');
 
     // Use our custom parser that supports Claude Code format
     const { frontmatter, content: agentBody } = extractFrontmatter(content);
 
     if (!frontmatter) {
       result.valid = false;
-      result.issues.push("No YAML frontmatter found");
+      result.issues.push('No YAML frontmatter found');
       result.score = 0;
       return result;
     }
 
     // Validate required fields
     if (!frontmatter.name) {
-      result.issues.push("Missing required field: name");
+      result.issues.push('Missing required field: name');
       result.valid = false;
     }
 
     if (!frontmatter.description) {
-      result.issues.push("Missing required field: description");
+      result.issues.push('Missing required field: description');
       result.valid = false;
     }
 
@@ -118,42 +118,42 @@ async function validateAgent(agentName) {
     // Validate tools
     if (frontmatter.tools) {
       const validTools = [
-        "Read",
-        "Write",
-        "Edit",
-        "MultiEdit",
-        "Bash",
-        "Grep",
-        "Glob",
-        "WebSearch",
-        "WebFetch",
-        "Task",
-        "TodoWrite",
-        "NotebookRead",
-        "NotebookEdit",
+        'Read',
+        'Write',
+        'Edit',
+        'MultiEdit',
+        'Bash',
+        'Grep',
+        'Glob',
+        'WebSearch',
+        'WebFetch',
+        'Task',
+        'TodoWrite',
+        'NotebookRead',
+        'NotebookEdit',
       ];
 
       const tools =
-        typeof frontmatter.tools === "string"
-          ? frontmatter.tools.split(",").map((t) => t.trim())
+        typeof frontmatter.tools === 'string'
+          ? frontmatter.tools.split(',').map((t) => t.trim())
           : frontmatter.tools;
 
       const invalidTools = tools.filter((t) => !validTools.includes(t));
       if (invalidTools.length > 0) {
-        result.warnings.push(`Unknown tools: ${invalidTools.join(", ")}`);
+        result.warnings.push(`Unknown tools: ${invalidTools.join(', ')}`);
         result.score *= 0.9;
       }
     }
 
     // Validate content
     if (agentBody.length < 100) {
-      result.warnings.push("Agent content seems too short (< 100 characters)");
+      result.warnings.push('Agent content seems too short (< 100 characters)');
       result.score *= 0.8;
     }
 
     // Check for common patterns
-    if (!agentBody.includes("role") && !agentBody.includes("expert")) {
-      result.warnings.push("Agent should define its role or expertise");
+    if (!agentBody.includes('role') && !agentBody.includes('expert')) {
+      result.warnings.push('Agent should define its role or expertise');
       result.score *= 0.9;
     }
 
@@ -163,8 +163,8 @@ async function validateAgent(agentName) {
       hasAuthor: !!frontmatter.author,
       hasTags: !!frontmatter.tags && frontmatter.tags.length > 0,
       toolCount: frontmatter.tools
-        ? typeof frontmatter.tools === "string"
-          ? frontmatter.tools.split(",").length
+        ? typeof frontmatter.tools === 'string'
+          ? frontmatter.tools.split(',').length
           : frontmatter.tools.length
         : 0,
     };
@@ -186,7 +186,7 @@ function displayValidationResults(results, options) {
   const totalCount = results.length;
   const avgScore = results.reduce((sum, r) => sum + r.score, 0) / totalCount;
 
-  console.log("Validation Summary:");
+  console.log('Validation Summary:');
   console.log(`  Total agents: ${totalCount}`);
   console.log(`  Valid: ${chalk.green(validCount)}`);
   console.log(`  Invalid: ${chalk.red(totalCount - validCount)}`);
@@ -194,24 +194,24 @@ function displayValidationResults(results, options) {
 
   // Detailed results table
   const table = new Table({
-    head: ["Agent", "Status", "Score", "Issues", "Warnings"],
+    head: ['Agent', 'Status', 'Score', 'Issues', 'Warnings'],
     colWidths: [25, 10, 10, 30, 30],
-    style: { head: ["cyan"] },
+    style: { head: ['cyan'] },
   });
 
   for (const result of results) {
     const status = result.valid
-      ? chalk.green("✓ Valid")
-      : chalk.red("✗ Invalid");
+      ? chalk.green('✓ Valid')
+      : chalk.red('✗ Invalid');
     const score = `${(result.score * 100).toFixed(0)}%`;
     const issues =
       result.issues.length > 0
-        ? chalk.red(result.issues.join("\n"))
-        : chalk.gray("None");
+        ? chalk.red(result.issues.join('\n'))
+        : chalk.gray('None');
     const warnings =
       result.warnings.length > 0
-        ? chalk.yellow(result.warnings.join("\n"))
-        : chalk.gray("None");
+        ? chalk.yellow(result.warnings.join('\n'))
+        : chalk.gray('None');
 
     table.push([result.name, status, score, issues, warnings]);
   }
@@ -220,11 +220,11 @@ function displayValidationResults(results, options) {
 
   // Show metadata if verbose
   if (options.verbose) {
-    console.log("\nAgent Metadata:");
+    console.log('\nAgent Metadata:');
     const metaTable = new Table({
-      head: ["Agent", "Version", "Author", "Tags", "Tools"],
+      head: ['Agent', 'Version', 'Author', 'Tags', 'Tools'],
       colWidths: [25, 10, 15, 15, 10],
-      style: { head: ["cyan"] },
+      style: { head: ['cyan'] },
     });
 
     for (const result of results) {
@@ -232,10 +232,10 @@ function displayValidationResults(results, options) {
         const m = result.metadata;
         metaTable.push([
           result.name,
-          m.hasVersion ? "✓" : "✗",
-          m.hasAuthor ? "✓" : "✗",
-          m.hasTags ? "✓" : "✗",
-          m.toolCount || "All",
+          m.hasVersion ? '✓' : '✗',
+          m.hasAuthor ? '✓' : '✗',
+          m.hasTags ? '✓' : '✗',
+          m.toolCount || 'All',
         ]);
       }
     }
@@ -248,12 +248,12 @@ function displayValidationResults(results, options) {
   const lowScoreAgents = results.filter((r) => r.valid && r.score < 0.7);
 
   if (invalidAgents.length > 0 || lowScoreAgents.length > 0) {
-    console.log(chalk.bold("\nRecommendations:"));
+    console.log(chalk.bold('\nRecommendations:'));
 
     if (invalidAgents.length > 0) {
       console.log(
         chalk.red(
-          `  • Fix critical issues in: ${invalidAgents.map((a) => a.name).join(", ")}`,
+          `  • Fix critical issues in: ${invalidAgents.map((a) => a.name).join(', ')}`,
         ),
       );
     }
@@ -261,7 +261,7 @@ function displayValidationResults(results, options) {
     if (lowScoreAgents.length > 0) {
       console.log(
         chalk.yellow(
-          `  • Run 'claude-agents optimize' to improve: ${lowScoreAgents.map((a) => a.name).join(", ")}`,
+          `  • Run 'claude-agents optimize' to improve: ${lowScoreAgents.map((a) => a.name).join(', ')}`,
         ),
       );
     }
@@ -270,12 +270,12 @@ function displayValidationResults(results, options) {
 
 // Command configuration for commander
 export const validateCommandConfig = {
-  command: "validate [agent]",
-  description: "Validate agent format and quality",
+  command: 'validate [agent]',
+  description: 'Validate agent format and quality',
   options: [
-    ["-v, --verbose", "Show detailed validation information"],
-    ["-j, --json", "Output results as JSON"],
-    ["-s, --strict", "Exit with error code if validation fails"],
+    ['-v, --verbose', 'Show detailed validation information'],
+    ['-j, --json', 'Output results as JSON'],
+    ['-s, --strict', 'Exit with error code if validation fails'],
   ],
   action: validateCommand,
 };

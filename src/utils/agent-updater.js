@@ -3,28 +3,28 @@
  * Ensures we always use the latest agent names and removes deprecated ones
  */
 
-import { existsSync, unlinkSync } from "fs";
-import { join } from "path";
-import { getAgentsDir } from "./paths.js";
-import { getConfig, updateConfig } from "./config.js";
-import { logger } from "./logger.js";
+import { existsSync, unlinkSync } from 'fs';
+import { join } from 'path';
+import { getAgentsDir } from './paths.js';
+import { getConfig, updateConfig } from './config.js';
+import { logger } from './logger.js';
 
 /**
  * List of deprecated agents that should be completely removed
  * These agents have been replaced with new versions
  */
 export const DEPRECATED_AGENTS = [
-  "design-director-platform",
-  "design-system-architect",
-  "doc-writer",
-  "refactor",
-  "interaction-design-optimizer",
-  "requirements-analyst",
-  "system-architect-2025",
-  "debugger",
-  "security-scanner",
-  "test-runner",
-  "code-reviewer",
+  'design-director-platform',
+  'design-system-architect',
+  'doc-writer',
+  'refactor',
+  'interaction-design-optimizer',
+  'requirements-analyst',
+  'system-architect-2025',
+  'debugger',
+  'security-scanner',
+  'test-runner',
+  'code-reviewer',
 ];
 
 /**
@@ -32,18 +32,18 @@ export const DEPRECATED_AGENTS = [
  * Note: Some deprecated agents may not have direct replacements
  */
 export const AGENT_REPLACEMENTS = {
-  "design-director-platform": "platform-redesigner",
-  "design-system-architect": "design-system-creator",
-  "doc-writer": "documentation-writer",
-  refactor: "code-refactorer",
-  "interaction-design-optimizer": "ux-optimizer",
-  "requirements-analyst": "codebase-analyzer",
-  "system-architect-2025": "system-architect",
+  'design-director-platform': 'platform-redesigner',
+  'design-system-architect': 'design-system-creator',
+  'doc-writer': 'documentation-writer',
+  refactor: 'code-refactorer',
+  'interaction-design-optimizer': 'ux-optimizer',
+  'requirements-analyst': 'codebase-analyzer',
+  'system-architect-2025': 'system-architect',
   // These don't have direct replacements in the new set
   debugger: null,
-  "security-scanner": null,
-  "test-runner": null,
-  "code-reviewer": null,
+  'security-scanner': null,
+  'test-runner': null,
+  'code-reviewer': null,
 };
 
 /**
@@ -79,10 +79,10 @@ export function removeDeprecatedAgents(dryRun = false) {
           summary.removed.push({
             name: deprecatedAgent,
             path: agentPath,
-            scope: scope ? "project" : "user",
+            scope: scope ? 'project' : 'user',
           });
           logger.debug(
-            `${dryRun ? "Would remove" : "Removed"} deprecated agent: ${agentPath}`,
+            `${dryRun ? 'Would remove' : 'Removed'} deprecated agent: ${agentPath}`,
           );
         } catch (error) {
           summary.errors.push({
@@ -160,14 +160,14 @@ export function cleanupAgentConfiguration() {
     }
 
     if (Object.keys(replacements).length > 0) {
-      logger.info("Suggested replacements:");
+      logger.info('Suggested replacements:');
       for (const [old, newAgent] of Object.entries(replacements)) {
         logger.info(`  ${old} → ${newAgent}`);
       }
     }
   } catch (error) {
     summary.errors.push({
-      operation: "cleanup",
+      operation: 'cleanup',
       error: error.message,
     });
     logger.error(`Cleanup failed: ${error.message}`);
@@ -183,7 +183,7 @@ export function cleanupAgentConfiguration() {
  */
 export function ensureLatestAgents() {
   try {
-    logger.info("Ensuring only latest agents are installed...");
+    logger.info('Ensuring only latest agents are installed...');
 
     // Clean up deprecated agents
     const cleanupSummary = cleanupAgentConfiguration();

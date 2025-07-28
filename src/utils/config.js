@@ -1,10 +1,10 @@
-import { readFileSync, writeFileSync, existsSync } from "fs";
-import { join } from "path";
-import { homedir } from "os";
-import { getConfigPath } from "./paths.js";
+import { readFileSync, writeFileSync, existsSync } from 'fs';
+import { join } from 'path';
+import { homedir } from 'os';
+import { getConfigPath } from './paths.js';
 
 const DEFAULT_CONFIG = {
-  version: "1.0.0",
+  version: '1.0.0',
   installedAgents: {},
   enabledAgents: [],
   disabledAgents: [],
@@ -23,10 +23,10 @@ export function loadConfig(isProject = false) {
   }
 
   try {
-    const content = readFileSync(configPath, "utf-8");
+    const content = readFileSync(configPath, 'utf-8');
     return JSON.parse(content);
   } catch (error) {
-    console.error("Error loading config:", error);
+    console.error('Error loading config:', error);
     return { ...DEFAULT_CONFIG };
   }
 }
@@ -38,7 +38,7 @@ export function saveConfig(config, isProject = false) {
     writeFileSync(configPath, JSON.stringify(config, null, 2));
     return true;
   } catch (error) {
-    console.error("Error saving config:", error);
+    console.error('Error saving config:', error);
     return false;
   }
 }
@@ -49,7 +49,7 @@ export function addInstalledAgent(agentName, metadata, isProject = false) {
   config.installedAgents[agentName] = {
     version: metadata.version,
     installedAt: new Date().toISOString(),
-    scope: isProject ? "project" : "user",
+    scope: isProject ? 'project' : 'user',
     ...metadata,
   };
 
@@ -143,9 +143,9 @@ export function getInstalledAgents(checkBothScopes = true) {
 }
 
 // Process configuration functions
-const PROCESSES_CONFIG_FILE = ".claude-processes.json";
+const PROCESSES_CONFIG_FILE = '.claude-processes.json';
 const DEFAULT_PROCESSES_CONFIG = {
-  version: "1.0.0",
+  version: '1.0.0',
   processes: {},
   lastSync: null,
 };
@@ -163,10 +163,10 @@ export function getProcessesConfig(isProject = false) {
   }
 
   try {
-    const content = readFileSync(configPath, "utf-8");
+    const content = readFileSync(configPath, 'utf-8');
     return JSON.parse(content);
   } catch (error) {
-    console.error("Error loading processes config:", error);
+    console.error('Error loading processes config:', error);
     return { ...DEFAULT_PROCESSES_CONFIG };
   }
 }
@@ -178,7 +178,7 @@ export function updateProcessesConfig(config, isProject = false) {
     writeFileSync(configPath, JSON.stringify(config, null, 2));
     return true;
   } catch (error) {
-    console.error("Error saving processes config:", error);
+    console.error('Error saving processes config:', error);
     return false;
   }
 }
@@ -192,9 +192,9 @@ export function initializeProcessesConfig(isProject = false) {
 }
 
 // Standards configuration functions
-const STANDARDS_CONFIG_FILE = ".claude-standards.json";
+const STANDARDS_CONFIG_FILE = '.claude-standards.json';
 const DEFAULT_STANDARDS_CONFIG = {
-  version: "1.0.0",
+  version: '1.0.0',
   standards: {},
   lastSync: null,
 };
@@ -220,10 +220,10 @@ export function getStandardsConfig(isProject = false) {
   }
 
   try {
-    const content = readFileSync(configPath, "utf-8");
+    const content = readFileSync(configPath, 'utf-8');
     return JSON.parse(content);
   } catch (error) {
-    console.error("Error loading standards config:", error);
+    console.error('Error loading standards config:', error);
     return { ...DEFAULT_STANDARDS_CONFIG };
   }
 }
@@ -235,7 +235,7 @@ export function updateStandardsConfig(config, isProject = false) {
     writeFileSync(configPath, JSON.stringify(config, null, 2));
     return true;
   } catch (error) {
-    console.error("Error saving standards config:", error);
+    console.error('Error saving standards config:', error);
     return false;
   }
 }

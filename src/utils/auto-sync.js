@@ -1,8 +1,8 @@
-import { existsSync, statSync } from "fs";
-import { getAgentsDir } from "./paths.js";
-import { loadConfig, saveConfig } from "./config.js";
-import { logger } from "./logger.js";
-import chalk from "chalk";
+import { existsSync, statSync } from 'fs';
+import { getAgentsDir } from './paths.js';
+import { loadConfig, saveConfig } from './config.js';
+import { logger } from './logger.js';
+import chalk from 'chalk';
 
 /**
  * Auto-sync utility to detect and sync external agent installations
@@ -75,13 +75,13 @@ export async function runAutoSyncIfNeeded(silent = false) {
   if (await shouldAutoSync()) {
     if (!silent) {
       console.log(
-        chalk.dim("Detected external agent changes, running sync..."),
+        chalk.dim('Detected external agent changes, running sync...'),
       );
     }
 
     try {
       // Import sync command dynamically to avoid circular dependencies
-      const { syncCommand } = await import("../commands/sync.js");
+      const { syncCommand } = await import('../commands/sync.js');
       await syncCommand({ auto: true });
       updateLastSyncTime();
       return true;
@@ -101,7 +101,7 @@ export function enableAutoSync() {
   const config = loadConfig();
   config.autoSync = true;
   saveConfig(config);
-  console.log(chalk.green("✓ Auto-sync enabled"));
+  console.log(chalk.green('✓ Auto-sync enabled'));
 }
 
 /**
@@ -111,7 +111,7 @@ export function disableAutoSync() {
   const config = loadConfig();
   config.autoSync = false;
   saveConfig(config);
-  console.log(chalk.yellow("Auto-sync disabled"));
+  console.log(chalk.yellow('Auto-sync disabled'));
 }
 
 /**

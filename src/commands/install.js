@@ -1,27 +1,27 @@
-import chalk from "chalk";
-import ora from "ora";
-import { writeFileSync, copyFileSync, existsSync } from "fs";
-import { join, dirname } from "path";
-import { fileURLToPath } from "url";
+import chalk from 'chalk';
+import ora from 'ora';
+import { writeFileSync, copyFileSync, existsSync } from 'fs';
+import { join, dirname } from 'path';
+import { fileURLToPath } from 'url';
 import {
   getAgentsDir,
   ensureDirectories,
   ensureProjectDirectories,
-} from "../utils/paths.js";
+} from '../utils/paths.js';
 import {
   selectAgents,
   confirmAction,
   selectInstallScope,
-} from "../utils/prompts.js";
-import { addInstalledAgent, getInstalledAgents } from "../utils/config.js";
-import { ensureLatestAgents } from "../utils/agent-updater.js";
+} from '../utils/prompts.js';
+import { addInstalledAgent, getInstalledAgents } from '../utils/config.js';
+import { ensureLatestAgents } from '../utils/agent-updater.js';
 import {
   getAvailableAgents,
   getAgentDetails,
   formatAgentForInstall,
-} from "../utils/agents.js";
-import { validateAgentName } from "../utils/validation.js";
-import { logger } from "../utils/logger.js";
+} from '../utils/agents.js';
+import { validateAgentName } from '../utils/validation.js';
+import { logger } from '../utils/logger.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -37,12 +37,12 @@ export async function installCommand(agentNames, options) {
     ensureLatestAgents();
 
     // Get available agents
-    spinner.start("Loading available agents...");
+    spinner.start('Loading available agents...');
     const availableAgents = getAvailableAgents();
     spinner.stop();
 
     if (availableAgents.length === 0) {
-      console.log(chalk.yellow("No agents available to install."));
+      console.log(chalk.yellow('No agents available to install.'));
       return;
     }
 
@@ -56,7 +56,7 @@ export async function installCommand(agentNames, options) {
     );
 
     if (installableAgents.length === 0) {
-      console.log(chalk.yellow("All available agents are already installed."));
+      console.log(chalk.yellow('All available agents are already installed.'));
       console.log(
         chalk.gray('Use "claude-agents list" to see installed agents.'),
       );
@@ -76,7 +76,7 @@ export async function installCommand(agentNames, options) {
         (name) => !installableAgents.some((agent) => agent.name === name),
       );
       if (notFound.length > 0) {
-        console.log(chalk.yellow(`Agents not found: ${notFound.join(", ")}`));
+        console.log(chalk.yellow(`Agents not found: ${notFound.join(', ')}`));
       }
     } else if (options.all) {
       selectedAgents = installableAgents.map((a) => a.name);
@@ -85,17 +85,17 @@ export async function installCommand(agentNames, options) {
     }
 
     if (selectedAgents.length === 0) {
-      console.log(chalk.yellow("No agents selected for installation."));
+      console.log(chalk.yellow('No agents selected for installation.'));
       return;
     }
 
     // Select installation scope
     const scope = options.project
-      ? "project"
+      ? 'project'
       : agentNames && agentNames.length > 0
-        ? "user"
+        ? 'user'
         : await selectInstallScope();
-    const isProject = scope === "project";
+    const isProject = scope === 'project';
 
     if (isProject) {
       ensureProjectDirectories();
@@ -107,13 +107,13 @@ export async function installCommand(agentNames, options) {
     if (!(agentNames && agentNames.length > 0)) {
       const confirmMessage = `Install ${selectedAgents.length} agent(s) to ${scope} directory?`;
       if (!(await confirmAction(confirmMessage))) {
-        console.log(chalk.yellow("Installation cancelled."));
+        console.log(chalk.yellow('Installation cancelled.'));
         return;
       }
     }
 
     // Install each selected agent
-    console.log("");
+    console.log('');
     for (const agentName of selectedAgents) {
       spinner.start(`Installing ${chalk.bold(agentName)}...`);
 
@@ -134,9 +134,9 @@ export async function installCommand(agentNames, options) {
         // For new format, just copy the .md file
         const srcPath = join(
           __dirname,
-          "..",
-          "..",
-          "agents",
+          '..',
+          '..',
+          'agents',
           `${agentName}.md`,
         );
         const destPath = join(agentsDir, `${agentName}.md`);
@@ -162,7 +162,7 @@ export async function installCommand(agentNames, options) {
         ) {
           console.log(
             chalk.gray(
-              "  This agent recommends hooks configuration in settings.json",
+              '  This agent recommends hooks configuration in settings.json',
             ),
           );
         }
@@ -171,14 +171,14 @@ export async function installCommand(agentNames, options) {
       }
     }
 
-    console.log("");
-    console.log(chalk.green("✓ Installation complete!"));
+    console.log('');
+    console.log(chalk.green('✓ Installation complete!'));
     console.log(
       chalk.gray('Use "claude-agents list" to see your installed agents.'),
     );
     console.log(
       chalk.gray(
-        "Agents use description-based auto-delegation in Claude Code.",
+        'Agents use description-based auto-delegation in Claude Code.',
       ),
     );
     console.log(
@@ -187,7 +187,7 @@ export async function installCommand(agentNames, options) {
       ),
     );
   } catch (error) {
-    spinner.fail("Installation failed");
+    spinner.fail('Installation failed');
     logger.error(error.message);
     throw error;
   }
