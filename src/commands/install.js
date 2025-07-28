@@ -23,6 +23,7 @@ import {
   formatAgentForInstall
 } from '../utils/agents.js';
 import { validateAgentName } from '../utils/validation.js';
+import { logger } from '../utils/logger.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -161,7 +162,7 @@ export async function installCommand(agentNames, options) {
     
   } catch (error) {
     spinner.fail('Installation failed');
-    console.error(chalk.red('Error:'), error.message);
-    process.exit(1);
+    logger.error(error.message);
+    throw error;
   }
 }

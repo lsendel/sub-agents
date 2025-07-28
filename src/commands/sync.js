@@ -1,6 +1,6 @@
 import chalk from 'chalk';
 import ora from 'ora';
-import { readdirSync, readFileSync, existsSync, writeFileSync, mkdirSync, copyFileSync } from 'fs';
+import { readdirSync, readFileSync, existsSync, writeFileSync, mkdirSync } from 'fs';
 import { join, basename, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { extractFrontmatter } from '../utils/yaml-parser.js';
@@ -25,13 +25,30 @@ function getProjectRoot() {
 }
 
 /**
+ * Create metadata object for an agent
+ */
+function createAgentMetadata(agent) {
+  return {
+    name: agent.name,
+    version: '1.0.0',
+    description: agent.frontmatter.description || `${agent.name} agent`,
+    author: 'External',
+    tags: agent.frontmatter.tags || [],
+    requirements: {
+      tools: agent.frontmatter.tools ? 
+        agent.frontmatter.tools.split(',').map(t => t.trim()) : 
+        []
+    },
+    compatible_with: ['claude-code@>=1.0.0']
+  };
+}
+
+/**
  * Copy agent files to project directory
  */
 async function copyAgentToProject(agent) {
   const projectRoot = getProjectRoot();
   const projectAgentsDir = join(projectRoot, 'agents', agent.name);
-  // Commands no longer used - agents use description-based delegation
-  // const projectCommandsDir = join(projectRoot, 'commands');
   
   try {
     // Create agent directory
@@ -42,25 +59,9 @@ async function copyAgentToProject(agent) {
     writeFileSync(agentTargetPath, agent.fullContent || readFileSync(agent.path, 'utf-8'));
     
     // Create metadata.json
-    const metadata = {
-      name: agent.name,
-      version: '1.0.0',
-      description: agent.frontmatter.description || `${agent.name} agent`,
-      author: 'External',
-      tags: agent.frontmatter.tags || [],
-      requirements: {
-        tools: agent.frontmatter.tools ? 
-          agent.frontmatter.tools.split(',').map(t => t.trim()) : 
-          []
-      },
-      compatible_with: ['claude-code@>=1.0.0']
-    };
-    
+    const metadata = createAgentMetadata(agent);
     const metadataPath = join(projectAgentsDir, 'metadata.json');
     writeFileSync(metadataPath, JSON.stringify(metadata, null, 2));
-    
-    // Commands no longer used - agents use description-based delegation
-    // Command detection and copying logic removed
     
     return true;
   } catch (error) {
@@ -253,22 +254,10 @@ export async function syncCommand(options) {
         }
         
         // Create metadata structure
-        const metadata = {
-          version: '1.0.0',
-          description: agent.frontmatter.description || `${agent.name} agent`,
-          author: 'External',
-          tags: agent.frontmatter.tags || [],
-          requirements: {
-            tools: agent.frontmatter.tools ? 
-              agent.frontmatter.tools.split(',').map(t => t.trim()) : 
-              []
-          },
-          compatible_with: ['claude-code@>=1.0.0']
-        };
+        const metadata = createAgentMetadata(agent);
         
         // Add to configuration
         const agentData = {
-          name: agent.name,
           ...metadata,
           frontmatter: agent.frontmatter,
           content: agent.content,
@@ -294,8 +283,8 @@ export async function syncCommand(options) {
     
   } catch (error) {
     spinner.fail('Sync failed');
-    console.error(chalk.red('Error:'), error.message);
+    logger.error(error.message);
     logger.debug(error.stack);
-    process.exit(1);
+    throw error;
   }
 }

@@ -4,6 +4,7 @@ import { existsSync } from 'fs';
 import { getAgentsDir } from '../utils/paths.js';
 import { confirmAction } from '../utils/prompts.js';
 import { AgentMigrator } from '../utils/agent-migrator.js';
+import { logger } from '../utils/logger.js';
 
 export async function migrateCommand(options) {
   const spinner = ora();
@@ -154,11 +155,11 @@ export async function migrateCommand(options) {
 
   } catch (error) {
     spinner.fail('Migration failed');
-    console.error(chalk.red('Error:'), error.message);
+    logger.error(error.message);
     if (options.verbose) {
-      console.error(error.stack);
+      logger.debug(error.stack);
     }
-    process.exit(1);
+    throw error;
   }
 }
 

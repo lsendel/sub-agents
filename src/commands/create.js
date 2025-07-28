@@ -5,6 +5,7 @@ import yaml from 'yaml';
 import { inputAgentDetails, confirmAction, selectInstallScope } from '../utils/prompts.js';
 import { getAgentsDir, ensureDirectories, ensureProjectDirectories } from '../utils/paths.js';
 import { addInstalledAgent } from '../utils/config.js';
+import { logger } from '../utils/logger.js';
 
 const BASIC_TEMPLATE = `You are a specialized assistant focused on [TASK].
 
@@ -150,7 +151,7 @@ export async function createCommand(options) {
     console.log(`4. Test your agent by mentioning it: "Use the ${agentDetails.name} agent to..."`);
     
   } catch (error) {
-    console.error(chalk.red('Error:'), error.message);
-    process.exit(1);
+    logger.error(error.message);
+    throw error;
   }
 }

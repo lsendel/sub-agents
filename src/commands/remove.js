@@ -5,7 +5,6 @@ import { join } from 'path';
 import { getAgentsDir } from '../utils/paths.js';
 import { getInstalledAgents, removeInstalledAgent } from '../utils/config.js';
 import { confirmAction } from '../utils/prompts.js';
-import { getAgentDetails } from '../utils/agents.js';
 import { logger } from '../utils/logger.js';
 import { Errors, handleError } from '../utils/errors.js';
 import { validateAgentName } from '../utils/validation.js';

@@ -6,6 +6,7 @@ import { getAgentsDir } from '../utils/paths.js';
 import { getInstalledAgents } from '../utils/config.js';
 import { validateDescription } from '../utils/description-optimizer.js';
 import { extractFrontmatter } from '../utils/yaml-parser.js';
+import { logger } from '../utils/logger.js';
 
 export async function validateCommand(agentName, options) {
   try {
@@ -41,14 +42,14 @@ export async function validateCommand(agentName, options) {
       displayValidationResults(results, options);
     }
     
-    // Exit with error if any validation failed and strict mode
+    // Throw error if any validation failed and strict mode
     if (options.strict && results.some(r => !r.valid)) {
-      process.exit(1);
+      throw new Error('Validation failed');
     }
     
   } catch (error) {
-    console.error(chalk.red('Error:'), error.message);
-    process.exit(1);
+    logger.error(error.message);
+    throw error;
   }
 }
 

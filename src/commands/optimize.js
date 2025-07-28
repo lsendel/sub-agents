@@ -10,6 +10,7 @@ import {
   updateAgentDescription,
   validateDescription 
 } from '../utils/description-optimizer.js';
+import { logger } from '../utils/logger.js';
 
 export async function optimizeCommand(agentName, options) {
   const spinner = ora();
@@ -96,8 +97,8 @@ export async function optimizeCommand(agentName, options) {
     
   } catch (error) {
     spinner.fail('Optimization failed');
-    console.error(chalk.red('Error:'), error.message);
-    process.exit(1);
+    logger.error(error.message);
+    throw error;
   }
 }
 

@@ -1,6 +1,7 @@
 import chalk from 'chalk';
 import { getAgentDetails } from '../utils/agents.js';
 import { getInstalledAgents, isAgentEnabled } from '../utils/config.js';
+import { logger } from '../utils/logger.js';
 
 export async function infoCommand(agentName) {
   try {
@@ -9,9 +10,9 @@ export async function infoCommand(agentName) {
     const isInstalled = Object.prototype.hasOwnProperty.call(installedAgents, agentName);
     
     if (!agentDetails && !isInstalled) {
-      console.log(chalk.red(`Agent "${agentName}" not found.`));
-      console.log(chalk.gray('Use "claude-agents list" to see available agents.'));
-      process.exit(1);
+      logger.error(`Agent "${agentName}" not found.`);
+      logger.info(chalk.gray('Use "claude-agents list" to see available agents.'));
+      throw new Error(`Agent "${agentName}" not found`);
     }
     
     // Display agent information
@@ -87,7 +88,7 @@ export async function infoCommand(agentName) {
     console.log('');
     
   } catch (error) {
-    console.error(chalk.red('Error:'), error.message);
-    process.exit(1);
+    logger.error(error.message);
+    throw error;
   }
 }

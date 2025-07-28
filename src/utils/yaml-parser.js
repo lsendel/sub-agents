@@ -87,12 +87,12 @@ function parseClaudeCodeFormat(yamlContent) {
 function processValue(value) {
   // Remove surrounding quotes if present
   if ((value.startsWith('"') && value.endsWith('"')) ||
-      (value.startsWith("'") && value.endsWith("'"))) {
+      (value.startsWith('\'') && value.endsWith('\''))) {
     value = value.slice(1, -1);
   }
   
   // Handle empty values
-  if (value === '""' || value === "''") {
+  if (value === '""' || value === '\'\'') {
     return '';
   }
   
