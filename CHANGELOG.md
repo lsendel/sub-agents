@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.0] - 2025-07-28
+
 ### Added
 - 17 new specialized agents for comprehensive development support:
   - **Core Development**: code-refactorer, performance-optimizer, codebase-analyzer
@@ -17,6 +19,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - **Creative & Marketing**: creative-brainstormer, marketing-strategist
 - Categorized agent display in documentation
 - Enhanced agent descriptions for better auto-delegation
+
+### Changed
+- Package renamed to generic claude-agents format
+- Updated all documentation to remove proprietary naming
 
 ## [1.0.4] - 2024-07-28
 
@@ -98,7 +104,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Custom agent creation
 - Comprehensive documentation
 
-[Unreleased]: https://github.com/yourusername/sub-agents/compare/v1.0.2...HEAD
-[1.0.2]: https://github.com/yourusername/sub-agents/compare/v1.0.1...v1.0.2
-[1.0.1]: https://github.com/yourusername/sub-agents/compare/v1.0.0...v1.0.1
-[1.0.0]: https://github.com/yourusername/sub-agents/releases/tag/v1.0.0
+[Unreleased]: https://github.com/lsendel/sub-agents/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/lsendel/sub-agents/compare/v1.0.4...v1.1.0
+[1.0.4]: https://github.com/lsendel/sub-agents/compare/v1.0.3...v1.0.4
+[1.0.3]: https://github.com/lsendel/sub-agents/compare/v1.0.2...v1.0.3
+[1.0.2]: https://github.com/lsendel/sub-agents/compare/v1.0.1...v1.0.2
+[1.0.1]: https://github.com/lsendel/sub-agents/compare/v1.0.0...v1.0.1
+[1.0.0]: https://github.com/lsendel/sub-agents/releases/tag/v1.0.0
