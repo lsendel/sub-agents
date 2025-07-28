@@ -7,6 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.0] - 2025-07-28
+
+### Added
+- Agent cleanup command to remove deprecated agents
+- Agent updater utility for maintaining latest agent versions
+- Makefile targets for syncing commands (`make sync-commands`)
+- Comprehensive `make sync-all` target for full synchronization
+- Automatic deprecated agent removal during sync and install
+
+### Changed
+- Unified directory naming from `process/` to `processes/` for consistency
+- Enhanced sync command to automatically clean up old agents
+- Updated install command to ensure only latest agents are used
+
+### Fixed
+- Removed old agent names (design-director-platform, doc-writer, refactor, etc.)
+- Fixed command paths to reference correct `processes/` directory
+- Resolved conflicts between old and new agent naming schemes
+
 ## [1.1.0] - 2025-07-28
 
 ### Added
