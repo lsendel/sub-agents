@@ -25,6 +25,7 @@
   "scripts": {
     "start": "node bin/claude-agents",
     "test": "echo \"No tests configured\" && exit 0",
+    "test:coverage": "echo \"No test coverage configured\" && exit 0",
     "lint": "eslint src/**/*.js",
     "lint:fix": "eslint src/**/*.js --fix",
     "format": "prettier --write src/**/*.js",
