@@ -2,33 +2,19 @@
 name: api-design
 type: standard
 version: 1.0.0
-description: Standards for designing consistent, intuitive, and maintainable APIs
-author: Claude Code Team
+description: RESTful API design patterns and conventions
+author: Claude
 tags: [api, rest, design, standards]
 related_commands: [/design-api, /api-review]
 ---
 
 # API Design Standards
 
-## Overview
-This document outlines the standards for designing RESTful APIs that are consistent, intuitive, and maintainable.
-
 ## Core Principles
-
-### 1. Consistency
 - Use consistent naming conventions
+- Keep endpoints focused and RESTful
 - Standardize response formats
-- Maintain consistent error handling
-
-### 2. Simplicity
-- Keep endpoints focused
-- Avoid deep nesting
-- Use clear, descriptive names
-
-### 3. Flexibility
-- Version APIs appropriately
-- Support filtering and pagination
-- Allow partial updates
+- Version breaking changes
 
 ## URL Structure
 
@@ -54,22 +40,11 @@ GET    /api/v1/users/123/orders   # Get user's orders
 ```
 
 ## HTTP Methods
-
-### Standard Usage
 - **GET**: Retrieve resources (safe, idempotent)
 - **POST**: Create new resources
 - **PUT**: Update entire resource (idempotent)
 - **PATCH**: Partial update (idempotent)
 - **DELETE**: Remove resources (idempotent)
-
-### Method Safety
-| Method | Safe | Idempotent |
-|--------|------|------------|
-| GET    | Yes  | Yes        |
-| POST   | No   | No         |
-| PUT    | No   | Yes        |
-| PATCH  | No   | Yes        |
-| DELETE | No   | Yes        |
 
 ## Request Standards
 
@@ -296,56 +271,20 @@ If-Modified-Since: Wed, 21 Oct 2023 07:28:00 GMT
 ```
 
 ## Best Practices
-
-### 1. Use HTTPS Always
-- Encrypt all API traffic
-- Use proper SSL certificates
-- Implement HSTS headers
-
-### 2. Documentation
-- Provide comprehensive API docs
-- Include examples for all endpoints
-- Document error responses
-- Keep documentation updated
-
-### 3. Backward Compatibility
+- Always use HTTPS
 - Don't break existing endpoints
-- Use versioning for breaking changes
-- Deprecate gracefully
-- Communicate changes clearly
-
-### 4. Performance
-- Implement pagination for large datasets
-- Support field selection
-- Use appropriate caching
-- Optimize database queries
-
-### 5. Security
+- Implement pagination for collections
 - Validate all inputs
 - Use parameterized queries
 - Implement rate limiting
-- Log security events
-- Regular security audits
+- Cache appropriately
 
-## API Design Checklist
-- [ ] Endpoints use consistent naming and structure
-- [ ] HTTP methods follow REST conventions
-- [ ] Request/response formats are documented
-- [ ] Error handling is standardized
-- [ ] Versioning is implemented if needed
-- [ ] Security (auth, rate limiting) is considered
-- [ ] Pagination/filtering supported for collections
-- [ ] API changes are backward compatible or versioned
-
-## Example Endpoint Documentation Template
-```markdown
-### [GET] /api/v1/resource
-- **Description**: [What this endpoint does]
-- **Request Params**: [List params and types]
-- **Response**: [Example JSON]
-- **Errors**: [Possible error codes and messages]
-```
-
----
-
-*For more on standards, see [Development Best Practices](./best-practices.md) and [Coding Standards](./coding-standards.md).*
+## Implementation Checklist
+- [ ] Consistent URL structure
+- [ ] Proper HTTP method usage
+- [ ] Standardized responses
+- [ ] Error format consistency
+- [ ] Pagination for collections
+- [ ] Authentication implemented
+- [ ] Rate limiting configured
+- [ ] API versioning strategy

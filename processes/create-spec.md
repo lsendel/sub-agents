@@ -9,32 +9,16 @@ tags: [specification, planning, features]
 
 # Feature Specification Guide
 
-## Overview
-
-This guide helps you create clear, actionable specifications for new features. Good specs reduce ambiguity and accelerate development.
-
-## Prerequisites
-
-- Product documentation exists in `./product/`
-- Clear understanding of the feature requirements
-- Access to product roadmap and mission
-
 ## Process Steps
 
-### 1. Verify Feature Alignment
-
-Before creating a spec:
-- Check `./product/roadmap.md` for feature priority
+### 1. Verify Alignment
+- Check `./product/roadmap.md` for priority
 - Ensure alignment with `./product/mission.md`
-- Review `./product/tech-stack.md` for technical constraints
+- Review `./product/tech-stack.md` for constraints
 
 ### 2. Create Spec Directory
-
-Create a dated directory for your specification:
-
 ```bash
-# Format: YYYY-MM-DD-feature-name
-mkdir ./specs/2024-01-15-user-authentication
+mkdir ./specs/YYYY-MM-DD-feature-name
 ```
 
 ### 3. Write Feature Specification
@@ -189,81 +173,16 @@ Create `./specs/YYYY-MM-DD-feature-name/tasks.md`:
 - [ ] Product owner approval
 ```
 
-## Feature Spec Checklist
-- [ ] Feature aligns with product mission and roadmap
-- [ ] Technical constraints and dependencies identified
-- [ ] Acceptance criteria are clear and testable
-- [ ] User flows and edge cases described
-- [ ] API changes (if any) are specified
-- [ ] Security and privacy considerations noted
-- [ ] Spec reviewed by at least one other team member
+## Spec Checklist
+- [ ] Aligns with mission and roadmap
+- [ ] Technical constraints identified
+- [ ] Clear acceptance criteria
+- [ ] User flows documented
+- [ ] API changes specified
+- [ ] Security considerations noted
+- [ ] Peer reviewed
 
-## Feature Spec Template
-```markdown
-# Feature: [Feature Name]
-
-> Created: [DATE]
-> Status: Draft | In Review | Approved
-> Owner: [Name]
-
-## Overview
-Brief summary of the feature and its purpose.
-
-## Requirements
-- [ ] List of requirements
-
-## User Stories / Flows
-- As a [user], I want to [do something] so that [goal].
-- ...
-
-## Acceptance Criteria
-- [ ] Criteria 1
-- [ ] Criteria 2
-
-## Technical Notes
-- Stack/architecture notes
-- API changes
-- Data model changes
-
-## Security & Privacy
-- Considerations and mitigations
-
-## Open Questions
-- [ ] ...
-```
-
----
-
-*For more on planning, see [Product Planning Guide](./plan-product.md).*
-
-## Best Practices
-
-### Writing Good Specs
-
-1. **Be Specific**: Avoid ambiguous language
-2. **Stay Focused**: One feature per spec
-3. **Think Edge Cases**: Document error scenarios
-4. **Consider Scale**: Plan for growth
-5. **Include Examples**: Show, don't just tell
-
-### Common Pitfalls
-
-- Over-engineering the solution
-- Skipping user research
-- Ignoring existing patterns
-- Missing non-functional requirements
-- Forgetting about maintenance
-
-### Review Process
-
-1. **Self Review**: Check completeness
-2. **Technical Review**: Architecture validation
-3. **Product Review**: Business alignment
-4. **Team Review**: Get buy-in
-
-## Templates
-
-### Quick Spec Template (for small features)
+## Quick Spec Template
 
 ```markdown
 # Quick Spec: [Feature]
@@ -279,7 +198,7 @@ Brief summary of the feature and its purpose.
 - [ ] [Task 2]
 ```
 
-### Decision Record Template
+## Decision Record Template
 
 ```markdown
 ## Decision: [Title]
@@ -290,11 +209,3 @@ Brief summary of the feature and its purpose.
 **Decision**: [What we decided]
 **Consequences**: [What happens as a result]
 ```
-
-## Integration Tips
-
-- Link specs to product roadmap items
-- Reference specs in pull requests
-- Update specs as implementation evolves
-- Archive completed specs for reference
-- Use specs in sprint planning

@@ -1,93 +1,41 @@
 # Tech Stack
 
-> Version: 1.0.0
-> Last Updated: 2025-08-31
-
-## Context
-
-This file defines global tech stack defaults that are referenced by all product codebases when initializing new projects. Individual projects may override these choices in their `./product/tech-stack.md` file.
-
 ## Core Technologies
 
-### Application Framework
-- **Framework:** Spring Boot
-- **Version:** 3.0+
-- **Language:** Java 17+
-
-### Database
-- **Primary:** PostgreSQL
-- **Version:** 17+
-- **ORM:** JPA/Hibernate
+- **Framework:** Spring Boot 3.5.4 (Java 21)
+- **Database:** PostgreSQL 17+ with JPA/Hibernate
 
 ## Frontend Stack
 
-### JavaScript Framework
-- **Framework:** React
-- **Version:** Latest stable
-- **Build Tool:** Vite
-
-### Import Strategy
-- **Strategy:** Node.js modules
-- **Package Manager:** npm
-- **Node Version:** 22 LTS
-
-### CSS Framework
-- **Framework:** TailwindCSS
-- **Version:** 4.0+
-- **PostCSS:** Yes
-
-### UI Components
-- **Library:** Material-UI / Ant Design
-- **Version:** Latest
-- **Installation:** Via npm/yarn
+- **Framework:** React 18.3.0 with Vite
+- **Node:** 22 LTS with npm
+- **CSS:** TailwindCSS 4.0+ with PostCSS
+- **UI:** Material-UI / Ant Design (latest)
 
 ## Assets & Media
 
-### Fonts
-- **Provider:** Google Fonts
-- **Loading Strategy:** Self-hosted for performance
-
-### Icons
-- **Library:** Lucide
-- **Implementation:** React components
+- **Fonts:** Google Fonts (self-hosted)
+- **Icons:** Lucide React components
 
 ## Infrastructure
 
-### Application Hosting
-- **Platform:** Digital Ocean
-- **Service:** App Platform / Droplets
-- **Region:** Primary region based on user base
-
-### Database Hosting
-- **Provider:** Digital Ocean
-- **Service:** Managed PostgreSQL
-- **Backups:** Daily automated
-
-### Asset Storage
-- **Provider:** Amazon S3
-- **CDN:** CloudFront
-- **Access:** Private with signed URLs
+- **App Hosting:** Digital Ocean (App Platform/Droplets)
+- **Database:** Digital Ocean Managed PostgreSQL (daily backups)
+- **Assets:** S3 + CloudFront (signed URLs)
 
 ## Deployment
 
-### CI/CD Pipeline
-- **Platform:** GitHub Actions
-- **Trigger:** Push to main/staging branches
-- **Tests:** Run before deployment
+- **CI/CD:** GitHub Actions (push to main/staging)
+- **Environments:** Production (main), Staging (staging), Review Apps (PRs)
 
-### Environments
-- **Production:** main branch
-- **Staging:** staging branch
-- **Review Apps:** PR-based (optional)
-
-## Tech Stack Selection Checklist
-- [ ] Application framework and language selected based on team expertise
-- [ ] Database choice justified for scalability and reliability
-- [ ] Frontend stack aligns with product requirements
-- [ ] Build tools and package managers standardized
-- [ ] UI component library chosen for consistency
-- [ ] Asset and media strategy defined
-- [ ] All tech choices documented in product/tech-stack.md
+## Checklist
+- [ ] Framework matches team expertise
+- [ ] Database scalable and reliable
+- [ ] Frontend meets requirements
+- [ ] Build tools standardized
+- [ ] UI library selected
+- [ ] Asset strategy defined
+- [ ] Documented in product/tech-stack.md
 
 ## Tech Stack Documentation Template
 ```markdown
@@ -122,8 +70,3 @@ This file defines global tech stack defaults that are referenced by all product 
 - [Migration/upgrade plan]
 ```
 
----
-
-*For more on standards, see [Product Planning Guide](../processes/plan-product.md) and [Development Best Practices](./best-practices.md).*
-
-*Customize this file with your organization's preferred tech stack. These defaults are used when initializing new projects.*

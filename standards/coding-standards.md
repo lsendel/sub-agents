@@ -10,33 +10,17 @@ related_commands: [/format, /lint]
 
 # Coding Standards
 
-## Overview
-This document defines the coding standards and best practices to ensure consistency, readability, and maintainability across the codebase.
-
-## General Principles
-
-### 1. Readability First
-- Code is read more often than it's written
-- Favor clarity over cleverness
-- Write self-documenting code
-
-### 2. Consistency
-- Follow existing patterns in the codebase
-- Use consistent naming conventions
-- Maintain consistent formatting
-
-### 3. Simplicity
-- Keep functions and classes focused (Single Responsibility)
-- Avoid premature optimization
-- Reduce complexity where possible
+## Core Principles
+- **Readability**: Clarity over cleverness, self-documenting code
+- **Consistency**: Follow existing patterns, naming, formatting
+- **Simplicity**: Single responsibility, avoid premature optimization
 
 ## Naming Conventions
 
 ### Variables
-- Use descriptive names that explain purpose
-- camelCase for JavaScript/TypeScript
-- snake_case for Python
-- Avoid single-letter variables except in loops
+- Descriptive names
+- camelCase (JS/TS), snake_case (Python)
+- No single letters except loops
 
 ```javascript
 // Good
@@ -49,9 +33,8 @@ const flag = true;
 ```
 
 ### Functions
-- Use verb-noun pairs for function names
-- Be specific about what the function does
-- Boolean functions should start with is/has/can
+- Verb-noun pairs
+- Boolean functions: is/has/can prefix
 
 ```javascript
 // Good
@@ -66,9 +49,8 @@ function permission(user, action) {}
 ```
 
 ### Classes
-- Use PascalCase for class names
+- PascalCase
 - Nouns or noun phrases
-- Be specific and descriptive
 
 ```javascript
 // Good
@@ -83,9 +65,9 @@ class Validate {}
 ```
 
 ### Constants
-- Use UPPER_SNAKE_CASE
-- Define at module/class level
-- Group related constants
+- UPPER_SNAKE_CASE
+- Module/class level
+- Group related
 
 ```javascript
 // Good
@@ -96,33 +78,15 @@ const API_BASE_URL = 'https://api.example.com';
 
 ## Code Organization
 
-### File Structure
-- One class/component per file (when reasonable)
-- Group related functionality
-- Clear folder structure
-- Meaningful file names
-
-### Function Length
-- Keep functions under 20-30 lines
-- Extract complex logic into helper functions
-- Each function should do one thing well
-
-### Class Structure
-1. Static properties/methods
-2. Constructor
-3. Public methods
-4. Protected methods
-5. Private methods
+- One class/component per file
+- Functions under 20-30 lines
+- Class order: static → constructor → public → protected → private
 
 ## Comments and Documentation
 
-### When to Comment
-- Complex algorithms or business logic
-- Non-obvious code behavior
-- Important decisions or trade-offs
-- TODO items with context
-
-### How to Comment
+- Comment complex algorithms and non-obvious behavior
+- Explain "why" not "what"
+- Document public APIs with parameters, returns, exceptions
 ```javascript
 // Good: Explains why
 // Using exponential backoff to avoid overwhelming the server
@@ -134,10 +98,6 @@ const delay = Math.pow(2, retryCount) * 1000;
 const delay = Math.pow(2, retryCount) * 1000;
 ```
 
-### Documentation Comments
-- Document all public APIs
-- Include parameters, return values, and exceptions
-- Provide usage examples when helpful
 
 ```javascript
 /**
@@ -155,11 +115,10 @@ function calculateTotalPrice(items, taxRate, shippingCost) {
 
 ## Error Handling
 
-### Best Practices
-- Catch specific exceptions when possible
-- Provide meaningful error messages
+- Catch specific exceptions
+- Meaningful error messages
 - Log errors appropriately
-- Clean up resources in finally blocks
+- Clean up in finally blocks
 
 ```javascript
 // Good
@@ -183,12 +142,7 @@ try {
 }
 ```
 
-## Testing Standards
-
-### Test Naming
-- Describe what is being tested
-- Include expected behavior
-- Use consistent format
+## Testing
 
 ```javascript
 // Good
@@ -199,56 +153,28 @@ describe('UserValidator', () => {
 });
 ```
 
-### Test Structure
-- Arrange: Set up test data
-- Act: Execute the function
-- Assert: Verify the result
+- Describe behavior in test names
+- Arrange → Act → Assert
+- 80%+ coverage target
+- Test edge cases and errors
 
-### Test Coverage
-- Aim for 80%+ coverage
-- Test edge cases
-- Test error conditions
-- Don't test implementation details
+## Security
 
-## Security Standards
-
-### Input Validation
-- Always validate user input
-- Use whitelisting over blacklisting
-- Sanitize data before storage
-
-### Authentication
-- Use secure session management
-- Implement proper password policies
-- Enable multi-factor authentication when possible
-
-### Data Protection
+- Validate all user input (whitelist approach)
 - Encrypt sensitive data
-- Use HTTPS for all communications
-- Follow principle of least privilege
+- HTTPS only
+- Principle of least privilege
 
-## Performance Guidelines
+## Performance
 
-### General Rules
 - Measure before optimizing
-- Focus on algorithmic improvements
 - Cache expensive operations
-- Lazy load when appropriate
-
-### Database
-- Use indexes appropriately
 - Avoid N+1 queries
-- Paginate large result sets
-- Use connection pooling
+- Use indexes and pagination
 
 ## Version Control
 
-### Commit Messages
-- Use present tense ("Add feature" not "Added feature")
-- Keep first line under 50 characters
-- Provide context in body if needed
-- Reference issue numbers
-
+### Commit Format
 ```
 feat: Add user authentication endpoint
 
@@ -259,26 +185,21 @@ feat: Add user authentication endpoint
 Closes #123
 ```
 
-### Branching
-- Use feature branches
-- Keep branches up to date
-- Delete branches after merging
-- Use descriptive branch names
+- Present tense, <50 chars first line
+- Feature branches with descriptive names
 
-## Coding Standards Checklist
-- [ ] Code is readable and self-documenting
-- [ ] Naming conventions match language and context
-- [ ] Functions/classes have a single responsibility
-- [ ] Consistent formatting and indentation
-- [ ] No unnecessary complexity or premature optimization
-- [ ] Follows project and language-specific style guides
-- [ ] Comments explain "why" for complex logic
-- [ ] No unused variables, functions, or imports
+## Checklist
+- [ ] Readable and self-documenting
+- [ ] Proper naming conventions
+- [ ] Single responsibility
+- [ ] Consistent formatting
+- [ ] No premature optimization
+- [ ] "Why" comments for complex logic
+- [ ] No unused code
 
-## Language-Specific Examples
+## Examples
 
-### JavaScript/TypeScript
-```js
+```javascript
 // Good
 function getUserEmail(user) {
   return user.email;
@@ -290,7 +211,6 @@ function g(u) {
 }
 ```
 
-### Python
 ```python
 # Good
 def get_user_email(user):
@@ -300,17 +220,3 @@ def get_user_email(user):
 def g(u):
     return u.e
 ```
-
----
-
-*For more on style and best practices, see [Code Style Guide](./code-style.md) and [Development Best Practices](./best-practices.md).*
-
-## Code Review Checklist
-
-- [ ] Follows naming conventions
-- [ ] Functions are focused and concise
-- [ ] Error handling is appropriate
-- [ ] Tests are included and passing
-- [ ] Security considerations addressed
-- [ ] Performance impact considered
-- [ ] Documentation updated

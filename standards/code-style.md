@@ -1,42 +1,18 @@
 # Code Style Guide
 
-> Version: 1.0.0
-> Last Updated: 2025-04-24
-
-## Context
-
-This file defines global code style rules that are referenced by all product codebases and provide default formatting guidelines. Individual projects may extend or override these rules in their `./product/code-style.md` file.
-
 ## General Formatting
 
-### Indentation
-- Use 2 spaces for indentation (never tabs)
-- Maintain consistent indentation throughout files
-- Align nested structures for readability
-
-### Naming Conventions
-- **Methods and Variables**: Use camelCase (e.g., `userProfile`, `calculateTotal`)
-- **Classes and Interfaces**: Use PascalCase (e.g., `UserProfile`, `PaymentProcessor`)
-- **Constants**: Use UPPER_SNAKE_CASE (e.g., `MAX_RETRY_COUNT`)
-
-### String Formatting
-- Use single quotes for strings: `'Hello World'`
-- Use double quotes only when interpolation is needed
-- Use template literals for multi-line strings or complex interpolation
+- **Indentation**: 2 spaces (never tabs)
+- **Methods/Variables**: camelCase (`userProfile`, `calculateTotal`)
+- **Classes/Interfaces**: PascalCase (`UserProfile`, `PaymentProcessor`)
+- **Constants**: UPPER_SNAKE_CASE (`MAX_RETRY_COUNT`)
+- **Strings**: Single quotes `'Hello World'`, template literals for interpolation
 
 ## HTML/Template Formatting
 
-### Structure Rules
-- Use 2 spaces for indentation
-- Place nested elements on new lines with proper indentation
-- Content between tags should be on its own line when multi-line
-
-### Attribute Formatting
-- Place each HTML attribute on its own line
+- Each HTML attribute on its own line
 - Align attributes vertically
-- Keep the closing `>` on the same line as the last attribute
-
-### Example HTML Structure
+- Closing `>` on same line as last attribute
 
 ```html
 <div class="container">
@@ -60,18 +36,13 @@ This file defines global code style rules that are referenced by all product cod
 </div>
 ```
 
-## Tailwind CSS preferences
+## Tailwind CSS Multi-line Format
 
-### Multi-line CSS classes in markup
-
-- We use a unique multi-line formatting style when writing Tailwind CSS classes in HTML markup and ERB tags, where the classes for each responsive size are written on their own dedicated line.
-- The top-most line should be the smallest size (no responsive prefix). Each line below it should be the next responsive size up.
-- Each line of CSS classes should be aligned vertically.
-- focus and hover classes should be on their own additional dedicated lines.
-- We implement one additional responsive breakpoint size called 'xs' which represents 400px.
-- If there are any custom CSS classes being used, those should be included at the start of the first line.
-
-**Example of multi-line Tailwind CSS classes:**
+- Each responsive size on its own line (smallest to largest)
+- Align classes vertically
+- hover/focus states on separate lines
+- Custom 'xs' breakpoint = 400px
+- Custom classes at start of first line
 
 <div class="custom-cta bg-gray-50 dark:bg-gray-900 p-4 rounded cursor-pointer w-full
             hover:bg-gray-100 dark:hover:bg-gray-800
@@ -86,17 +57,11 @@ This file defines global code style rules that are referenced by all product cod
 
 ## Code Comments
 
-### When to Comment
-- Add brief comments above non-obvious business logic
-- Document complex algorithms or calculations
-- Explain the "why" behind implementation choices
-
-### Comment Maintenance
-- Never remove existing comments unless removing the associated code
-- Update comments when modifying code to maintain accuracy
-- Keep comments concise and relevant
-
-### Comment Format
+- Comment non-obvious business logic
+- Document complex algorithms
+- Explain "why" not "what"
+- Never remove existing comments
+- Update comments when code changes
 ```java
 /**
  * Calculate compound interest with monthly contributions
@@ -113,13 +78,13 @@ public double calculateCompoundInterest(double principal, double rate, int time,
 }
 ```
 
-## Code Style Checklist
-- [ ] Indentation is consistent (2 spaces, no tabs)
-- [ ] Naming conventions match language and context
-- [ ] String formatting follows project rules
-- [ ] HTML/template formatting is clean and readable
-- [ ] No trailing whitespace or unnecessary blank lines
-- [ ] Code is auto-formatted with linter/prettier if available
+## Checklist
+- [ ] 2 spaces indentation
+- [ ] Correct naming conventions
+- [ ] Proper string formatting
+- [ ] Clean HTML/template formatting
+- [ ] No trailing whitespace
+- [ ] Auto-formatted with linter/prettier
 
 ## Example Naming Conventions
 ```java
@@ -135,10 +100,3 @@ public interface PaymentProcessor { ... }
 public static final int MAX_RETRY_COUNT = 5;
 ```
 
----
-
-*For more on standards, see [Coding Standards](./coding-standards.md) and [Development Best Practices](./best-practices.md).*
-
----
-
-*Customize this file with your team's specific style preferences. These formatting rules apply to all code written by humans and AI agents.*
