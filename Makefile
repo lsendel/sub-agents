@@ -11,7 +11,7 @@ YELLOW = \033[1;33m
 RED = \033[0;31m
 NC = \033[0m # No Color
 
-.PHONY: help install test lint format clean dev link unlink sync sync-copy pull-agents pull-processes pull-standards pull-commands pull-all sync-all cleanup install-agent migrate optimize validate fix-yaml publish-info publish-quick list-agents install-agents push-agents push-processes push-standards push-commands push-all
+.PHONY: help install test lint format clean dev link unlink sync sync-copy pull-agents pull-processes pull-standards pull-commands pull-all sync-all cleanup install-agent migrate optimize validate fix-yaml publish-info publish-quick list-agents install-agents push-agents push-processes push-standards push-commands push-all push-reference
 
 # Default target
 help:
@@ -41,6 +41,7 @@ help:
 	@echo "  $(YELLOW)make push-processes$(NC) - Push processes from project to ~/.claude/processes"
 	@echo "  $(YELLOW)make push-standards$(NC) - Push standards from project to ~/.claude/standards"
 	@echo "  $(YELLOW)make push-commands$(NC)  - Push commands from project to ~/.claude/commands"
+	@echo "  $(YELLOW)make push-reference$(NC) - Push CLAUDE-REFERENCE.md to ~/.claude/ (catalog of all agents/processes/standards)"
 	@echo "  $(YELLOW)make push-all$(NC)      - Push all resources to global directories"
 	@echo ""
 	@echo "$(GREEN)Legacy sync commands:$(NC)"
@@ -256,6 +257,22 @@ push-all: push-agents push-processes push-standards push-commands
 	@echo "  • Processes → ~/.claude/processes"
 	@echo "  • Standards → ~/.claude/standards"
 	@echo "  • Commands → ~/.claude/commands"
+
+# Push CLAUDE-REFERENCE.md to ~/.claude/
+# This file contains a comprehensive catalog of all available agents, processes, standards, and commands
+# Other projects can reference this file in their CLAUDE.md to make Claude aware of all available resources
+push-reference:
+	@echo "$(BLUE)Pushing CLAUDE-REFERENCE.md (comprehensive agent/process/standard catalog) to ~/.claude/...$(NC)"
+	@mkdir -p ~/.claude
+	@if [ -f "CLAUDE-REFERENCE.md" ]; then \
+		cp -f CLAUDE-REFERENCE.md ~/.claude/ && \
+		echo "$(GREEN)✓ CLAUDE-REFERENCE.md pushed to ~/.claude/$(NC)"; \
+		echo "$(BLUE)Other projects can now reference this catalog in their CLAUDE.md$(NC)"; \
+		echo "$(YELLOW)Usage: Add 'See ~/.claude/CLAUDE-REFERENCE.md' to your project's CLAUDE.md$(NC)"; \
+	else \
+		echo "$(RED)✗ CLAUDE-REFERENCE.md not found in project root$(NC)"; \
+		echo "$(YELLOW)This file should contain the catalog of all agents, processes, and standards$(NC)"; \
+	fi
 
 # Clean up deprecated agents
 cleanup:
