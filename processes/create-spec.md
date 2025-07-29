@@ -2,12 +2,36 @@
 name: create-spec
 type: process
 version: 2.0.0
-description: Guide for creating feature specifications
+description: LLM-optimized template for creating detailed feature specifications with examples
 author: Claude Code Team
-tags: [specification, planning, features]
+tags: [specification, planning, features, llm-guide]
+related_commands: [/create-spec, /plan-feature]
 ---
 
-# Feature Specification Guide
+# Feature Specification Guide for LLMs
+
+> Version: 2.0.0
+> Last updated: 2025-07-29
+> Purpose: Enable LLMs to create comprehensive, actionable feature specifications
+> Target: Language models planning new features or enhancements
+
+## Context for LLM Usage
+
+This guide helps LLMs create specifications that bridge business requirements and technical implementation. When creating specs:
+- Extract both explicit and implicit requirements
+- Define clear acceptance criteria
+- Include edge cases and error scenarios
+- Provide mockups or examples where helpful
+- Consider performance and security implications
+
+## Related Standards
+
+Reference these standards when creating specifications:
+- **[documentation-standard.md](../standards/documentation-standard.md)** - For specification format and structure
+- **[api-design.md](../standards/api-design.md)** - When designing API endpoints
+- **[domain-driven-design.md](../standards/domain-driven-design.md)** - For domain modeling and bounded contexts
+- **[ui-design-guide.md](../standards/ui-design-guide.md)** - For UI/UX specifications
+- **[testing-standards.md](../standards/testing-standards.md)** - For defining test scenarios
 
 ## Process Steps
 

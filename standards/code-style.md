@@ -1,4 +1,27 @@
-# Code Style Guide
+---
+name: code-style
+type: standard
+version: 1.0.0
+description: LLM-optimized code formatting and style conventions with auto-formatting rules
+author: Claude
+tags: [style, formatting, conventions, llm-guide]
+related_commands: [/format-code, /style-check]
+---
+
+# Code Style Guide for LLMs
+
+> Version: 1.0.0
+> Last updated: 2025-07-29
+> Purpose: Ensure consistent code formatting across all LLM-generated code
+> Target: Language models writing or formatting code
+
+## Context for LLM Usage
+
+This guide defines exact formatting rules for generated code. When writing code:
+- Apply these rules automatically without asking
+- Format existing code to match when making edits
+- Use language-specific variations where noted
+- Maintain consistency within existing codebases
 
 ## General Formatting
 

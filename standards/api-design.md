@@ -2,19 +2,43 @@
 name: api-design
 type: standard
 version: 1.0.0
-description: RESTful API design patterns and conventions
+description: LLM-optimized RESTful API design patterns with OpenAPI specifications and best practices
 author: Claude
-tags: [api, rest, design, standards]
-related_commands: [/design-api, /api-review]
+tags: [api, rest, design, standards, openapi, llm-guide]
+related_commands: [/design-api, /api-review, /generate-openapi]
 ---
 
-# API Design Standards
+# API Design Standards for LLMs
+
+> Version: 1.0.0
+> Last updated: 2025-07-29
+> Purpose: Enable LLMs to design and review REST APIs consistently
+> Target: Language models creating or reviewing API specifications
+
+## Context for LLM Usage
+
+This guide is specifically designed for language models designing REST APIs. When creating APIs:
+- You will receive requirements in various formats (user stories, technical specs, existing code)
+- You should generate OpenAPI specifications following these patterns
+- Your output should include examples, error cases, and integration documentation
+- You must consider security, performance, and maintainability from the start
+
+## Reading API Requirements
+
+When analyzing API requirements:
+1. **Identify Resources**: Extract nouns that represent entities
+2. **Map Operations**: Determine CRUD operations needed
+3. **Define Relationships**: Understand resource hierarchies
+4. **Extract Constraints**: Note rate limits, auth requirements, validation rules
 
 ## Core Principles
-- Use consistent naming conventions
-- Keep endpoints focused and RESTful
-- Standardize response formats
-- Version breaking changes
+- Use consistent naming conventions (lowercase, hyphens for word separation)
+- Keep endpoints focused and RESTful (one resource per endpoint)
+- Standardize response formats (consistent envelope structure)
+- Version breaking changes (use /v1, /v2 prefixes)
+- Design for pagination from the start
+- Include filtering and sorting capabilities
+- Plan for future expansion with extensible schemas
 
 ## URL Structure
 

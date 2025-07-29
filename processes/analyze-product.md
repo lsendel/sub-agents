@@ -2,12 +2,35 @@
 name: analyze-product
 type: process
 version: 2.0.0
-description: Guide for analyzing existing codebases and creating product documentation
+description: LLM-optimized guide for analyzing existing codebases with systematic discovery patterns
 author: Claude Code Team
-tags: [analysis, documentation, existing-projects]
+tags: [analysis, documentation, existing-projects, llm-guide]
+related_commands: [/analyze-codebase, /discover-features]
 ---
 
-# Product Analysis Guide
+# Product Analysis Guide for LLMs
+
+> Version: 2.0.0
+> Last updated: 2025-07-29
+> Purpose: Enable LLMs to systematically analyze and document existing codebases
+> Target: Language models discovering features and architecture in unfamiliar projects
+
+## Context for LLM Usage
+
+This guide helps LLMs analyze codebases they haven't seen before. When analyzing:
+- Start with high-level structure before diving into details
+- Look for patterns that indicate architecture decisions
+- Document findings in a structured format
+- Identify both implemented features and technical debt
+
+## Related Standards
+
+This process references the following standards:
+- **[coding-standards.md](../standards/coding-standards.md)** - For identifying code patterns and conventions
+- **[testing-standards.md](../standards/testing-standards.md)** - For analyzing test coverage and quality
+- **[documentation-standard.md](../standards/documentation-standard.md)** - For creating product documentation
+- **[tech-stack.md](../standards/tech-stack.md)** - For documenting technology choices
+- **[domain-driven-design.md](../standards/domain-driven-design.md)** - For understanding architecture patterns
 
 ## Process Steps
 
@@ -78,9 +101,9 @@ Based on analysis of the codebase, [Product] is a [type] that [purpose].
 - **Infrastructure**: [Hosting/deployment method]
 
 ### Code Patterns Observed
-- Architecture: [MVC, microservices, etc.]
-- Testing: [Framework and coverage]
-- Code Style: [Standards observed]
+- Architecture: [MVC, microservices, etc.] (See: [domain-driven-design.md](../standards/domain-driven-design.md))
+- Testing: [Framework and coverage] (See: [testing-standards.md](../standards/testing-standards.md))
+- Code Style: [Standards observed] (See: [coding-standards.md](../standards/coding-standards.md))
 
 ## User Base (Inferred)
 

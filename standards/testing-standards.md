@@ -2,21 +2,38 @@
 name: testing-standards
 type: standard
 version: 1.0.0
-description: Comprehensive testing standards for software quality assurance
+description: LLM-optimized testing standards with test generation patterns and coverage strategies
 author: Claude
-tags: [testing, quality, tdd, automation, performance]
-related_commands: [/test-review, /coverage-check]
+tags: [testing, quality, tdd, automation, performance, llm-guide]
+related_commands: [/test-review, /coverage-check, /generate-tests]
 ---
 
-# Testing Standards
+# Testing Standards for LLMs
 
 > Version: 1.0.0
 > Last updated: 2025-07-29
-> Scope: Global testing standards for all projects
+> Purpose: Enable LLMs to write comprehensive test suites with proper coverage
+> Target: Language models creating, reviewing, or improving tests
+
+## Context for LLM Usage
+
+This guide helps LLMs write effective tests at all levels. When testing:
+- Analyze code to determine appropriate test types
+- Generate tests that cover happy paths, edge cases, and error conditions
+- Use mocking and stubbing appropriately
+- Write clear test descriptions that serve as documentation
+- Balance test coverage with maintainability
+
+## Related Processes
+
+This standard is applied in:
+- **[feature-development.md](../processes/feature-development.md)** - Writing tests during development
+- **[code-review.md](../processes/code-review.md)** - Reviewing test coverage
+- **[post-deployment-automation.md](../processes/post-deployment-automation.md)** - Automated testing validation
 
 ## Context
 
-This guide establishes comprehensive testing standards to ensure software quality, maintainability, and reliability. It covers all aspects of testing from unit tests to performance testing, providing concrete patterns and practices that teams can implement immediately.
+This guide establishes comprehensive testing standards to ensure software quality, maintainability, and reliability. It covers all aspects of testing from unit tests to performance testing, providing concrete patterns and practices that LLMs can implement immediately.
 
 ## Testing Philosophy
 

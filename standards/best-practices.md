@@ -2,13 +2,26 @@
 name: best-practices
 type: standard
 version: 1.0.0
-description: Core development principles and practices
+description: LLM-optimized development principles with actionable patterns and anti-patterns
 author: Claude
-tags: [development, practices, code-quality]
-related_commands: [/code-review, /refactor]
+tags: [development, practices, code-quality, llm-guide]
+related_commands: [/code-review, /refactor, /improve-code]
 ---
 
-# Development Best Practices
+# Development Best Practices for LLMs
+
+> Version: 1.0.0
+> Last updated: 2025-07-29
+> Purpose: Guide LLMs in writing high-quality, maintainable code
+> Target: Language models implementing features or refactoring code
+
+## Context for LLM Usage
+
+This guide helps language models make consistent decisions when writing code. When implementing features:
+- Apply these patterns automatically unless the user specifies otherwise
+- Recognize and refactor anti-patterns when found in existing code
+- Balance pragmatism with best practices based on project context
+- Prioritize readability and maintainability over premature optimization
 
 ## Core Principles
 

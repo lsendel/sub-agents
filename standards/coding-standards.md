@@ -2,13 +2,26 @@
 name: coding-standards
 type: standard
 version: 1.0.0
-description: General coding standards and best practices for consistent, maintainable code
+description: LLM-optimized coding standards with language detection and pattern matching
 author: Claude Code Team
-tags: [standards, best-practices, code-quality]
-related_commands: [/format, /lint]
+tags: [standards, best-practices, code-quality, llm-guide]
+related_commands: [/format, /lint, /apply-standards]
 ---
 
-# Coding Standards
+# Coding Standards for LLMs
+
+> Version: 1.0.0
+> Last updated: 2025-07-29
+> Purpose: Guide LLMs in applying consistent coding standards across languages
+> Target: Language models writing or reviewing code
+
+## Context for LLM Usage
+
+This guide helps LLMs apply appropriate coding standards based on:
+- Language detection from file extensions or syntax
+- Existing patterns in the codebase
+- Framework-specific conventions
+- Team preferences documented in project configuration
 
 ## Core Principles
 - **Readability**: Clarity over cleverness, self-documenting code

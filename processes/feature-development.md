@@ -2,13 +2,37 @@
 name: feature-development
 type: process
 version: 1.0.0
-description: Standard process for developing new features from planning to deployment
+description: LLM-optimized feature development workflow with decision points and automation
 author: Claude Code Team
-tags: [development, features, workflow]
-related_commands: [/plan-feature, /implement]
+tags: [development, features, workflow, llm-guide]
+related_commands: [/plan-feature, /implement, /develop-feature]
 ---
 
-# Feature Development Process
+# Feature Development Process for LLMs
+
+> Version: 1.0.0
+> Last updated: 2025-07-29
+> Purpose: Guide LLMs through complete feature development lifecycle
+> Target: Language models implementing new features or enhancements
+
+## Context for LLM Usage
+
+This process helps LLMs develop features systematically. When developing:
+- Break large features into incremental commits
+- Test as you go rather than at the end
+- Document decisions and trade-offs
+- Consider performance and security at each step
+- Communicate progress through meaningful commit messages
+
+## Related Standards
+
+This process follows these standards:
+- **[coding-standards.md](../standards/coding-standards.md)** - For writing consistent, quality code
+- **[code-style.md](../standards/code-style.md)** - For proper code formatting
+- **[testing-standards.md](../standards/testing-standards.md)** - For comprehensive test coverage
+- **[best-practices.md](../standards/best-practices.md)** - For development patterns and practices
+- **[documentation-standard.md](../standards/documentation-standard.md)** - For updating documentation
+- **[api-design.md](../standards/api-design.md)** - When implementing API endpoints
 
 ## 1. Planning
 - [ ] Gather requirements and acceptance criteria
@@ -24,10 +48,11 @@ git checkout -b feature/name
 ```
 
 ## 3. Implementation
-- [ ] Code incrementally
-- [ ] Follow standards
-- [ ] Regular commits
-- [ ] Write tests alongside code
+- [ ] Code incrementally following [coding-standards.md](../standards/coding-standards.md)
+- [ ] Apply [code-style.md](../standards/code-style.md) formatting rules
+- [ ] Follow patterns from [best-practices.md](../standards/best-practices.md)
+- [ ] Regular commits with meaningful messages
+- [ ] Write tests alongside code per [testing-standards.md](../standards/testing-standards.md)
 
 ## 4. Testing
 - [ ] Unit tests with edge cases

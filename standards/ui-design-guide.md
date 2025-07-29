@@ -36,6 +36,136 @@ This guide establishes consistent UI design patterns and component usage across 
 - Include proper ARIA labels and semantic HTML
 - Support keyboard navigation for all interactive elements
 
+## Semantic HTML Best Practices
+
+### HTML5 Semantic Elements
+Use semantic HTML elements to provide meaning and structure to your content:
+
+#### Document Structure
+```html
+<header>
+  <nav aria-label="Main navigation">
+    <ul>
+      <li><a href="/">Home</a></li>
+      <li><a href="/products">Products</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main>
+  <article>
+    <header>
+      <h1>Article Title</h1>
+      <time datetime="2025-07-29">July 29, 2025</time>
+    </header>
+    <section>
+      <h2>Section Heading</h2>
+      <p>Content goes here...</p>
+    </section>
+  </article>
+  
+  <aside aria-label="Related content">
+    <h2>Related Articles</h2>
+    <ul><!-- Related links --></ul>
+  </aside>
+</main>
+
+<footer>
+  <p>&copy; 2025 Company Name</p>
+</footer>
+```
+
+#### Form Semantics
+```html
+<form>
+  <fieldset>
+    <legend>Personal Information</legend>
+    
+    <div>
+      <label for="name">
+        Full Name
+        <span aria-label="required">*</span>
+      </label>
+      <input 
+        type="text" 
+        id="name" 
+        name="name" 
+        required
+        aria-describedby="name-error"
+      />
+      <span id="name-error" role="alert" aria-live="polite"></span>
+    </div>
+    
+    <div>
+      <label for="email">Email Address</label>
+      <input 
+        type="email" 
+        id="email" 
+        name="email"
+        aria-describedby="email-hint"
+      />
+      <small id="email-hint">We'll never share your email</small>
+    </div>
+  </fieldset>
+  
+  <button type="submit">Submit</button>
+</form>
+```
+
+#### Interactive Elements
+```html
+<!-- Dialog/Modal -->
+<dialog aria-labelledby="dialog-title" aria-describedby="dialog-desc">
+  <h2 id="dialog-title">Confirm Action</h2>
+  <p id="dialog-desc">Are you sure you want to proceed?</p>
+  <button onclick="closeDialog()">Cancel</button>
+  <button onclick="confirmAction()">Confirm</button>
+</dialog>
+
+<!-- Details/Summary for collapsible content -->
+<details>
+  <summary>Show more options</summary>
+  <div>
+    <!-- Additional content -->
+  </div>
+</details>
+
+<!-- Progress indicator -->
+<progress value="32" max="100" aria-label="File upload progress">32%</progress>
+```
+
+### Semantic HTML Guidelines
+1. **Use the right element for the job**
+   - `<button>` for actions, `<a>` for navigation
+   - `<nav>` for navigation sections
+   - `<main>` for primary content (only one per page)
+   - `<article>` for self-contained content
+   - `<section>` for thematic groupings
+
+2. **Heading hierarchy**
+   - Only one `<h1>` per page
+   - Don't skip heading levels
+   - Use headings to create document outline
+
+3. **Lists for grouped items**
+   ```html
+   <!-- Navigation -->
+   <nav>
+     <ul>
+       <li><a href="/home">Home</a></li>
+       <li><a href="/about">About</a></li>
+     </ul>
+   </nav>
+   
+   <!-- Definition lists for term-description pairs -->
+   <dl>
+     <dt>React</dt>
+     <dd>A JavaScript library for building user interfaces</dd>
+     <dt>Vue</dt>
+     <dd>The progressive JavaScript framework</dd>
+   </dl>
+   ```
+
 ## Component Organization
 
 ### Directory Structure
@@ -116,10 +246,131 @@ src/
 
 ## Styling Approach
 
-### CSS-in-JS with Emotion
-- Use Emotion for component styling
-- Leverage theme tokens for consistency
-- Create styled components for reusability
+### TailwindCSS with Optimized Components
+- Primary styling approach using TailwindCSS utility classes
+- Component-specific styles with CSS-in-JS (Emotion) for complex interactions
+- Leverage Tailwind's JIT compiler for optimal bundle size
+- Use Tailwind's design system for consistency
+
+### Tailwind Configuration
+```javascript
+// tailwind.config.js
+module.exports = {
+  content: ['./src/**/*.{js,jsx,ts,tsx}'],
+  theme: {
+    extend: {
+      colors: {
+        // Extend with brand colors
+        primary: {
+          50: '#eff6ff',
+          500: '#3b82f6',
+          900: '#1e3a8a',
+        },
+      },
+      animation: {
+        'fade-in': 'fadeIn 0.15s ease-in',
+        'slide-up': 'slideUp 0.25s ease-out',
+      },
+    },
+  },
+  plugins: [
+    require('@tailwindcss/forms'),
+    require('@tailwindcss/typography'),
+    require('@tailwindcss/aspect-ratio'),
+  ],
+};
+```
+
+### Tailwind Optimization Strategies
+
+#### 1. Component Classes Pattern
+```typescript
+// Use component classes for repeated patterns
+const Button = ({ variant, size, children }) => {
+  const baseClasses = 'inline-flex items-center justify-center font-medium rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2';
+  
+  const variants = {
+    primary: 'bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500',
+    secondary: 'bg-gray-200 text-gray-900 hover:bg-gray-300 focus:ring-gray-500',
+    danger: 'bg-red-600 text-white hover:bg-red-700 focus:ring-red-500',
+  };
+  
+  const sizes = {
+    sm: 'px-3 py-1.5 text-sm',
+    md: 'px-4 py-2 text-base',
+    lg: 'px-6 py-3 text-lg',
+  };
+  
+  return (
+    <button className={`${baseClasses} ${variants[variant]} ${sizes[size]}`}>
+      {children}
+    </button>
+  );
+};
+```
+
+#### 2. Utility Extraction with @apply
+```css
+/* Only for truly reusable patterns */
+@layer components {
+  .btn-primary {
+    @apply bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg 
+           hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
+           transition-colors duration-150;
+  }
+  
+  .card {
+    @apply bg-white rounded-lg shadow-md p-6 
+           hover:shadow-lg transition-shadow duration-200;
+  }
+}
+```
+
+#### 3. Dynamic Classes with clsx
+```typescript
+import clsx from 'clsx';
+
+const Alert = ({ type, dismissible, children }) => {
+  return (
+    <div 
+      className={clsx(
+        'p-4 rounded-md',
+        {
+          'bg-blue-50 text-blue-800': type === 'info',
+          'bg-red-50 text-red-800': type === 'error',
+          'bg-green-50 text-green-800': type === 'success',
+          'pr-12': dismissible,
+        }
+      )}
+    >
+      {children}
+    </div>
+  );
+};
+```
+
+#### 4. Performance Optimization Tips
+- **PurgeCSS Integration**: Tailwind automatically removes unused styles
+- **JIT Mode**: Generates styles on-demand for smaller CSS files
+- **Avoid Dynamic Classes**: Don't construct class names dynamically
+```typescript
+// ❌ Bad - Won't be included in production
+const color = 'blue';
+<div className={`text-${color}-500`} />
+
+// ✅ Good - Static classes
+const colors = {
+  blue: 'text-blue-500',
+  red: 'text-red-500',
+};
+<div className={colors.blue} />
+```
+
+### CSS-in-JS with Emotion (For Complex Cases)
+- Use Emotion for dynamic styles that can't be achieved with Tailwind
+- Complex animations and transitions
+- Runtime style calculations
+- Third-party library integration
 
 ### Theme Structure
 ```typescript
@@ -127,7 +378,8 @@ theme/
 ├── constants/       # Design tokens and constants
 ├── provider/        # Theme context provider
 ├── types/          # TypeScript definitions
-└── utils/          # Theme manipulation utilities
+├── utils/          # Theme manipulation utilities
+└── tailwind/       # Tailwind theme extensions
 ```
 
 ### Design Tokens
@@ -479,6 +731,355 @@ const Input = styled.input<{ hasError?: boolean }>`
 - **On Submit**: Final validation check
 - **Async**: Server-side validation with loading states
 
+## ARIA Tags and Accessibility Patterns
+
+### Core ARIA Concepts
+
+#### ARIA Roles
+Define what an element is or does:
+```html
+<!-- Landmark roles -->
+<div role="banner">Site header</div>
+<nav role="navigation" aria-label="Primary">
+<div role="main">Main content</div>
+<aside role="complementary">Sidebar</aside>
+<footer role="contentinfo">Footer</footer>
+
+<!-- Widget roles -->
+<div role="button" tabindex="0" onclick="handleClick()">Custom Button</div>
+<div role="tab" aria-selected="true" aria-controls="panel1">Tab 1</div>
+<div role="tabpanel" id="panel1" aria-labelledby="tab1">Tab content</div>
+
+<!-- Document structure roles -->
+<div role="article">Article content</div>
+<div role="heading" aria-level="2">Custom heading</div>
+<div role="list">
+  <div role="listitem">Item 1</div>
+  <div role="listitem">Item 2</div>
+</div>
+```
+
+#### ARIA Properties
+Describe element properties:
+```html
+<!-- Labels and descriptions -->
+<button aria-label="Close dialog">×</button>
+<input aria-labelledby="label1 label2" />
+<div aria-describedby="help-text">Complex widget</div>
+
+<!-- States -->
+<button aria-pressed="true">Toggle</button>
+<div aria-expanded="false">Collapsible section</div>
+<input aria-invalid="true" aria-errormessage="error1" />
+<div aria-hidden="true">Decorative element</div>
+<button aria-disabled="true">Disabled action</button>
+
+<!-- Relationships -->
+<div aria-owns="submenu1">Menu with detached submenu</div>
+<input aria-controls="results" />
+<div aria-flowto="next-section">Content flows to...</div>
+```
+
+#### Live Regions
+Announce dynamic content changes:
+```html
+<!-- Polite announcements (waits for pause) -->
+<div role="status" aria-live="polite">
+  Form saved successfully
+</div>
+
+<!-- Assertive announcements (interrupts) -->
+<div role="alert" aria-live="assertive">
+  Error: Invalid input
+</div>
+
+<!-- Atomic updates -->
+<div aria-live="polite" aria-atomic="true">
+  <span>Items in cart: </span>
+  <span>5</span>
+</div>
+```
+
+### Common Accessibility Patterns
+
+#### Accessible Modal/Dialog
+```typescript
+const Modal = ({ isOpen, onClose, title, children }) => {
+  const modalRef = useRef(null);
+  const previousFocus = useRef(null);
+  
+  useEffect(() => {
+    if (isOpen) {
+      // Store current focus
+      previousFocus.current = document.activeElement;
+      // Focus first focusable element
+      modalRef.current?.focus();
+      
+      // Trap focus
+      const handleKeyDown = (e) => {
+        if (e.key === 'Escape') onClose();
+        if (e.key === 'Tab') {
+          // Implement focus trap logic
+        }
+      };
+      
+      document.addEventListener('keydown', handleKeyDown);
+      return () => document.removeEventListener('keydown', handleKeyDown);
+    } else {
+      // Restore focus
+      previousFocus.current?.focus();
+    }
+  }, [isOpen, onClose]);
+  
+  if (!isOpen) return null;
+  
+  return (
+    <div 
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modal-title"
+      ref={modalRef}
+      tabIndex={-1}
+    >
+      <h2 id="modal-title">{title}</h2>
+      <button 
+        onClick={onClose}
+        aria-label="Close dialog"
+      >
+        ×
+      </button>
+      {children}
+    </div>
+  );
+};
+```
+
+#### Accessible Dropdown/Combobox
+```typescript
+const Dropdown = ({ options, value, onChange, label }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(-1);
+  
+  return (
+    <div>
+      <label id="dropdown-label">{label}</label>
+      <div
+        role="combobox"
+        aria-expanded={isOpen}
+        aria-haspopup="listbox"
+        aria-labelledby="dropdown-label"
+        aria-controls="dropdown-list"
+      >
+        <input
+          type="text"
+          value={value}
+          aria-autocomplete="list"
+          aria-activedescendant={activeIndex >= 0 ? `option-${activeIndex}` : undefined}
+          onKeyDown={(e) => {
+            // Handle arrow keys, enter, escape
+          }}
+        />
+        {isOpen && (
+          <ul
+            id="dropdown-list"
+            role="listbox"
+            aria-labelledby="dropdown-label"
+          >
+            {options.map((option, index) => (
+              <li
+                key={option.value}
+                id={`option-${index}`}
+                role="option"
+                aria-selected={option.value === value}
+                onClick={() => {
+                  onChange(option.value);
+                  setIsOpen(false);
+                }}
+              >
+                {option.label}
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    </div>
+  );
+};
+```
+
+#### Accessible Tabs
+```typescript
+const Tabs = ({ tabs, defaultTab = 0 }) => {
+  const [activeTab, setActiveTab] = useState(defaultTab);
+  
+  return (
+    <div>
+      <div role="tablist" aria-label="Main tabs">
+        {tabs.map((tab, index) => (
+          <button
+            key={tab.id}
+            role="tab"
+            aria-selected={activeTab === index}
+            aria-controls={`panel-${tab.id}`}
+            id={`tab-${tab.id}`}
+            tabIndex={activeTab === index ? 0 : -1}
+            onClick={() => setActiveTab(index)}
+            onKeyDown={(e) => {
+              // Handle arrow keys for navigation
+              if (e.key === 'ArrowRight') {
+                setActiveTab((prev) => (prev + 1) % tabs.length);
+              } else if (e.key === 'ArrowLeft') {
+                setActiveTab((prev) => (prev - 1 + tabs.length) % tabs.length);
+              }
+            }}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
+      {tabs.map((tab, index) => (
+        <div
+          key={tab.id}
+          role="tabpanel"
+          id={`panel-${tab.id}`}
+          aria-labelledby={`tab-${tab.id}`}
+          hidden={activeTab !== index}
+          tabIndex={0}
+        >
+          {tab.content}
+        </div>
+      ))}
+    </div>
+  );
+};
+```
+
+#### Accessible Form with Validation
+```typescript
+const AccessibleForm = () => {
+  const [errors, setErrors] = useState({});
+  
+  return (
+    <form aria-label="Contact form" noValidate>
+      <div>
+        <label htmlFor="name">
+          Name
+          <span aria-label="required" className="text-red-500">*</span>
+        </label>
+        <input
+          id="name"
+          type="text"
+          required
+          aria-required="true"
+          aria-invalid={!!errors.name}
+          aria-describedby={errors.name ? "name-error" : "name-hint"}
+        />
+        <span id="name-hint" className="text-sm text-gray-600">
+          Enter your full name
+        </span>
+        {errors.name && (
+          <span id="name-error" role="alert" className="text-red-600">
+            {errors.name}
+          </span>
+        )}
+      </div>
+      
+      <fieldset>
+        <legend>Notification Preferences</legend>
+        <div role="group" aria-describedby="notification-desc">
+          <p id="notification-desc" className="text-sm">
+            Choose how you'd like to receive updates
+          </p>
+          <label>
+            <input type="checkbox" name="email" />
+            Email notifications
+          </label>
+          <label>
+            <input type="checkbox" name="sms" />
+            SMS notifications
+          </label>
+        </div>
+      </fieldset>
+      
+      <button type="submit" aria-describedby="submit-hint">
+        Submit Form
+      </button>
+      <span id="submit-hint" className="sr-only">
+        Submit the contact form to send your message
+      </span>
+    </form>
+  );
+};
+```
+
+### Screen Reader Utilities
+```css
+/* Visually hidden but accessible to screen readers */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Show on focus (for skip links) */
+.sr-only-focusable:focus {
+  position: static;
+  width: auto;
+  height: auto;
+  padding: 0.5rem 1rem;
+  margin: 0;
+  overflow: visible;
+  clip: auto;
+  white-space: normal;
+}
+```
+
+### Keyboard Navigation Best Practices
+1. **Focus Management**
+   - Visible focus indicators (2px minimum)
+   - Logical tab order
+   - Focus trap in modals
+   - Skip links for navigation
+
+2. **Keyboard Shortcuts**
+   ```typescript
+   const KeyboardShortcuts = {
+     'Escape': 'Close modal or cancel action',
+     'Enter': 'Activate button or submit form',
+     'Space': 'Toggle checkbox or activate button',
+     'Arrow Keys': 'Navigate between options',
+     'Tab': 'Move to next focusable element',
+     'Shift+Tab': 'Move to previous focusable element',
+   };
+   ```
+
+3. **Custom Keyboard Handlers**
+   ```typescript
+   const handleKeyboard = (e) => {
+     switch(e.key) {
+       case 'Enter':
+       case ' ':
+         e.preventDefault();
+         handleActivate();
+         break;
+       case 'ArrowDown':
+         e.preventDefault();
+         focusNext();
+         break;
+       case 'ArrowUp':
+         e.preventDefault();
+         focusPrevious();
+         break;
+     }
+   };
+   ```
+
 ## Icon Usage
 
 ### Icon System
@@ -682,6 +1283,539 @@ export const AllVariants: Story = {
 - Verify keyboard navigation
 - Test with screen readers (NVDA/JAWS)
 - Visual regression tests for style changes
+
+## Interactive JavaScript with React
+
+### React Hooks and State Management
+
+#### Essential Hooks Patterns
+```typescript
+// useState for local component state
+const [count, setCount] = useState(0);
+const [user, setUser] = useState<User | null>(null);
+const [loading, setLoading] = useState(false);
+
+// useEffect for side effects
+useEffect(() => {
+  // Component mount
+  fetchData();
+  
+  // Cleanup on unmount
+  return () => {
+    cancelSubscriptions();
+  };
+}, []); // Empty deps = run once
+
+// useEffect with dependencies
+useEffect(() => {
+  if (userId) {
+    fetchUser(userId);
+  }
+}, [userId]); // Re-run when userId changes
+
+// useCallback for memoized functions
+const handleClick = useCallback((id: string) => {
+  setSelectedId(id);
+  onSelect?.(id);
+}, [onSelect]);
+
+// useMemo for expensive computations
+const sortedItems = useMemo(() => 
+  items.sort((a, b) => a.name.localeCompare(b.name)),
+  [items]
+);
+```
+
+#### Custom Hooks for Reusable Logic
+```typescript
+// useDebounce hook
+function useDebounce<T>(value: T, delay: number): T {
+  const [debouncedValue, setDebouncedValue] = useState(value);
+  
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedValue(value);
+    }, delay);
+    
+    return () => clearTimeout(handler);
+  }, [value, delay]);
+  
+  return debouncedValue;
+}
+
+// useLocalStorage hook
+function useLocalStorage<T>(key: string, initialValue: T) {
+  const [storedValue, setStoredValue] = useState<T>(() => {
+    try {
+      const item = window.localStorage.getItem(key);
+      return item ? JSON.parse(item) : initialValue;
+    } catch (error) {
+      return initialValue;
+    }
+  });
+  
+  const setValue = (value: T | ((val: T) => T)) => {
+    try {
+      const valueToStore = value instanceof Function ? value(storedValue) : value;
+      setStoredValue(valueToStore);
+      window.localStorage.setItem(key, JSON.stringify(valueToStore));
+    } catch (error) {
+      console.error(`Error saving to localStorage:`, error);
+    }
+  };
+  
+  return [storedValue, setValue] as const;
+}
+
+// useAsync hook for async operations
+function useAsync<T>(
+  asyncFunction: () => Promise<T>,
+  immediate = true
+) {
+  const [status, setStatus] = useState<'idle' | 'pending' | 'success' | 'error'>('idle');
+  const [value, setValue] = useState<T | null>(null);
+  const [error, setError] = useState<Error | null>(null);
+  
+  const execute = useCallback(() => {
+    setStatus('pending');
+    setValue(null);
+    setError(null);
+    
+    return asyncFunction()
+      .then((response) => {
+        setValue(response);
+        setStatus('success');
+      })
+      .catch((error) => {
+        setError(error);
+        setStatus('error');
+      });
+  }, [asyncFunction]);
+  
+  useEffect(() => {
+    if (immediate) {
+      execute();
+    }
+  }, [execute, immediate]);
+  
+  return { execute, status, value, error };
+}
+```
+
+#### State Management Patterns
+
+##### Context API for Global State
+```typescript
+// Theme Context
+interface ThemeContextType {
+  theme: 'light' | 'dark';
+  toggleTheme: () => void;
+}
+
+const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
+
+export const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const [theme, setTheme] = useState<'light' | 'dark'>('light');
+  
+  const toggleTheme = useCallback(() => {
+    setTheme(prev => prev === 'light' ? 'dark' : 'light');
+  }, []);
+  
+  return (
+    <ThemeContext.Provider value={{ theme, toggleTheme }}>
+      {children}
+    </ThemeContext.Provider>
+  );
+};
+
+export const useTheme = () => {
+  const context = useContext(ThemeContext);
+  if (!context) {
+    throw new Error('useTheme must be used within ThemeProvider');
+  }
+  return context;
+};
+```
+
+##### useReducer for Complex State
+```typescript
+type State = {
+  items: Item[];
+  loading: boolean;
+  error: string | null;
+  filter: string;
+};
+
+type Action =
+  | { type: 'FETCH_START' }
+  | { type: 'FETCH_SUCCESS'; payload: Item[] }
+  | { type: 'FETCH_ERROR'; payload: string }
+  | { type: 'SET_FILTER'; payload: string }
+  | { type: 'ADD_ITEM'; payload: Item }
+  | { type: 'REMOVE_ITEM'; payload: string };
+
+const reducer = (state: State, action: Action): State => {
+  switch (action.type) {
+    case 'FETCH_START':
+      return { ...state, loading: true, error: null };
+    case 'FETCH_SUCCESS':
+      return { ...state, loading: false, items: action.payload };
+    case 'FETCH_ERROR':
+      return { ...state, loading: false, error: action.payload };
+    case 'SET_FILTER':
+      return { ...state, filter: action.payload };
+    case 'ADD_ITEM':
+      return { ...state, items: [...state.items, action.payload] };
+    case 'REMOVE_ITEM':
+      return { 
+        ...state, 
+        items: state.items.filter(item => item.id !== action.payload) 
+      };
+    default:
+      return state;
+  }
+};
+
+const ItemList = () => {
+  const [state, dispatch] = useReducer(reducer, {
+    items: [],
+    loading: false,
+    error: null,
+    filter: ''
+  });
+  
+  const filteredItems = useMemo(() => 
+    state.items.filter(item => 
+      item.name.toLowerCase().includes(state.filter.toLowerCase())
+    ),
+    [state.items, state.filter]
+  );
+  
+  return (
+    <div>
+      <input
+        type="text"
+        value={state.filter}
+        onChange={(e) => dispatch({ type: 'SET_FILTER', payload: e.target.value })}
+        placeholder="Filter items..."
+      />
+      {/* Render filtered items */}
+    </div>
+  );
+};
+```
+
+### Interactive Component Patterns
+
+#### Form Handling with Validation
+```typescript
+interface FormData {
+  email: string;
+  password: string;
+}
+
+const LoginForm = () => {
+  const [formData, setFormData] = useState<FormData>({
+    email: '',
+    password: ''
+  });
+  const [errors, setErrors] = useState<Partial<FormData>>({});
+  const [touched, setTouched] = useState<Set<keyof FormData>>(new Set());
+  
+  const validate = useCallback((data: FormData): Partial<FormData> => {
+    const newErrors: Partial<FormData> = {};
+    
+    if (!data.email) {
+      newErrors.email = 'Email is required';
+    } else if (!/\S+@\S+\.\S+/.test(data.email)) {
+      newErrors.email = 'Email is invalid';
+    }
+    
+    if (!data.password) {
+      newErrors.password = 'Password is required';
+    } else if (data.password.length < 8) {
+      newErrors.password = 'Password must be at least 8 characters';
+    }
+    
+    return newErrors;
+  }, []);
+  
+  useEffect(() => {
+    if (touched.size > 0) {
+      setErrors(validate(formData));
+    }
+  }, [formData, touched, validate]);
+  
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+  
+  const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    const { name } = e.target;
+    setTouched(prev => new Set(prev).add(name as keyof FormData));
+  };
+  
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const validationErrors = validate(formData);
+    setErrors(validationErrors);
+    
+    if (Object.keys(validationErrors).length === 0) {
+      // Submit form
+      console.log('Form submitted:', formData);
+    }
+  };
+  
+  return (
+    <form onSubmit={handleSubmit} noValidate>
+      <div>
+        <input
+          type="email"
+          name="email"
+          value={formData.email}
+          onChange={handleChange}
+          onBlur={handleBlur}
+          aria-invalid={!!errors.email}
+          aria-describedby={errors.email ? 'email-error' : undefined}
+          className={clsx(
+            'border rounded px-3 py-2',
+            errors.email && touched.has('email') && 'border-red-500'
+          )}
+        />
+        {errors.email && touched.has('email') && (
+          <span id="email-error" className="text-red-500 text-sm">
+            {errors.email}
+          </span>
+        )}
+      </div>
+      {/* Similar for password field */}
+      <button type="submit">Login</button>
+    </form>
+  );
+};
+```
+
+#### Infinite Scroll with Intersection Observer
+```typescript
+const InfiniteList = () => {
+  const [items, setItems] = useState<Item[]>([]);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const loadMoreRef = useRef<HTMLDivElement>(null);
+  
+  const loadMore = useCallback(async () => {
+    if (loading || !hasMore) return;
+    
+    setLoading(true);
+    try {
+      const newItems = await fetchItems(page);
+      setItems(prev => [...prev, ...newItems]);
+      setPage(prev => prev + 1);
+      setHasMore(newItems.length > 0);
+    } catch (error) {
+      console.error('Failed to load items:', error);
+    } finally {
+      setLoading(false);
+    }
+  }, [page, loading, hasMore]);
+  
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          loadMore();
+        }
+      },
+      { threshold: 0.1 }
+    );
+    
+    const currentRef = loadMoreRef.current;
+    if (currentRef) {
+      observer.observe(currentRef);
+    }
+    
+    return () => {
+      if (currentRef) {
+        observer.unobserve(currentRef);
+      }
+    };
+  }, [loadMore]);
+  
+  return (
+    <div>
+      {items.map(item => (
+        <div key={item.id}>{item.name}</div>
+      ))}
+      {hasMore && (
+        <div ref={loadMoreRef} className="h-10 flex items-center justify-center">
+          {loading ? <Spinner /> : 'Load more'}
+        </div>
+      )}
+    </div>
+  );
+};
+```
+
+#### Drag and Drop with React
+```typescript
+interface DraggableItem {
+  id: string;
+  content: string;
+}
+
+const DragDropList = () => {
+  const [items, setItems] = useState<DraggableItem[]>([
+    { id: '1', content: 'Item 1' },
+    { id: '2', content: 'Item 2' },
+    { id: '3', content: 'Item 3' },
+  ]);
+  const [draggedItem, setDraggedItem] = useState<string | null>(null);
+  
+  const handleDragStart = (e: React.DragEvent, itemId: string) => {
+    setDraggedItem(itemId);
+    e.dataTransfer.effectAllowed = 'move';
+  };
+  
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+  };
+  
+  const handleDrop = (e: React.DragEvent, targetId: string) => {
+    e.preventDefault();
+    
+    if (!draggedItem || draggedItem === targetId) return;
+    
+    const draggedIndex = items.findIndex(item => item.id === draggedItem);
+    const targetIndex = items.findIndex(item => item.id === targetId);
+    
+    const newItems = [...items];
+    const [removed] = newItems.splice(draggedIndex, 1);
+    newItems.splice(targetIndex, 0, removed);
+    
+    setItems(newItems);
+    setDraggedItem(null);
+  };
+  
+  return (
+    <ul>
+      {items.map(item => (
+        <li
+          key={item.id}
+          draggable
+          onDragStart={(e) => handleDragStart(e, item.id)}
+          onDragOver={handleDragOver}
+          onDrop={(e) => handleDrop(e, item.id)}
+          className={clsx(
+            'p-4 border rounded cursor-move',
+            draggedItem === item.id && 'opacity-50'
+          )}
+        >
+          {item.content}
+        </li>
+      ))}
+    </ul>
+  );
+};
+```
+
+### Performance Optimization with React
+
+#### React.memo for Component Memoization
+```typescript
+interface ExpensiveComponentProps {
+  data: ComplexData;
+  onAction: (id: string) => void;
+}
+
+const ExpensiveComponent = React.memo<ExpensiveComponentProps>(
+  ({ data, onAction }) => {
+    // Complex rendering logic
+    return <div>{/* Render content */}</div>;
+  },
+  (prevProps, nextProps) => {
+    // Custom comparison function
+    return (
+      prevProps.data.id === nextProps.data.id &&
+      prevProps.data.version === nextProps.data.version
+    );
+  }
+);
+```
+
+#### Virtualization for Large Lists
+```typescript
+import { FixedSizeList } from 'react-window';
+
+const VirtualizedList = ({ items }: { items: Item[] }) => {
+  const Row = ({ index, style }: { index: number; style: React.CSSProperties }) => (
+    <div style={style} className="flex items-center px-4">
+      {items[index].name}
+    </div>
+  );
+  
+  return (
+    <FixedSizeList
+      height={600}
+      itemCount={items.length}
+      itemSize={50}
+      width="100%"
+    >
+      {Row}
+    </FixedSizeList>
+  );
+};
+```
+
+#### Code Splitting with React.lazy
+```typescript
+// Lazy load heavy components
+const Dashboard = lazy(() => import('./Dashboard'));
+const Analytics = lazy(() => import('./Analytics'));
+
+const App = () => {
+  return (
+    <Suspense fallback={<LoadingSpinner />}>
+      <Routes>
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/analytics" element={<Analytics />} />
+      </Routes>
+    </Suspense>
+  );
+};
+```
+
+### State Management Best Practices
+
+1. **Keep state as local as possible**
+   - Only lift state when needed by multiple components
+   - Use component state for UI-specific state
+   - Use global state for app-wide concerns
+
+2. **Normalize complex state**
+   ```typescript
+   // Instead of nested arrays
+   const badState = {
+     posts: [
+       { id: 1, title: 'Post', comments: [...] }
+     ]
+   };
+   
+   // Use normalized structure
+   const goodState = {
+     posts: { 1: { id: 1, title: 'Post' } },
+     comments: { 1: { id: 1, postId: 1, text: 'Comment' } },
+     postComments: { 1: [1] }
+   };
+   ```
+
+3. **Use the right tool for the job**
+   - useState: Simple local state
+   - useReducer: Complex local state with multiple sub-values
+   - Context API: Cross-component state without prop drilling
+   - External libraries (Redux, Zustand): Complex global state
 
 ## Implementation Checklist
 
