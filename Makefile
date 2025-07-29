@@ -11,7 +11,7 @@ YELLOW = \033[1;33m
 RED = \033[0;31m
 NC = \033[0m # No Color
 
-.PHONY: help install test lint format clean dev link unlink sync sync-copy sync-processes sync-standards sync-commands sync-all cleanup install-agent migrate optimize validate fix-yaml publish-info publish-quick list-agents install-agents
+.PHONY: help install test lint format clean dev link unlink sync sync-copy pull-agents pull-processes pull-standards pull-commands pull-all sync-all cleanup install-agent migrate optimize validate fix-yaml publish-info publish-quick list-agents install-agents push-agents push-processes push-standards push-commands push-all
 
 # Default target
 help:
@@ -29,13 +29,23 @@ help:
 	@echo "  $(YELLOW)make install-agents$(NC) - Install all available agents"
 	@echo "  $(YELLOW)make install-agent AGENTS=\"name1 name2\"$(NC) - Install specific agents"
 	@echo ""
-	@echo "$(GREEN)Sync commands:$(NC)"
+	@echo "$(GREEN)Pull commands (global → project):$(NC)"
+	@echo "  $(YELLOW)make pull-agents$(NC)    - Pull agents from ~/.claude/agents to agents/"
+	@echo "  $(YELLOW)make pull-processes$(NC) - Pull processes from ~/.claude/processes to processes/"
+	@echo "  $(YELLOW)make pull-standards$(NC) - Pull standards from ~/.claude/standards to standards/"
+	@echo "  $(YELLOW)make pull-commands$(NC)  - Pull commands from ~/.claude/commands to commands/"
+	@echo "  $(YELLOW)make pull-all$(NC)      - Pull all resources from global to project"
+	@echo ""
+	@echo "$(GREEN)Push commands (project → global):$(NC)"
+	@echo "  $(YELLOW)make push-agents$(NC)    - Push agents from project to ~/.claude/agents"
+	@echo "  $(YELLOW)make push-processes$(NC) - Push processes from project to ~/.claude/processes"
+	@echo "  $(YELLOW)make push-standards$(NC) - Push standards from project to ~/.claude/standards"
+	@echo "  $(YELLOW)make push-commands$(NC)  - Push commands from project to ~/.claude/commands"
+	@echo "  $(YELLOW)make push-all$(NC)      - Push all resources to global directories"
+	@echo ""
+	@echo "$(GREEN)Legacy sync commands:$(NC)"
 	@echo "  $(YELLOW)make sync$(NC)         - Sync externally installed agents"
-	@echo "  $(YELLOW)make sync-copy$(NC)    - Force copy all agents to project"
-	@echo "  $(YELLOW)make sync-processes$(NC) - Sync processes from ~/.claude/processes"
-	@echo "  $(YELLOW)make sync-standards$(NC) - Sync standards from ~/.claude/standards"
-	@echo "  $(YELLOW)make sync-commands$(NC)  - Sync commands to ~/.claude/commands"
-	@echo "  $(YELLOW)make sync-all$(NC)      - Sync agents, processes, standards, and commands"
+	@echo "  $(YELLOW)make sync-all$(NC)     - Full sync (agents + pull all resources)"
 	@echo ""
 	@echo "$(GREEN)Maintenance:$(NC)"
 	@echo "  $(YELLOW)make validate$(NC)     - Validate agent configurations"
@@ -124,50 +134,128 @@ install-agent:
 	@./bin/claude-agents install $(AGENTS)
 	@echo "$(GREEN)✓ Agents installed$(NC)"
 
-# Sync externally installed agents
-sync:
-	@echo "$(BLUE)Syncing externally installed agents...$(NC)"
-	@./bin/claude-agents sync
-	@echo "$(GREEN)✓ Sync complete$(NC)"
-
-# Force copy all agents to project directory
-sync-copy:
-	@echo "$(BLUE)Copying all agents to project directory...$(NC)"
-	@./bin/claude-agents sync --force-copy
-	@echo "$(GREEN)✓ All agents copied to project$(NC)"
-
-# Sync processes from ~/.claude/processes
-sync-processes:
-	@echo "$(BLUE)Syncing processes from ~/.claude/processes...$(NC)"
-	@./bin/claude-agents sync-processes --force-copy
-	@echo "$(GREEN)✓ Processes sync complete$(NC)"
-
-# Sync standards from ~/.claude/standards
-sync-standards:
-	@echo "$(BLUE)Syncing standards from ~/.claude/standards...$(NC)"
-	@./bin/claude-agents sync-standards --force-copy
-	@echo "$(GREEN)✓ Standards sync complete$(NC)"
-
-# Sync commands to ~/.claude/commands
-sync-commands:
-	@echo "$(BLUE)Syncing commands to ~/.claude/commands...$(NC)"
-	@if [ -d "commands" ]; then \
-		mkdir -p ~/.claude/commands; \
-		cp -f commands/*.md ~/.claude/commands/ 2>/dev/null || true; \
-		sed -i '' 's|@~/.claude/process/|@~/.claude/processes/|g' ~/.claude/commands/*.md 2>/dev/null || true; \
-		echo "$(GREEN)✓ Commands synced to ~/.claude/commands (paths updated)$(NC)"; \
+# Pull agents from ~/.claude/agents to project
+pull-agents:
+	@echo "$(BLUE)Pulling agents from ~/.claude/agents to project...$(NC)"
+	@mkdir -p agents
+	@if [ -d ~/.claude/agents ]; then \
+		cp -f ~/.claude/agents/*.md agents/ 2>/dev/null && \
+		echo "$(GREEN)✓ Agents pulled to project/agents/$(NC)" || \
+		echo "$(YELLOW)⚠ No agent files found in ~/.claude/agents$(NC)"; \
 	else \
-		echo "$(YELLOW)⚠ No commands directory found$(NC)"; \
+		echo "$(YELLOW)⚠ ~/.claude/agents directory not found$(NC)"; \
 	fi
 
-# Sync all: agents, processes, standards, and commands
-sync-all: cleanup sync sync-processes sync-standards sync-commands
+# Pull processes from ~/.claude/processes to project
+pull-processes:
+	@echo "$(BLUE)Pulling processes from ~/.claude/processes to project...$(NC)"
+	@mkdir -p processes
+	@if [ -d ~/.claude/processes ]; then \
+		cp -f ~/.claude/processes/*.md processes/ 2>/dev/null && \
+		echo "$(GREEN)✓ Processes pulled to project/processes/$(NC)" || \
+		echo "$(YELLOW)⚠ No process files found in ~/.claude/processes$(NC)"; \
+	else \
+		echo "$(YELLOW)⚠ ~/.claude/processes directory not found$(NC)"; \
+	fi
+
+# Pull standards from ~/.claude/standards to project
+pull-standards:
+	@echo "$(BLUE)Pulling standards from ~/.claude/standards to project...$(NC)"
+	@mkdir -p standards
+	@if [ -d ~/.claude/standards ]; then \
+		cp -f ~/.claude/standards/*.md standards/ 2>/dev/null && \
+		echo "$(GREEN)✓ Standards pulled to project/standards/$(NC)" || \
+		echo "$(YELLOW)⚠ No standard files found in ~/.claude/standards$(NC)"; \
+	else \
+		echo "$(YELLOW)⚠ ~/.claude/standards directory not found$(NC)"; \
+	fi
+
+# Pull commands from ~/.claude/commands to project
+pull-commands:
+	@echo "$(BLUE)Pulling commands from ~/.claude/commands to project...$(NC)"
+	@mkdir -p commands
+	@if [ -d ~/.claude/commands ]; then \
+		cp -f ~/.claude/commands/*.md commands/ 2>/dev/null && \
+		echo "$(GREEN)✓ Commands pulled to project/commands/$(NC)" || \
+		echo "$(YELLOW)⚠ No command files found in ~/.claude/commands$(NC)"; \
+	else \
+		echo "$(YELLOW)⚠ ~/.claude/commands directory not found$(NC)"; \
+	fi
+
+# Pull all resources from global to project directories
+pull-all: pull-agents pull-processes pull-standards pull-commands
+	@echo "$(GREEN)✓ All resources pulled to project!$(NC)"
+	@echo "$(BLUE)Pulled:$(NC)"
+	@echo "  • Agents → agents/"
+	@echo "  • Processes → processes/"
+	@echo "  • Standards → standards/"
+	@echo "  • Commands → commands/"
+
+# Legacy sync-all for backwards compatibility
+sync-all: cleanup pull-all
 	@echo "$(GREEN)✓ Full sync complete!$(NC)"
 	@echo "$(BLUE)Synced:$(NC)"
 	@echo "  • Agents"
 	@echo "  • Processes"
 	@echo "  • Standards"
 	@echo "  • Commands"
+
+# Push agents from project to global directory
+push-agents:
+	@echo "$(BLUE)Pushing agents from project to ~/.claude/agents...$(NC)"
+	@mkdir -p ~/.claude/agents
+	@if [ -d "agents" ]; then \
+		cp -f agents/*.md ~/.claude/agents/ 2>/dev/null && \
+		echo "$(GREEN)✓ Agents pushed to ~/.claude/agents$(NC)" || \
+		echo "$(RED)✗ No agent files found to push$(NC)"; \
+	else \
+		echo "$(YELLOW)⚠ No agents directory found$(NC)"; \
+	fi
+
+# Push processes from project to global directory
+push-processes:
+	@echo "$(BLUE)Pushing processes from project to ~/.claude/processes...$(NC)"
+	@mkdir -p ~/.claude/processes
+	@if [ -d "processes" ]; then \
+		cp -f processes/*.md ~/.claude/processes/ 2>/dev/null && \
+		echo "$(GREEN)✓ Processes pushed to ~/.claude/processes$(NC)" || \
+		echo "$(RED)✗ No process files found to push$(NC)"; \
+	else \
+		echo "$(YELLOW)⚠ No processes directory found$(NC)"; \
+	fi
+
+# Push standards from project to global directory
+push-standards:
+	@echo "$(BLUE)Pushing standards from project to ~/.claude/standards...$(NC)"
+	@mkdir -p ~/.claude/standards
+	@if [ -d "standards" ]; then \
+		cp -f standards/*.md ~/.claude/standards/ 2>/dev/null && \
+		echo "$(GREEN)✓ Standards pushed to ~/.claude/standards$(NC)" || \
+		echo "$(RED)✗ No standard files found to push$(NC)"; \
+	else \
+		echo "$(YELLOW)⚠ No standards directory found$(NC)"; \
+	fi
+
+# Push commands from project to global directory
+push-commands:
+	@echo "$(BLUE)Pushing commands from project to ~/.claude/commands...$(NC)"
+	@mkdir -p ~/.claude/commands
+	@if [ -d "commands" ]; then \
+		cp -f commands/*.md ~/.claude/commands/ 2>/dev/null && \
+		echo "$(GREEN)✓ Commands pushed to ~/.claude/commands$(NC)" || \
+		echo "$(RED)✗ No command files found to push$(NC)"; \
+	else \
+		echo "$(YELLOW)⚠ No commands directory found$(NC)"; \
+	fi
+
+# Push all local resources to global directories
+push-all: push-agents push-processes push-standards push-commands
+	@echo "$(GREEN)✓ All resources pushed to global directories!$(NC)"
+	@echo "$(BLUE)Pushed:$(NC)"
+	@echo "  • Agents → ~/.claude/agents"
+	@echo "  • Processes → ~/.claude/processes"
+	@echo "  • Standards → ~/.claude/standards"
+	@echo "  • Commands → ~/.claude/commands"
 
 # Clean up deprecated agents
 cleanup:
