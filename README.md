@@ -856,6 +856,14 @@ See [IMPROVEMENTS.md](./docs/IMPROVEMENTS.md) for detailed documentation on:
 - 🚀 CI/CD pipelines
 - 📦 Dependency management
 
+### 📚 Documentation
+
+- [How to Create an Agent](docs/HOW_TO_CREATE_AGENT.md)
+- [Process & Standards Guide](docs/PROCESS_STANDARDS.md)
+- [Sync Process Documentation](docs/SYNC_PROCESS.md)
+- [Update Command Guide](docs/UPDATE_COMMAND.md)
+- **[CLAUDE-REFERENCE.md](CLAUDE-REFERENCE.md)** - Complete catalog of all agents, processes, and standards to reference in your project's CLAUDE.md
+
 ## 📬 Connect
 
 - 🐛 [Report Issues](https://github.com/lsendel/sub-agents/issues)
