@@ -1,8 +1,6 @@
 ---
 name: security-scanner
-description: Scans for security vulnerabilities and compliance issues. Detects
-  exposed secrets, OWASP violations, and suggests fixes. Use for security
-  analysis.
+description: Scans for SQL injection, XSS vulnerabilities, exposed API keys, hardcoded passwords, security misconfigurations, dependency vulnerabilities, OWASP issues. Use for security audits, vulnerability scanning, penetration testing, compliance checks.
 tools: Read, Grep, Glob, Bash
 version: 1.0.0
 author: External

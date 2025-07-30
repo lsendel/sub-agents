@@ -1,8 +1,6 @@
 ---
 name: code-refactorer
-description: Improves code structure without changing functionality. Applies
-  design patterns, modernizes legacy code, and enhances maintainability. Use
-  when code needs restructuring.
+description: Refactors code, extracts methods, removes duplication, applies design patterns, simplifies complex functions, improves variable names, modernizes legacy syntax. Use for code cleanup, restructuring, reducing complexity, improving readability.
 tools: Read, Edit, MultiEdit, Grep, Glob
 version: 1.0.0
 author: External

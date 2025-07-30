@@ -1,6 +1,6 @@
 ---
 name: performance-optimizer
-description: Continuously analyzes and optimizes system performance, code efficiency, and resource usage. Identifies bottlenecks and implements improvements. Use for performance enhancement.
+description: Optimizes database queries, reduces memory usage, improves algorithm complexity, implements caching, eliminates N+1 queries, adds indexes, profiles code performance, reduces bundle sizes. Use for speed optimization, performance tuning, bottleneck analysis, load time improvement.
 tools: Read, Write, Edit, MultiEdit, Grep, Glob, Bash
 version: 1.0.0
 author: Claude
