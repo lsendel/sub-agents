@@ -11,7 +11,7 @@ YELLOW = \033[1;33m
 RED = \033[0;31m
 NC = \033[0m # No Color
 
-.PHONY: help install test lint format clean dev link unlink sync sync-copy pull-agents pull-processes pull-standards pull-commands pull-all sync-all cleanup install-agent migrate optimize validate fix-yaml publish-info publish-quick list-agents install-agents push-agents push-processes push-standards push-commands push-all push-reference
+.PHONY: help install test lint format clean dev link unlink sync sync-copy pull-agents pull-processes pull-standards pull-commands pull-all sync-all cleanup install-agent migrate optimize validate fix-yaml publish-info publish-quick list-agents install-agents push-agents push-processes push-standards push-commands push-all push-reference reset-and-push
 
 # Default target
 help:
@@ -43,6 +43,7 @@ help:
 	@echo "  $(YELLOW)make push-commands$(NC)  - Push commands from project to ~/.claude/commands"
 	@echo "  $(YELLOW)make push-reference$(NC) - Push CLAUDE-REFERENCE.md to ~/.claude/ (catalog of all agents/processes/standards)"
 	@echo "  $(YELLOW)make push-all$(NC)      - Push all resources to global directories"
+	@echo "  $(YELLOW)make reset-and-push$(NC) - Delete all global directories and push fresh copies from project"
 	@echo ""
 	@echo "$(GREEN)Legacy sync commands:$(NC)"
 	@echo "  $(YELLOW)make sync$(NC)         - Sync externally installed agents"
@@ -366,3 +367,27 @@ publish-quick:
 	@echo ""
 	@echo "$(BLUE)View package at:$(NC) https://www.npmjs.com/package/@zamaz/claude-agents"
 	@echo "$(BLUE)═══════════════════════════════════════════════════$(NC)"
+
+# Reset and push - Delete all global directories and push fresh copies
+reset-and-push:
+	@echo "$(RED)WARNING: This will delete all files in:$(NC)"
+	@echo "  • ~/.claude/agents"
+	@echo "  • ~/.claude/processes"
+	@echo "  • ~/.claude/standards"
+	@echo "  • ~/.claude/commands"
+	@echo ""
+	@echo "$(YELLOW)Press Ctrl+C to cancel, or wait 3 seconds to continue...$(NC)"
+	@sleep 3
+	@echo ""
+	@echo "$(BLUE)Deleting global directories...$(NC)"
+	@rm -rf ~/.claude/agents
+	@rm -rf ~/.claude/processes
+	@rm -rf ~/.claude/standards
+	@rm -rf ~/.claude/commands
+	@echo "$(GREEN)✓ Global directories deleted$(NC)"
+	@echo ""
+	@echo "$(BLUE)Pushing fresh copies from project...$(NC)"
+	@$(MAKE) push-all
+	@echo ""
+	@echo "$(GREEN)✓ Reset and push complete!$(NC)"
+	@echo "$(BLUE)All global directories now contain fresh copies from the project.$(NC)"
