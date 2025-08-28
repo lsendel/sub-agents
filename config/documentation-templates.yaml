@@ -1,0 +1,388 @@
+# Documentation Templates Configuration
+# Reusable content patterns and templates for consistent documentation
+
+templates:
+  name: "Documentation Templates"
+  version: "2.0.0"
+  description: "Standardized templates for consistent, high-quality documentation"
+
+# Mermaid Diagram Standards
+mermaid:
+  style_guidelines:
+    consistency: "Use same diagram types and styling across all documentation"
+    colors: "Stick to brand colors and ensure accessibility"
+    complexity: "Maximum 7-9 nodes per diagram for readability"
+    
+  diagram_types:
+    flowchart:
+      usage: "Process flows, decision trees, user journeys"
+      syntax: "graph TD or graph LR"
+      example: |
+        ```mermaid
+        graph TD
+            A[Start Process] --> B{Decision Point?}
+            B -->|Yes| C[Action 1]
+            B -->|No| D[Action 2]
+            C --> E[End]
+            D --> E[End]
+        ```
+        
+    sequence:
+      usage: "API interactions, system communications"
+      syntax: "sequenceDiagram"
+      example: |
+        ```mermaid
+        sequenceDiagram
+            participant Client
+            participant API
+            participant Database
+            
+            Client->>API: POST /users
+            API->>Database: INSERT user
+            Database-->>API: Success
+            API-->>Client: 201 Created
+        ```
+        
+    architecture:
+      usage: "System architecture, component relationships"
+      syntax: "graph TB with subgraphs"
+      example: |
+        ```mermaid
+        graph TB
+            subgraph "Client Layer"
+                WEB[Web App]
+                MOB[Mobile App]
+            end
+            
+            subgraph "API Layer"
+                GW[API Gateway]
+                AUTH[Auth Service]
+                USER[User Service]
+            end
+            
+            subgraph "Data Layer"
+                DB[(Database)]
+                CACHE[(Cache)]
+            end
+            
+            WEB --> GW
+            MOB --> GW
+            GW --> AUTH
+            GW --> USER
+            AUTH --> CACHE
+            USER --> DB
+        ```
+        
+    entity_relationship:
+      usage: "Database schemas, data relationships"
+      syntax: "erDiagram"
+      example: |
+        ```mermaid
+        erDiagram
+            USER ||--o{ ORDER : places
+            ORDER ||--|{ ORDER_ITEM : contains
+            PRODUCT ||--o{ ORDER_ITEM : included_in
+            
+            USER {
+                uuid id PK
+                string email UK
+                string name
+                timestamp created_at
+            }
+            
+            ORDER {
+                uuid id PK
+                uuid user_id FK
+                decimal total
+                timestamp created_at
+            }
+        ```
+
+# Content Templates
+content_templates:
+  quick_start:
+    purpose: "Get users successful in minimal time (15-30 minutes)"
+    structure: |
+      # Quick Start: [Feature Name]
+      
+      ## What You'll Accomplish
+      In [X] minutes, you'll:
+      - ✅ [Specific outcome 1]
+      - ✅ [Specific outcome 2]
+      - ✅ [Specific outcome 3]
+      
+      ## Prerequisites
+      - [Requirement 1]
+      - [Requirement 2]
+      
+      ## Step 1: [Action]
+      ```[language]
+      // Working code example
+      const example = doSomething();
+      console.log(example); // Expected output
+      ```
+      
+      **What this does**: [Brief explanation]
+      
+      ## Step 2: [Next Action]
+      [Continue with clear, tested steps]
+      
+      ## Verify Success
+      You should see: [Expected result]
+      
+      ## What's Next?
+      - [Link to advanced guide]
+      - [Link to API reference]
+      
+  api_endpoint:
+    purpose: "Complete API endpoint documentation"
+    structure: |
+      ## [METHOD] /api/v1/endpoint
+      
+      [Brief description of what this endpoint does]
+      
+      ### Request
+      **Headers:**
+      ```http
+      Content-Type: application/json
+      Authorization: Bearer <token>
+      ```
+      
+      **Parameters:**
+      | Parameter | Type | Location | Required | Description |
+      |-----------|------|----------|----------|-------------|
+      | param1 | string | path | Yes | Description |
+      | param2 | string | query | No | Description |
+      
+      **Body Schema:**
+      ```typescript
+      interface RequestBody {
+        field1: string;    // Description
+        field2?: number;   // Optional field description
+      }
+      ```
+      
+      **Example Request:**
+      ```bash
+      curl -X [METHOD] https://api.example.com/v1/endpoint \
+        -H "Content-Type: application/json" \
+        -H "Authorization: Bearer ${API_TOKEN}" \
+        -d '{
+          "field1": "value",
+          "field2": 123
+        }'
+      ```
+      
+      ### Response
+      **Success ([Status Code]):**
+      ```json
+      {
+        "data": {
+          "id": "123",
+          "field1": "value"
+        }
+      }
+      ```
+      
+      **Error Responses:**
+      ```json
+      // 400 Bad Request
+      {
+        "error": "validation_error",
+        "message": "Description of error"
+      }
+      ```
+      
+      ### Integration Examples
+      **JavaScript:**
+      ```javascript
+      const response = await fetch('/api/v1/endpoint', {
+        method: '[METHOD]',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          field1: 'value'
+        })
+      });
+      
+      const data = await response.json();
+      ```
+      
+  user_guide_section:
+    purpose: "Step-by-step user instructions with visuals"
+    structure: |
+      ## [Task Name]
+      
+      **When to use this**: [Context for when users need this]
+      
+      ### Step 1: [Clear Action]
+      1. **[Specific instruction]**: [Additional context]
+         ![Screenshot](images/step1.png)
+      
+      2. **[Next instruction]**: 
+         - [Sub-step if needed]
+         - [Another sub-step]
+      
+      💡 **Pro Tip**: [Helpful shortcut or best practice]
+      
+      ### Step 2: [Next Major Action]
+      [Continue with clear, visual instructions]
+      
+      ### Common Issues
+      #### "Error message or problem"
+      **What this means**: [Explanation]
+      **How to fix it**:
+      1. [Solution step 1]
+      2. [Solution step 2]
+      
+  process_documentation:
+    purpose: "Business process with clear ownership and workflow"
+    structure: |
+      # [Process Name]
+      
+      ## Process Overview
+      **Purpose**: [What this process accomplishes]
+      **Owner**: [Team or role responsible]
+      **Duration**: [Typical time to complete]
+      **Frequency**: [How often this happens]
+      
+      ## Process Flow
+      ```mermaid
+      graph LR
+          A[Start Event] --> B[Step 1<br/>Owner: Role]
+          B --> C[Step 2<br/>Owner: Role]
+          C --> D{Decision?}
+          D -->|Yes| E[Path 1]
+          D -->|No| F[Path 2]
+          E --> G[End]
+          F --> G[End]
+      ```
+      
+      ## Detailed Steps
+      
+      ### Step 1: [Action] (Owner: [Role])
+      **Duration**: [Time estimate]
+      **Trigger**: [What initiates this step]
+      
+      **Actions**:
+      1. [Specific task]
+      2. [Next task]
+      
+      **Deliverables**:
+      - [ ] [Checklist item]
+      - [ ] [Another deliverable]
+      
+      **Success Criteria**: [How to know this step is complete]
+      
+      ### Step 2: [Next Action]
+      [Continue with structured steps]
+      
+      ## Quality Standards
+      **KPIs**:
+      | Metric | Target | Current |
+      |--------|--------|---------|
+      | [Metric 1] | [Target] | [Current] |
+      
+      **Escalation Triggers**:
+      - [Condition that requires escalation]
+      - [Another escalation trigger]
+      
+  architecture_documentation:
+    purpose: "System architecture with technical details"
+    structure: |
+      # System Architecture: [System Name]
+      
+      ## Overview
+      [High-level description of the system]
+      
+      ## Architecture Diagram
+      ```mermaid
+      graph TB
+          subgraph "Client Layer"
+              WEB[Web Application<br/>Technology Stack]
+              MOB[Mobile Apps<br/>Technology Stack]
+          end
+          
+          subgraph "API Gateway"
+              GW[Gateway Service<br/>Port: 8080<br/>Tech: Kong]
+          end
+          
+          subgraph "Services"
+              AUTH[Auth Service<br/>Port: 3001<br/>Tech: Node.js]
+              USER[User Service<br/>Port: 3002<br/>Tech: Node.js]
+          end
+          
+          subgraph "Data Layer"
+              DB[(Primary Database<br/>PostgreSQL)]
+              CACHE[(Cache Layer<br/>Redis)]
+          end
+          
+          WEB --> GW
+          MOB --> GW
+          GW --> AUTH
+          GW --> USER
+          AUTH --> CACHE
+          USER --> DB
+      ```
+      
+      ## Component Details
+      
+      ### [Service Name]
+      **Responsibility**: [What this service does]
+      **Technology**: [Tech stack]
+      **Port**: [Port number]
+      **Dependencies**: [What it depends on]
+      
+      **Configuration**:
+      ```yaml
+      service-name:
+        image: company/service:latest
+        ports:
+          - "3001:3001"
+        environment:
+          ENV_VAR: ${VALUE}
+      ```
+      
+      ## Data Flow Examples
+      ### [Common Workflow Name]
+      ```mermaid
+      sequenceDiagram
+          participant Client
+          participant Gateway
+          participant Service
+          participant Database
+          
+          Client->>Gateway: Request
+          Gateway->>Service: Forward Request
+          Service->>Database: Query Data
+          Database-->>Service: Return Data
+          Service-->>Gateway: Response
+          Gateway-->>Client: Final Response
+      ```
+      
+      **Step-by-step**:
+      1. [Description of step 1]
+      2. [Description of step 2]
+      
+# Template Usage Guidelines
+usage_guidelines:
+  template_selection:
+    quick_start: "For getting users successful with core functionality quickly"
+    api_endpoint: "For every API endpoint that external developers use"
+    user_guide: "For step-by-step user tasks in business applications"
+    process_doc: "For internal business processes with multiple stakeholders"
+    architecture: "For system design documentation and technical onboarding"
+    
+  customization_rules:
+    required_sections: "All sections marked as required must be included"
+    optional_sections: "Include optional sections when they add value"
+    placeholders: "Replace all [placeholder] content with actual information"
+    examples: "Customize all examples to match actual implementation"
+    
+  quality_requirements:
+    completeness: "All template sections filled out appropriately"
+    accuracy: "All technical information verified against implementation"
+    testing: "All code examples tested and working"
+    accessibility: "All visual elements have proper alt text and descriptions"

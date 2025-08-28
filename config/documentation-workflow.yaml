@@ -1,0 +1,138 @@
+# Documentation Workflow Configuration
+# Defines the multi-agent documentation workflow inspired by NVIDIA demo structure
+
+workflow:
+  name: "Documentation Generation Workflow"
+  version: "1.0.0"
+  description: "Multi-stage collaborative documentation generation process"
+
+# Workflow Stages
+stages:
+  1_analysis:
+    name: "Codebase Analysis"
+    description: "Systematic analysis of codebase structure and documentation opportunities"
+    primary_agent: "codebase-documentation-explorer"
+    estimated_duration: "30-60 minutes"
+    deliverables:
+      - "Structural analysis report"
+      - "Component inventory"
+      - "Documentation gap analysis"
+      - "Priority recommendations"
+
+  2_strategy:
+    name: "Documentation Strategy"
+    description: "Strategic planning for comprehensive documentation coverage"
+    primary_agent: "documentation-strategist"
+    dependencies: ["1_analysis"]
+    estimated_duration: "45-90 minutes"
+    deliverables:
+      - "Documentation master plan"
+      - "Content briefs for each document"
+      - "Resource allocation plan"
+      - "Success metrics definition"
+
+  3_creation:
+    name: "Content Creation"
+    description: "Parallel content creation by specialized writers"
+    agents:
+      - "documentation-writer"         # General documentation
+      - "technical-documentation-writer"  # Technical/API docs
+      - "business-documentation-writer"   # User guides/business docs
+    dependencies: ["2_strategy"]
+    estimated_duration: "2-8 hours (parallel)"
+    deliverables:
+      - "Draft documentation content"
+      - "Working code examples"
+      - "Visual assets and diagrams"
+      - "Cross-reference structure"
+
+  4_review:
+    name: "Quality Assurance"
+    description: "Comprehensive review and validation of all documentation"
+    primary_agent: "documentation-reviewer"
+    dependencies: ["3_creation"]
+    estimated_duration: "1-3 hours"
+    deliverables:
+      - "Quality assessment reports"
+      - "Technical accuracy validation"
+      - "User testing results"
+      - "Publication recommendations"
+
+# Agent Coordination
+coordination:
+  handoff_requirements:
+    analysis_to_strategy:
+      - "Complete structural analysis report"
+      - "Prioritized documentation opportunities"
+      - "Component complexity assessments"
+      - "Audience identification"
+    
+    strategy_to_creation:
+      - "Detailed content briefs"
+      - "Target audience specifications"
+      - "Success criteria per document"
+      - "Style and format requirements"
+    
+    creation_to_review:
+      - "Complete draft content"
+      - "All code examples functional"
+      - "Visual assets created"
+      - "Self-review checklist completed"
+
+  collaboration_points:
+    - stage: "2_strategy"
+      interaction: "Strategist validates analysis findings with Explorer"
+    - stage: "3_creation"
+      interaction: "Writers clarify technical details with Explorer"
+    - stage: "4_review"
+      interaction: "Reviewer validates technical accuracy with Explorer"
+
+# Quality Gates
+quality_gates:
+  analysis_complete:
+    criteria:
+      - "All major components identified"
+      - "Documentation gaps prioritized"
+      - "Technical complexity assessed"
+      - "Target audiences defined"
+  
+  strategy_approved:
+    criteria:
+      - "Content briefs cover all priority areas"
+      - "Resource allocation realistic"
+      - "Success metrics measurable"
+      - "Timeline achievable"
+  
+  content_ready:
+    criteria:
+      - "All required sections present"
+      - "Code examples tested and working"
+      - "Appropriate for target audience"
+      - "Meets style and format standards"
+  
+  publication_approved:
+    criteria:
+      - "Technical accuracy validated"
+      - "User testing successful"
+      - "Quality standards met"
+      - "Stakeholder approval obtained"
+
+# Success Metrics
+metrics:
+  process_efficiency:
+    - "Time from start to publication-ready"
+    - "Number of revision cycles required"
+    - "Agent utilization and parallel work"
+    - "Quality gate pass rates"
+  
+  documentation_quality:
+    - "User task completion success rate"
+    - "Technical accuracy scores"
+    - "Content completeness ratings"
+    - "User satisfaction feedback"
+  
+  business_impact:
+    - "Developer onboarding time reduction"
+    - "Support ticket volume decrease"
+    - "API adoption rate increase"
+    - "User engagement metrics"
